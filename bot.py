@@ -11,15 +11,14 @@ from aiohttp.web import run_app
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 import os
 
-token = '6029120908:AAFSntMGALPmIV7eJPrLbPxXEk_pEEdTRgQ'
+
 # HEROKU_APP_NAME = os.getenv('HEROKU_APP_NAME')
 # WEBHOOK_HOST = f'https://{HEROKU_APP_NAME}.herokuapp.com'
 # WEBHOOK_PATH = f'/webhook/{token}'
 # WEBHOOK_URL = f'jdafhjasdh2u3alskd/{WEBHOOK_PATH}'
 # WEBAPP_HOST = '0.0.0.0'
 # WEBAPP_PORT = os.getenv('PORT', default=8081)
-dp = Dispatcher()
-bot = Bot(token=token)
+
 
 # async def on_startup(dispatcher):
 #     await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
@@ -40,6 +39,9 @@ async def main():
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
     )
+    token = '6029120908:AAFSntMGALPmIV7eJPrLbPxXEk_pEEdTRgQ'
+    dp = Dispatcher()
+    bot = Bot(token=token)
     sched = AsyncIOScheduler({'apscheduler.timezone':'Asia/Almaty'})
     sched.add_job(send_message,'cron',hour='8-20/1', minute = '30', kwargs= {'bot':bot} )
     sched.start()
