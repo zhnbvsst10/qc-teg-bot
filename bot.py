@@ -26,7 +26,10 @@ import os
 
 # async def on_shutdown(dispatcher):
 #     await bot.delete_webhook()
-
+token = '6029120908:AAFSntMGALPmIV7eJPrLbPxXEk_pEEdTRgQ'
+dp = Dispatcher()
+bot = Bot(token=token)
+bot.delete_webhook()
 async def send_message(bot: Bot):
     
     await bot.send_message(443493321,'Проверка контроля качества. \n Перейти в /start')
@@ -39,10 +42,7 @@ async def main():
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
     )
-    token = '6029120908:AAFSntMGALPmIV7eJPrLbPxXEk_pEEdTRgQ'
-    dp = Dispatcher()
-    bot = Bot(token=token)
-    bot.delete_webhook()
+    
     sched = AsyncIOScheduler({'apscheduler.timezone':'Asia/Almaty'})
     sched.add_job(send_message,'cron',hour='8-20/1', minute = '30', kwargs= {'bot':bot} )
     sched.start()
