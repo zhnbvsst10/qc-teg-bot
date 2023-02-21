@@ -42,6 +42,7 @@ async def main():
     token = '6029120908:AAFSntMGALPmIV7eJPrLbPxXEk_pEEdTRgQ'
     dp = Dispatcher()
     bot = Bot(token=token)
+    bot.delete_webhook()
     sched = AsyncIOScheduler({'apscheduler.timezone':'Asia/Almaty'})
     sched.add_job(send_message,'cron',hour='8-20/1', minute = '30', kwargs= {'bot':bot} )
     sched.start()
