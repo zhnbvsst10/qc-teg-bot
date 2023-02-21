@@ -12,21 +12,21 @@ from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_applicati
 import os
 
 token = '6029120908:AAFSntMGALPmIV7eJPrLbPxXEk_pEEdTRgQ'
-HEROKU_APP_NAME = os.getenv('HEROKU_APP_NAME')
-WEBHOOK_HOST = f'https://{HEROKU_APP_NAME}.herokuapp.com'
-WEBHOOK_PATH = f'/webhook/{token}'
-WEBHOOK_URL = f'jdafhjasdh2u3alskd/{WEBHOOK_PATH}'
-WEBAPP_HOST = '0.0.0.0'
-WEBAPP_PORT = os.getenv('PORT', default=8081)
+# HEROKU_APP_NAME = os.getenv('HEROKU_APP_NAME')
+# WEBHOOK_HOST = f'https://{HEROKU_APP_NAME}.herokuapp.com'
+# WEBHOOK_PATH = f'/webhook/{token}'
+# WEBHOOK_URL = f'jdafhjasdh2u3alskd/{WEBHOOK_PATH}'
+# WEBAPP_HOST = '0.0.0.0'
+# WEBAPP_PORT = os.getenv('PORT', default=8081)
 dp = Dispatcher()
 bot = Bot(token=token)
 
-async def on_startup(dispatcher):
-    await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
+# async def on_startup(dispatcher):
+#     await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
 
 
-async def on_shutdown(dispatcher):
-    await bot.delete_webhook()
+# async def on_shutdown(dispatcher):
+#     await bot.delete_webhook()
 
 async def send_message(bot: Bot):
     
@@ -52,13 +52,16 @@ async def main():
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    app = Application()
-    app["bot"] = bot
-    SimpleRequestHandler(
-        dispatcher=dp,
-        bot=bot,
-    ).register(app, path=WEBHOOK_PATH)
-    setup_application(app, dp, bot=bot)
-    run_app(app, host="0.0.0.0", port=8081)
+    # app = Application()
+    # app["bot"] = bot
+    # SimpleRequestHandler(
+    #     dispatcher=dp,
+    #     bot=bot,
+    # ).register(app, path=WEBHOOK_PATH)
+    # app.router.add_get("/demo", demo_handler)
+    # app.router.add_post("/demo/checkData", check_data_handler)
+    # app.router.add_post("/demo/sendMessage", send_message_handler)
+    # setup_application(app, dp, bot=bot)
+    # run_app(app, host="0.0.0.0", port=8081)
     asyncio.run(main())
     
