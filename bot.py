@@ -28,7 +28,7 @@ token = os.getenv('TOKEN')
 #     await bot.delete_webhook()
 dp = Dispatcher()
 bot = Bot(token=token)
-bot.delete_webhook()
+
 async def send_message(bot: Bot):
     
     await bot.send_message(443493321,'Проверка контроля качества. \n Перейти в /start')
@@ -37,6 +37,7 @@ async def send_message(bot: Bot):
     # await bot.send_message(1051813835,'Проверка контроля качества. \n Перейти в /start')
     
 async def main():
+    bot.delete_webhook()
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
