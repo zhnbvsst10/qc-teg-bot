@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards.simple_row import make_row_keyboard
-from datetime import datetime
+from datetime import datetime, timedelta
 import psycopg2
 
 router2 = Router()
@@ -129,7 +129,7 @@ async def pvc_weight(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPVC3.choosing_pvc_weight) #F.text.in_(available_food_names))
 async def pvc_width(message: Message, state: FSMContext):
-    if datetime.now().hour in [8,11,14,17,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [8,11,14,17,20]:
         await state.update_data(chosen_weight=message.text.lower().replace(',', '.'))
         #chosen_weight = chosen_weight.replace(',', '.')
         await message.answer(
@@ -138,7 +138,7 @@ async def pvc_width(message: Message, state: FSMContext):
         )
         print('choose width')
         await state.set_state(SetParameterPVC3.choosing_pvc_width)
-    elif datetime.now().hour in [9,10,12,13,15,16,18,19]:
+    elif (datetime.now().hour + timedelta(hours = 6)) in [9,10,12,13,15,16,18,19]:
         await state.update_data(chosen_weight=message.text.lower().replace(',', '.'))
         #chosen_weight = chosen_weight.replace(',', '.')
         await message.answer(
@@ -185,7 +185,7 @@ async def pvc_proch(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPVC3.choosing_pvc_proch)
 async def pvc_finish(message: Message, state: FSMContext):
-    if datetime.now().hour in [8,11,14,17,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [8,11,14,17,20]:
         await state.update_data(chosen_proch=message.text.lower())
         await message.answer(
             text="перейти к передаче данных",
@@ -197,7 +197,7 @@ async def pvc_finish(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPVC3.choosing_pvc_finish, F.text.in_(available_proceeds))
 async def pvc_chosen(message: Message, state: FSMContext):
-    if datetime.now().hour in [8,11,14,17,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [8,11,14,17,20]:
         user_data = await state.get_data()
         #await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
         await state.clear()
@@ -212,7 +212,7 @@ async def pvc_chosen(message: Message, state: FSMContext):
         conn.commit()
         cursor.close()
         conn.close()
-    elif datetime.now().hour in [9,10,12,13,15,16,18,19]:
+    elif (datetime.now()+ timedelta(hours = 6)).hour in [9,10,12,13,15,16,18,19]:
         print('sucess 3 params')
         user_data = await state.get_data()
         await state.clear()

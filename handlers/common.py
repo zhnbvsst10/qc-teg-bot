@@ -3,7 +3,7 @@ from aiogram.filters.command import Command
 from aiogram.filters.text import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove, KeyboardButton,ReplyKeyboardMarkup
-from datetime import datetime
+from datetime import datetime, timedelta
 import psycopg2
 
 router = Router()
@@ -58,7 +58,7 @@ async def not_working(message: Message, state: FSMContext):
 async def cmd_start_3(message: Message, state: FSMContext):
     await state.clear()
     print()
-    if datetime.now().hour in [8,9,10,11,12,13,14,15,16,17,18,18,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour  in [8,9,10,11,12,13,14,15,16,17,18,18,20]:
         kb6 = [[KeyboardButton(text='PVC трубa'),KeyboardButton(text='PPR-C трубa') ]]
         keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
         await message.answer(
