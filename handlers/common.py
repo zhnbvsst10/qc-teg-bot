@@ -20,7 +20,7 @@ async def hello(message: Message, state: FSMContext):
     
 @router.message(Command(commands=["start"]))
 async def working(message: Message, state: FSMContext):
-    kb6 = [[KeyboardButton(text='работает'),KeyboardButton(text='остановлена') ]]
+    kb6 = [[KeyboardButton(text='работает'),KeyboardButton(text='остановка для настройки'), KeyboardButton(text='ремонт'), ]]
     keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
     await message.answer(
                             text="Работает ли сейчас линия ?",
