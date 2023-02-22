@@ -33,9 +33,9 @@ bot.delete_webhook()
 async def send_message(bot: Bot):
     
     await bot.send_message(443493321,'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1055367376,'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1174180760,'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1051813835,'Проверка контроля качества. \n Перейти в /start')
+    # await bot.send_message(1055367376,'Проверка контроля качества. \n Перейти в /start')
+    # await bot.send_message(1174180760,'Проверка контроля качества. \n Перейти в /start')
+    # await bot.send_message(1051813835,'Проверка контроля качества. \n Перейти в /start')
     
 async def main():
     logging.basicConfig(
