@@ -18,7 +18,7 @@ import os
 # WEBHOOK_URL = f'jdafhjasdh2u3alskd/{WEBHOOK_PATH}'
 # WEBAPP_HOST = '0.0.0.0'
 # WEBAPP_PORT = os.getenv('PORT', default=8081)
-
+token = os.getenv('TOKEN')
 
 # async def on_startup(dispatcher):
 #     await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
@@ -26,7 +26,6 @@ import os
 
 # async def on_shutdown(dispatcher):
 #     await bot.delete_webhook()
-token = '6029120908:AAFSntMGALPmIV7eJPrLbPxXEk_pEEdTRgQ'
 dp = Dispatcher()
 bot = Bot(token=token)
 bot.delete_webhook()
