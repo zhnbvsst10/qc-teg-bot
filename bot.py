@@ -51,7 +51,7 @@ async def main():
     dp.include_router(pvc_1.router)
     dp.include_router(pvc_3.router2)
 
-    await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
+    await dp.start_polling(bot, skip_updates=True)#allowed_updates=dp.resolve_used_update_types())
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
