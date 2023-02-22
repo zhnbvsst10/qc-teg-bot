@@ -138,7 +138,7 @@ async def pvc_width(message: Message, state: FSMContext):
         )
         print('choose width')
         await state.set_state(SetParameterPVC3.choosing_pvc_width)
-    elif (datetime.now().hour + timedelta(hours = 6)) in [9,10,12,13,15,16,18,19]:
+    elif (datetime.now()+ timedelta(hours = 6)).hour in [9,10,12,13,15,16,18,19]:
         await state.update_data(chosen_weight=message.text.lower().replace(',', '.'))
         #chosen_weight = chosen_weight.replace(',', '.')
         await message.answer(
