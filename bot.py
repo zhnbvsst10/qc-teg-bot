@@ -43,7 +43,7 @@ async def main():
     await dp.start_polling(bot, skip_updates=True)
 
 @common.router.message()
-async def get_photo(message: Message):
+async def get_photo(message: Message.photo):
     gauth = GoogleAuth()
     gauth.LocalWebserverAuth()           
     drive = GoogleDrive(gauth)  
