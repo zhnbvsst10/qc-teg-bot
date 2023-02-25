@@ -32,7 +32,7 @@ async def main():
     )
     
     sched = AsyncIOScheduler({'apscheduler.timezone':'Asia/Almaty'})
-    sched.add_job(send_message,'cron',hour='0-20/1', minute = '20', kwargs= {'bot':bot} )
+    sched.add_job(send_message,'cron',hour='0-20/1', minute = '26', kwargs= {'bot':bot} )
     sched.start()
     sched.print_jobs()
     dp.include_router(common.router)
