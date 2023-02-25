@@ -52,7 +52,7 @@ async def get_photo(message: Message):
     PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
     file = await bot.get_file(file_id)
     file_path = file.file_path
-    filename = 'balk_photo_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+    filename = 'pvc_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
     await bot.download_file(file_path, filename )
     upload_file_list = [filename]
     for upload_file in upload_file_list:
