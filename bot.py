@@ -4,28 +4,18 @@ import aiogram
 from aiogram import Bot
 from aiogram import Dispatcher
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-# from aiogram.fsm.storage.memory import MemoryStorage
-from handlers import common, pvc_1, pvc_3
+from handlers import common,  pvc_3
 from aiohttp.web_app import Application
 from aiohttp.web import run_app
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 import os
+from aiogram.types import Message
+from aiogram.types.photo_size import PhotoSize
+from datetime import datetime
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
 
-
-# HEROKU_APP_NAME = os.getenv('HEROKU_APP_NAME')
-# WEBHOOK_HOST = f'https://{HEROKU_APP_NAME}.herokuapp.com'
-# WEBHOOK_PATH = f'/webhook/{token}'
-# WEBHOOK_URL = f'jdafhjasdh2u3alskd/{WEBHOOK_PATH}'
-# WEBAPP_HOST = '0.0.0.0'
-# WEBAPP_PORT = os.getenv('PORT', default=8081)
 token = os.getenv('TOKEN')
-
-# async def on_startup(dispatcher):
-#     await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
-
-
-# async def on_shutdown(dispatcher):
-#     await bot.delete_webhook()
 dp = Dispatcher()
 bot = Bot(token=token)
 
@@ -48,23 +38,29 @@ async def main():
     sched.start()
     sched.print_jobs()
     dp.include_router(common.router)
-    dp.include_router(pvc_1.router)
     dp.include_router(pvc_3.router2)
 
-    await dp.start_polling(bot, skip_updates=True)#allowed_updates=dp.resolve_used_update_types())
+    await dp.start_polling(bot, skip_updates=True)
+
+@common.router.message()
+async def get_photo(message: Message):
+    gauth = GoogleAuth()
+    gauth.LocalWebserverAuth()           
+    drive = GoogleDrive(gauth)  
+    file_id =  message.photo[-1].file_id
+    file_unique_id = message.photo[-1].file_unique_id
+    PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+    file = await bot.get_file(file_id)
+    file_path = file.file_path
+    filename = '/down_photoc_pvc/balk_photo_' + datetime.now().strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+    await bot.download_file(file_path, filename )
+    upload_file_list = [filename]
+    for upload_file in upload_file_list:
+        gfile = drive.CreateFile({'parents': [{'id': '1yaz2rotCLCAfzusoOujCe7gW1Ec1fFqU'}]})
+        gfile.SetContentFile(upload_file)
+        gfile.Upload()
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    # app = Application()
-    # app["bot"] = bot
-    # SimpleRequestHandler(
-    #     dispatcher=dp,
-    #     bot=bot,
-    # ).register(app, path=WEBHOOK_PATH)
-    # app.router.add_get("/demo", demo_handler)
-    # app.router.add_post("/demo/checkData", check_data_handler)
-    # app.router.add_post("/demo/sendMessage", send_message_handler)
-    # setup_application(app, dp, bot=bot)
-    # run_app(app, host="0.0.0.0", port=8081)
     asyncio.run(main())
     
