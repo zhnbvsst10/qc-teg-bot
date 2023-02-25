@@ -17,8 +17,25 @@ async def hello(message: Message, state: FSMContext):
                         text="спасибо за ваше сообщение ! ",
                         )
     print(msg)
-    
 @router.message(Command(commands=["start"]))
+#@router.message(Text(text='работает'))
+async def cmd_start_3(message: Message, state: FSMContext):
+    await state.clear()
+    print()
+    if (datetime.now()+ timedelta(hours = 6)).hour  in [0, 8,9,10,11,12,13,14,15,16,17,18,18,20]:
+        kb6 = [[KeyboardButton(text='PVC трубa'),KeyboardButton(text='PPR-C трубa') ]]
+        keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
+        await message.answer(
+                        text="Выберите изделие: ",
+                        reply_markup=keyboard6
+                        )
+    else:
+        msg = await message.answer(
+                        text="В данный момент работы не ведутся ",
+                        )
+
+#@router.message(Command(commands=["start"]))
+@router.message(Text(text='PVC трубa'))
 async def working(message: Message, state: FSMContext):
     kb6 = [[KeyboardButton(text='работает'),KeyboardButton(text='остановка для настройки'), KeyboardButton(text='ремонт'), ]]
     keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
@@ -54,21 +71,6 @@ async def not_working(message: Message, state: FSMContext):
             reply_markup=ReplyKeyboardRemove())
 
 
-@router.message(Text(text='работает'))
-async def cmd_start_3(message: Message, state: FSMContext):
-    await state.clear()
-    print()
-    if (datetime.now()+ timedelta(hours = 6)).hour  in [8,9,10,11,12,13,14,15,16,17,18,18,20]:
-        kb6 = [[KeyboardButton(text='PVC трубa'),KeyboardButton(text='PPR-C трубa') ]]
-        keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
-        await message.answer(
-                        text="Выберите изделие: ",
-                        reply_markup=keyboard6
-                        )
-    else:
-        msg = await message.answer(
-                        text="В данный момент работы не ведутся ",
-                        )
 
 @router.message(Command(commands=["cancel"]))
 @router.message(Text(text="отмена", ))

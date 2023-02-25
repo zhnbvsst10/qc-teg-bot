@@ -22,9 +22,9 @@ bot = Bot(token=token)
 async def send_message(bot: Bot):
     
     await bot.send_message(443493321,'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1055367376,'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1174180760,'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1051813835,'Проверка контроля качества. \n Перейти в /start')
+    # await bot.send_message(1055367376,'Проверка контроля качества. \n Перейти в /start')
+    # await bot.send_message(1174180760,'Проверка контроля качества. \n Перейти в /start')
+    # await bot.send_message(1051813835,'Проверка контроля качества. \n Перейти в /start')
     
 async def main():
     bot.delete_webhook()
@@ -34,7 +34,7 @@ async def main():
     )
     
     sched = AsyncIOScheduler({'apscheduler.timezone':'Asia/Almaty'})
-    sched.add_job(send_message,'cron',hour='8-20/1', minute = '30', kwargs= {'bot':bot} )
+    sched.add_job(send_message,'cron',hour='0-20/1', minute = '15', kwargs= {'bot':bot} )
     sched.start()
     sched.print_jobs()
     dp.include_router(common.router)

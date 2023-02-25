@@ -35,7 +35,7 @@ class SetParameterPVC3(StatesGroup):
     choosing_pvc_proch = State()
     choosing_pvc_finish = State()
 
-@router2.message(Text(text='PVC трубa'))
+@router2.message(Text(text='работает'))
 async def pvc_controller(message: Message, state: FSMContext):
     await message.answer(
         text="Введите ФИО контроллера",
