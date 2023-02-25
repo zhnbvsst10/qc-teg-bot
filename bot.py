@@ -1,19 +1,17 @@
 import asyncio
 import logging
 import aiogram
-from aiogram import Bot
+from aiogram import Bot, F
 from aiogram import Dispatcher
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from handlers import common,  pvc_3
-from aiohttp.web_app import Application
-from aiohttp.web import run_app
-from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 import os
 from aiogram.types import Message
 from aiogram.types.photo_size import PhotoSize
 from datetime import datetime, timedelta
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
+
 
 token = os.getenv('TOKEN')
 dp = Dispatcher()
@@ -42,7 +40,7 @@ async def main():
 
     await dp.start_polling(bot, skip_updates=True)
 
-@common.router.message(content_types=['photo'])
+@common.router.message(F.content_type.in_({'photo'}))
 async def get_photo(message: Message):
     gauth = GoogleAuth()
     gauth.LocalWebserverAuth()           
