@@ -5,10 +5,12 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove, KeyboardButton,ReplyKeyboardMarkup
 from datetime import datetime, timedelta
 import psycopg2
+from keyboards.simple_row import make_row_keyboard
 
 router = Router()
 
-available_options = ['работает', 'ремонт', 'остановка для настройки']
+available_options_pprc = ['работает PPR-C', 'ремонт PPR-C', 'остановка для настройки PPR-C']
+available_options_pvc = ['работает PVC', 'ремонт PVC', 'остановка для настройки PVC']
 
 @router.message(Command(commands=["hello"]))
 async def hello(message: Message, state: FSMContext):
@@ -41,15 +43,15 @@ async def working(message: Message, state: FSMContext):
     keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
     await message.answer(
                             text="Работает ли сейчас линия PVC трубы ?",
-                            reply_markup=keyboard6
+                            reply_markup=make_row_keyboard(available_options_pvc)
                             )
 @router.message(Text(text='PPR-C трубa'))
 async def working(message: Message, state: FSMContext):
     kb6 = [[KeyboardButton(text='работает'),KeyboardButton(text='остановка для настройки'), KeyboardButton(text='ремонт'), ]]
     keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
     await message.answer(
-                            text="Работает ли сейчас линия ?",
-                            reply_markup=keyboard6
+                            text="Работает ли сейчас линия PPR-C трубы?",
+                            reply_markup=make_row_keyboard(available_options_pprc)
                             )
 
 @router.message(Text(text='ремонт PVC'))
