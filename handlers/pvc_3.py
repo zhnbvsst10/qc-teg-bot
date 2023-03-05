@@ -154,7 +154,6 @@ async def pvc_width(message: Message, state: FSMContext):
 @router2.message(SetParameterPVC3.choosing_pvc_width) #F.text.in_(available_food_names))
 async def pvc_control_mark(message: Message, state: FSMContext):
     await state.update_data(chosen_width=message.text.lower().replace(',', '.'))
-    #chosen_width = chosen_width.replace(',','.')
     await message.answer(
             text="оцените контрольную маркировку PVC трубы:",
             reply_markup=make_row_keyboard(available_answers)
