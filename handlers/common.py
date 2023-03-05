@@ -22,7 +22,7 @@ async def hello(message: Message, state: FSMContext):
 async def cmd_start_3(message: Message, state: FSMContext):
     await state.clear()
     print()
-    if (datetime.now()+ timedelta(hours = 6)).hour  in [0, 8,9,10,11,12,13,14,15,16,17,18,18,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour  in [0,1, 8,9,10,11,12,13,14,15,16,17,18,18,20]:
         kb6 = [[KeyboardButton(text='PVC трубa'), KeyboardButton(text='PPR-C трубa'), KeyboardButton(text='Фиттинг'), ]]
         keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
         await message.answer(
