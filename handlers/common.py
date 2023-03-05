@@ -23,7 +23,7 @@ async def cmd_start_3(message: Message, state: FSMContext):
     await state.clear()
     print()
     if (datetime.now()+ timedelta(hours = 6)).hour  in [0, 8,9,10,11,12,13,14,15,16,17,18,18,20]:
-        kb6 = [[KeyboardButton(text='PVC трубa'),KeyboardButton(text='PPR-C трубa') ]]
+        kb6 = [[KeyboardButton(text='PVC трубa'), KeyboardButton(text='PPR-C трубa'), KeyboardButton(text='Фиттинг'), ]]
         keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
         await message.answer(
                         text="Выберите изделие: ",
@@ -37,13 +37,22 @@ async def cmd_start_3(message: Message, state: FSMContext):
 #@router.message(Command(commands=["start"]))
 @router.message(Text(text='PVC трубa'))
 async def working(message: Message, state: FSMContext):
+    kb6 = [[KeyboardButton(text='работает PVC'),KeyboardButton(text='остановка для настройки PVC'), KeyboardButton(text='ремонт PVC'), ]]
+    keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
+    await message.answer(
+                            text="Работает ли сейчас линия PVC трубы ?",
+                            reply_markup=keyboard6
+                            )
+@router.message(Text(text='PPR-C трубa'))
+async def working(message: Message, state: FSMContext):
     kb6 = [[KeyboardButton(text='работает'),KeyboardButton(text='остановка для настройки'), KeyboardButton(text='ремонт'), ]]
     keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
     await message.answer(
                             text="Работает ли сейчас линия ?",
                             reply_markup=keyboard6
                             )
-@router.message(Text(text='ремонт'))
+
+@router.message(Text(text='ремонт PVC'))
 async def not_working(message: Message, state: FSMContext):
     await state.clear()
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
@@ -57,7 +66,7 @@ async def not_working(message: Message, state: FSMContext):
             reply_markup=ReplyKeyboardRemove())
 
 
-@router.message(Text(text='остановка для настройки'))
+@router.message(Text(text='остановка для настройки PVC'))
 async def not_working(message: Message, state: FSMContext):
     await state.clear()
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
