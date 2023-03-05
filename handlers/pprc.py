@@ -159,7 +159,7 @@ async def pprc_finish(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.choosing_pprc_finish, F.text.in_(available_proceeds))
 async def pprc_chosen(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [1, 8,11,14,17,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [ 8,11,14,17,20]:
         user_data = await state.get_data()
         #await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
         await state.clear()
@@ -174,7 +174,7 @@ async def pprc_chosen(message: Message, state: FSMContext):
         conn.commit()
         cursor.close()
         conn.close()
-    elif (datetime.now()+ timedelta(hours = 6)).hour in [1, 9,10,12,13,15,16,18,19]:
+    elif (datetime.now()+ timedelta(hours = 6)).hour in [ 9,10,12,13,15,16,18,19]:
         print('sucess 3 params')
         user_data = await state.get_data()
         await state.clear()
