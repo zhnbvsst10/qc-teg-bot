@@ -125,7 +125,7 @@ async def pprc_control_mark(message: Message, state: FSMContext):
         #chosen_weight = chosen_weight.replace(',', '.')
         await message.answer(
                 text="Оцените контрольную маркировку PPR-C трубы:",
-                reply_markup=ReplyKeyboardRemove()
+                reply_markup=make_row_keyboard(available_answers)
         )
         print('choose control mark')
         await state.set_state(SetParameterPPRC.choosing_pprc_control_mark)
