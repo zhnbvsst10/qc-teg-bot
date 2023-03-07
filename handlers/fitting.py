@@ -7,6 +7,10 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards.simple_row import make_row_keyboard
 from datetime import datetime, timedelta
 import psycopg2
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+from aiogram.types.photo_size import PhotoSize
+from bot import bot
 
 
 router = Router()
@@ -29,6 +33,7 @@ class SetParameterFit(StatesGroup):
     choosing_fitting_view = State()
     choosing_fitting_functionality = State()
     choosing_fitting_finish = State()
+    send_photo = State()
 
 @router.message(Text(text='работает фиттинг'))
 async def fitting_controller(message: Message, state: FSMContext):
@@ -115,7 +120,7 @@ async def fitting_chosen(message: Message, state: FSMContext):
    
     user_data = await state.get_data()
         #await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
-    await state.clear()
+    # await state.clear()
     await message.answer(
             text="Благодарю за заполненные данные. Отправьте фото подтверждение",
             reply_markup=ReplyKeyboardRemove()
@@ -127,3 +132,23 @@ async def fitting_chosen(message: Message, state: FSMContext):
     conn.commit()
     cursor.close()
     conn.close()
+    await state.set_state(SetParameterFit.send_photo)
+
+@router.message(SetParameterFit.send_photo, F.content_type.in_({'photo'}))
+async def pvc_photo(message: Message, state: FSMContext):
+    gauth = GoogleAuth()
+    gauth.LocalWebserverAuth()  
+    await state.clear()         
+    drive = GoogleDrive(gauth)  
+    file_id =  message.photo[-1].file_id
+    file_unique_id = message.photo[-1].file_unique_id
+    PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+    file = await bot.get_file(file_id)
+    file_path = file.file_path
+    filename = 'fitting_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+    await bot.download_file(file_path, filename )
+    upload_file_list = [filename]
+    for upload_file in upload_file_list:
+        gfile = drive.CreateFile({'parents': [{'id': '1yaz2rotCLCAfzusoOujCe7gW1Ec1fFqU'}]})
+        gfile.SetContentFile(upload_file)
+        gfile.Upload()

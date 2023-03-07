@@ -42,23 +42,23 @@ async def main():
 
     await dp.start_polling(bot, skip_updates=True)
 
-@common.router.message(F.content_type.in_({'photo'}))
-async def get_photo(message: Message):
-    gauth = GoogleAuth()
-    gauth.LocalWebserverAuth()           
-    drive = GoogleDrive(gauth)  
-    file_id =  message.photo[-1].file_id
-    file_unique_id = message.photo[-1].file_unique_id
-    PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
-    file = await bot.get_file(file_id)
-    file_path = file.file_path
-    filename = 'pvc_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
-    await bot.download_file(file_path, filename )
-    upload_file_list = [filename]
-    for upload_file in upload_file_list:
-        gfile = drive.CreateFile({'parents': [{'id': '1yaz2rotCLCAfzusoOujCe7gW1Ec1fFqU'}]})
-        gfile.SetContentFile(upload_file)
-        gfile.Upload()
+# @common.router.message(F.content_type.in_({'photo'}))
+# async def get_photo(message: Message):
+#     gauth = GoogleAuth()
+#     gauth.LocalWebserverAuth()           
+#     drive = GoogleDrive(gauth)  
+#     file_id =  message.photo[-1].file_id
+#     file_unique_id = message.photo[-1].file_unique_id
+#     PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+#     file = await bot.get_file(file_id)
+#     file_path = file.file_path
+#     filename = 'pvc_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+#     await bot.download_file(file_path, filename )
+#     upload_file_list = [filename]
+#     for upload_file in upload_file_list:
+#         gfile = drive.CreateFile({'parents': [{'id': '1yaz2rotCLCAfzusoOujCe7gW1Ec1fFqU'}]})
+#         gfile.SetContentFile(upload_file)
+#         gfile.Upload()
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
