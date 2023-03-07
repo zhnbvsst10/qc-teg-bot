@@ -7,10 +7,10 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards.simple_row import make_row_keyboard
 from datetime import datetime, timedelta
 import psycopg2
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
-from aiogram.types.photo_size import PhotoSize
-from bot import bot
+# from pydrive.auth import GoogleAuth
+# from pydrive.drive import GoogleDrive
+# from aiogram.types.photo_size import PhotoSize
+# from bot import bot
 
 router2 = Router()
 available_answers = ['ok', 'not ok']
