@@ -146,7 +146,7 @@ async def pprc_control_mark(message: Message, state: FSMContext):
 async def pprc_weight(message: Message, state: FSMContext):
     await state.update_data(chosen_control_mark=message.text.lower().replace(',', '.'))
     await message.answer(
-        text="Теперь укажите толщину PPR-C трубы:",
+        text="Теперь укажите вес PPR-C трубы:",
         reply_markup=ReplyKeyboardRemove()
     )
     print('choose weight')
