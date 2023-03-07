@@ -11,7 +11,7 @@ from aiogram.types.photo_size import PhotoSize
 from datetime import datetime, timedelta
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-
+from aiogram.fsm.context import FSMContext
 
 token = os.getenv('TOKEN')
 dp = Dispatcher()
@@ -43,8 +43,8 @@ async def main():
     await dp.start_polling(bot, skip_updates=True)
 
 @pvc_3.router2.message(pvc_3.SetParameterPVC3.send_photo,F.content_type.in_({'photo'}))
-async def get_photo_pvc(message: Message):
-    
+async def get_photo_pvc(message: Message, state: FSMContext):
+    await state.clear()
     gauth = GoogleAuth()
     gauth.LocalWebserverAuth()           
     drive = GoogleDrive(gauth)  
@@ -62,7 +62,8 @@ async def get_photo_pvc(message: Message):
         gfile.Upload()
 
 @fitting.router.message(fitting.SetParameterFit.send_photo, F.content_type.in_({'photo'}))
-async def get_photo_fit(message: Message):
+async def get_photo_fit(message: Message, state: FSMContext):
+    await state.clear()
     gauth = GoogleAuth()
     gauth.LocalWebserverAuth()           
     drive = GoogleDrive(gauth)  
@@ -80,7 +81,8 @@ async def get_photo_fit(message: Message):
         gfile.Upload()
 
 @pprc.router.message(pprc.SetParameterPPRC.send_photo, F.content_type.in_({'photo'}))
-async def get_photo_pprc(message: Message):
+async def get_photo_pprc(message: Message, state: FSMContext):
+    await state.clear()
     gauth = GoogleAuth()
     gauth.LocalWebserverAuth()           
     drive = GoogleDrive(gauth)  

@@ -179,7 +179,7 @@ async def pprc_chosen(message: Message, state: FSMContext):
         conn.commit()
         cursor.close()
         conn.close()
-        # await state.set_state(SetParameterPPRC.send_photo)
+        await state.set_state(SetParameterPPRC.send_photo)
     elif (datetime.now()+ timedelta(hours = 6)).hour in [ 9,10,12,13,15,16,18,19]:
         print('sucess 3 params')
         user_data = await state.get_data()
@@ -195,7 +195,7 @@ async def pprc_chosen(message: Message, state: FSMContext):
         conn.commit()
         cursor.close()
         conn.close()
-        # await state.set_state(SetParameterPPRC.send_photo)
+        await state.set_state(SetParameterPPRC.send_photo)
     else:
         await message.answer(
             text="В данный момент работы не ведутся",
