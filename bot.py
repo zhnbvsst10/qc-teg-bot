@@ -42,7 +42,7 @@ async def main():
 
     await dp.start_polling(bot, skip_updates=True)
 
-@pvc_3.router.message(pvc_3.SetParameterPVC3.send_photo,F.content_type.in_({'photo'}))
+@pvc_3.router2.message(pvc_3.SetParameterPVC3.send_photo,F.content_type.in_({'photo'}))
 async def get_photo_pvc(message: Message):
     
     gauth = GoogleAuth()
@@ -79,7 +79,7 @@ async def get_photo_fit(message: Message):
         gfile.SetContentFile(upload_file)
         gfile.Upload()
 
-@pprc.router.message(pprc.SetParameterPPRC.send_photo, F.content_type.in_({'photo'}))
+@common.router.message(pprc.SetParameterPPRC.send_photo, F.content_type.in_({'photo'}))
 async def get_photo_pprc(message: Message):
     gauth = GoogleAuth()
     gauth.LocalWebserverAuth()           
