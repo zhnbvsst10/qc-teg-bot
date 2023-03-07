@@ -59,7 +59,7 @@ async def working(message: Message, state: FSMContext):
     kb6 = [[KeyboardButton(text='работает'),KeyboardButton(text='остановка для настройки'), KeyboardButton(text='ремонт'), ]]
     keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
     await message.answer(
-                            text="Работает ли сейчас линия PPR-C трубы?",
+                            text="Работает ли сейчас линия фиттинг трубы?",
                             reply_markup=make_row_keyboard(available_options_pprc)
                             )
 
