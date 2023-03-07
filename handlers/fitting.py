@@ -102,7 +102,7 @@ async def pprc_functionality(message: Message, state: FSMContext):
 
 @router.message(SetParameterFit.choosing_fitting_functionality)
 async def pprc_finish(message: Message, state: FSMContext):
-    await state.update_data(chosen_weight=message.text.lower())
+    await state.update_data(chosen_functionality=message.text.lower())
     await message.answer(
             text="перейти к передаче данных",
             reply_markup=make_row_keyboard(available_proceeds)
