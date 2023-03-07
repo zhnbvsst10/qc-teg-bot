@@ -42,6 +42,7 @@ class SetParameterPVC3(StatesGroup):
 
 @router2.message(Text(text='работает PVC'))
 async def pvc_controller(message: Message, state: FSMContext):
+    await state.clear()
     await message.answer(
         text="Введите ФИО контроллера",
         reply_markup=make_row_keyboard(available_controllers)

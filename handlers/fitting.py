@@ -37,6 +37,7 @@ class SetParameterFit(StatesGroup):
 
 @router.message(Text(text='работает фиттинг'))
 async def fitting_controller(message: Message, state: FSMContext):
+    await state.clear()
     await message.answer(
         text="Введите ФИО контроллера",
         reply_markup=make_row_keyboard(available_controllers)

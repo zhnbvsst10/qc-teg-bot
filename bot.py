@@ -79,7 +79,7 @@ async def get_photo_fit(message: Message):
         gfile.SetContentFile(upload_file)
         gfile.Upload()
 
-@common.router.message(pprc.SetParameterPPRC.send_photo, F.content_type.in_({'photo'}))
+@pprc.router.message(pprc.SetParameterPPRC.send_photo, F.content_type.in_({'photo'}))
 async def get_photo_pprc(message: Message):
     gauth = GoogleAuth()
     gauth.LocalWebserverAuth()           
