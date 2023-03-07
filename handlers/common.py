@@ -54,7 +54,7 @@ async def working(message: Message, state: FSMContext):
                             reply_markup=make_row_keyboard(available_options_pprc)
                             )
 
-@router.message(Text(text='фиттинг'))
+@router.message(Text(text='Фиттинг'))
 async def working(message: Message, state: FSMContext):
     kb6 = [[KeyboardButton(text='работает'),KeyboardButton(text='остановка для настройки'), KeyboardButton(text='ремонт'), ]]
     keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
