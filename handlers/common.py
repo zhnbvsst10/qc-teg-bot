@@ -51,7 +51,7 @@ async def working(message: Message, state: FSMContext):
 async def working(message: Message, state: FSMContext):
     await message.answer(
                             text="Работает ли сейчас линия PPR-C трубы?",
-                            reply_markup=make_row_keyboard(available_options_fitting)
+                            reply_markup=make_row_keyboard(available_options_pprc)
                             )
 
 @router.message(Text(text='фиттинг'))
@@ -60,7 +60,7 @@ async def working(message: Message, state: FSMContext):
     keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
     await message.answer(
                             text="Работает ли сейчас линия фиттинг трубы?",
-                            reply_markup=make_row_keyboard(available_options_pprc)
+                            reply_markup=make_row_keyboard(available_options_fitting)
                             )
 
 @router.message(Text(text='ремонт PVC'))
