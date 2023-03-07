@@ -19,7 +19,7 @@ available_diameters = ['50','110']
 available_proceeds = ['yes']
 
 
-class SetParameterPPRC(StatesGroup):
+class SetParameterFit(StatesGroup):
     choosing_fitting_type = State()
     choosing_fitting_controller = State()
     choosing_fitting_smena = State()
@@ -31,25 +31,25 @@ class SetParameterPPRC(StatesGroup):
     choosing_fitting_finish = State()
 
 @router.message(Text(text='работает фиттинг'))
-async def pprc_controller(message: Message, state: FSMContext):
+async def fitting_controller(message: Message, state: FSMContext):
     await message.answer(
         text="Введите ФИО контроллера",
         reply_markup=make_row_keyboard(available_controllers)
     )
     print('choose controller')
-    await state.set_state(SetParameterPPRC.choosing_fitting_controller)
+    await state.set_state(SetParameterFit.choosing_fitting_controller)
 
-@router.message(SetParameterPPRC.choosing_fitting_controller)
-async def pprc_smena(message: Message, state: FSMContext):
+@router.message(SetParameterFit.choosing_fitting_controller)
+async def fitting_smena(message: Message, state: FSMContext):
     await state.update_data(chosen_controller_name=message.text.lower())
     await message.answer(
         text="Выберите смену ",
         reply_markup=make_row_keyboard(available_shifts)
     )
     print('choose smena')
-    await state.set_state(SetParameterPPRC.choosing_fitting_smena)
+    await state.set_state(SetParameterFit.choosing_fitting_smena)
 
-@router.message(SetParameterPPRC.choosing_fitting_smena)
+@router.message(SetParameterFit.choosing_fitting_smena)
 async def pprc_name(message: Message, state: FSMContext):
     await state.update_data(chosen_smena=message.text.lower())
     await message.answer(
@@ -57,10 +57,10 @@ async def pprc_name(message: Message, state: FSMContext):
         reply_markup=make_row_keyboard(available_masters_fitting)
     )
     print('choose master')
-    await state.set_state(SetParameterPPRC.choosing_fitting_name)
+    await state.set_state(SetParameterFit.choosing_fitting_name)
 
 
-@router.message(SetParameterPPRC.choosing_fitting_name, F.text.in_(available_masters_fitting))
+@router.message(SetParameterFit.choosing_fitting_name, F.text.in_(available_masters_fitting))
 async def pprc_tube(message: Message, state: FSMContext):
     await state.update_data(chosen_name=message.text.lower())
     await message.answer(
@@ -68,9 +68,9 @@ async def pprc_tube(message: Message, state: FSMContext):
         reply_markup=make_row_keyboard(available_tubes)
     )
     print('choose brand')
-    await state.set_state(SetParameterPPRC.choosing_fitting_tube)
+    await state.set_state(SetParameterFit.choosing_fitting_tube)
 
-@router.message(SetParameterPPRC.choosing_fitting_tube, F.text.in_(available_tubes))
+@router.message(SetParameterFit.choosing_fitting_tube, F.text.in_(available_tubes))
 async def pprc_nom_diameter(message: Message, state: FSMContext):
     await state.update_data(chosen_tube=message.text.lower())
     await message.answer(
@@ -78,9 +78,9 @@ async def pprc_nom_diameter(message: Message, state: FSMContext):
         reply_markup=make_row_keyboard(available_diameters)
     )
     print('choose nom diameter')
-    await state.set_state(SetParameterPPRC.choosing_fitting_nom_diameter)
+    await state.set_state(SetParameterFit.choosing_fitting_nom_diameter)
 
-@router.message(SetParameterPPRC.choosing_fitting_nom_diameter, F.text.in_(available_diameters))
+@router.message(SetParameterFit.choosing_fitting_nom_diameter, F.text.in_(available_diameters))
 async def pprc_view(message: Message, state: FSMContext):
     await state.update_data(chosen_nom_diameter=message.text.lower())
     await message.answer(
@@ -88,9 +88,9 @@ async def pprc_view(message: Message, state: FSMContext):
         reply_markup=make_row_keyboard(available_answers)
     )
     print('choose view')
-    await state.set_state(SetParameterPPRC.choosing_fitting_view)
+    await state.set_state(SetParameterFit.choosing_fitting_view)
 
-@router.message(SetParameterPPRC.choosing_fitting_view, F.text.in_(available_answers))
+@router.message(SetParameterFit.choosing_fitting_view, F.text.in_(available_answers))
 async def pprc_functionality(message: Message, state: FSMContext):
     await state.update_data(chosen_view=message.text.lower())
     await message.answer(
@@ -98,19 +98,19 @@ async def pprc_functionality(message: Message, state: FSMContext):
         reply_markup=make_row_keyboard(available_answers)
     )
     print('choose view')
-    await state.set_state(SetParameterPPRC.choosing_fitting_functionality)
+    await state.set_state(SetParameterFit.choosing_fitting_functionality)
 
-@router.message(SetParameterPPRC.choosing_fitting_functionality)
+@router.message(SetParameterFit.choosing_fitting_functionality)
 async def pprc_finish(message: Message, state: FSMContext):
     await state.update_data(chosen_weight=message.text.lower())
     await message.answer(
             text="перейти к передаче данных",
             reply_markup=make_row_keyboard(available_proceeds)
     )
-    await state.set_state(SetParameterPPRC.choosing_fitting_finish)
+    await state.set_state(SetParameterFit.choosing_fitting_finish)
 
 
-@router.message(SetParameterPPRC.choosing_fitting_finish, F.text.in_(available_proceeds))
+@router.message(SetParameterFit.choosing_fitting_finish, F.text.in_(available_proceeds))
 async def fitting_chosen(message: Message, state: FSMContext):
    
     user_data = await state.get_data()
