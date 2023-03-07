@@ -119,7 +119,7 @@ async def pprc_finish(message: Message, state: FSMContext):
 async def fitting_chosen(message: Message, state: FSMContext):
    
     user_data = await state.get_data()
-        #await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
+    await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
     await state.clear()
     await message.answer(
             text="Благодарю за заполненные данные. Отправьте фото подтверждение",
@@ -132,7 +132,7 @@ async def fitting_chosen(message: Message, state: FSMContext):
     conn.commit()
     cursor.close()
     conn.close()
-    # await state.set_state(SetParameterFit.send_photo)
+    await state.set_state(SetParameterFit.send_photo)
 
 # @router.message(SetParameterFit.send_photo, F.content_type.in_({'photo'}))
 # async def pvc_photo(message: Message, state: FSMContext):

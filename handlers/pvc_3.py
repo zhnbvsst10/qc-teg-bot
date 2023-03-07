@@ -203,7 +203,7 @@ async def pvc_finish(message: Message, state: FSMContext):
 async def pvc_chosen(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [8,11,14,17,20]:
         user_data = await state.get_data()
-        #await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
+        await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
         await state.clear()
         await message.answer(
             text="Благодарю за заполненные данные. Отправьте фото подтверждение",
@@ -216,7 +216,7 @@ async def pvc_chosen(message: Message, state: FSMContext):
         conn.commit()
         cursor.close()
         conn.close()
-        # await state.set_state(SetParameterPVC3.send_photo)
+        await state.set_state(SetParameterPVC3.send_photo)
     elif (datetime.now()+ timedelta(hours = 6)).hour in [9,10,12,13,15,16,18,19]:
         print('sucess 3 params')
         user_data = await state.get_data()
@@ -232,7 +232,7 @@ async def pvc_chosen(message: Message, state: FSMContext):
         conn.commit()
         cursor.close()
         conn.close()
-        # await state.set_state(SetParameterPVC3.send_photo)
+        await state.set_state(SetParameterPVC3.send_photo)
     else:
         await message.answer(
             text="В данный момент работы не ведутся",

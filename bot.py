@@ -42,8 +42,9 @@ async def main():
 
     await dp.start_polling(bot, skip_updates=True)
 
-@pvc_3.router.message(F.content_type.in_({'photo'}))
-async def get_photo(message: Message):
+@pvc_3.router.message(pvc_3.SetParameterPVC3.send_photo,F.content_type.in_({'photo'}))
+async def get_photo_pvc(message: Message):
+    
     gauth = GoogleAuth()
     gauth.LocalWebserverAuth()           
     drive = GoogleDrive(gauth)  
@@ -53,6 +54,42 @@ async def get_photo(message: Message):
     file = await bot.get_file(file_id)
     file_path = file.file_path
     filename = 'pvc_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+    await bot.download_file(file_path, filename )
+    upload_file_list = [filename]
+    for upload_file in upload_file_list:
+        gfile = drive.CreateFile({'parents': [{'id': '1yaz2rotCLCAfzusoOujCe7gW1Ec1fFqU'}]})
+        gfile.SetContentFile(upload_file)
+        gfile.Upload()
+
+@fitting.router.message(fitting.SetParameterFit.send_photo, F.content_type.in_({'photo'}))
+async def get_photo_fit(message: Message):
+    gauth = GoogleAuth()
+    gauth.LocalWebserverAuth()           
+    drive = GoogleDrive(gauth)  
+    file_id =  message.photo[-1].file_id
+    file_unique_id = message.photo[-1].file_unique_id
+    PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+    file = await bot.get_file(file_id)
+    file_path = file.file_path
+    filename = 'fit_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+    await bot.download_file(file_path, filename )
+    upload_file_list = [filename]
+    for upload_file in upload_file_list:
+        gfile = drive.CreateFile({'parents': [{'id': '1yaz2rotCLCAfzusoOujCe7gW1Ec1fFqU'}]})
+        gfile.SetContentFile(upload_file)
+        gfile.Upload()
+
+@pprc.router.message(pprc.SetParameterPPRC.send_photo, F.content_type.in_({'photo'}))
+async def get_photo_pprc(message: Message):
+    gauth = GoogleAuth()
+    gauth.LocalWebserverAuth()           
+    drive = GoogleDrive(gauth)  
+    file_id =  message.photo[-1].file_id
+    file_unique_id = message.photo[-1].file_unique_id
+    PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+    file = await bot.get_file(file_id)
+    file_path = file.file_path
+    filename = 'pprc_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
     await bot.download_file(file_path, filename )
     upload_file_list = [filename]
     for upload_file in upload_file_list:
