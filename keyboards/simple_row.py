@@ -17,4 +17,4 @@ def make_row_keyboard_2(items: list[str]) :
     :return: объект реплай-клавиатуры
     """
     row = [KeyboardButton(text=item) for item in items]
-    return ReplyKeyboardBuilder([row])
+    return ReplyKeyboardBuilder(markup=[row])
