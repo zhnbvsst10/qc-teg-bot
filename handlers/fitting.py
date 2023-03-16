@@ -6,6 +6,7 @@ from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards.simple_row import make_row_keyboard
 from datetime import datetime, timedelta
+from aiogram.utils.keyboard import ReplyKeyboardMarkup, KeyboardButton
 import psycopg2
 # from pydrive.auth import GoogleAuth
 # from pydrive.drive import GoogleDrive
@@ -22,123 +23,36 @@ available_tubes = ['okyanus', 'deniz','kavi']
 available_diameters = ['50','110']
 available_proceeds = ['yes']
 available_stanoks = ['1','2','3','4','5','6']
-available_fit_names = ['КРЕПЛЕНИЕ Q20 мм DENIZ KELEPCE',
-'КРЕПЛЕНИЕ Q25 мм DENIZ KELEPCE',
-'КРЕПЛЕНИЕ Q32 мм DENIZ KELEPCE',
-'МУФТА ВОДОПР 20 мм DENIZ MANSON',
-'МУФТА ВОДОПР 25 мм DENIZ MANSON',
-'МУФТА ВОДОПР 32 мм DENIZ MANSON',
-'МУФТА С ВНУТ РЕЗБ 20*1/2 DENIZ RAKOR I.D',
-'МУФТА С ВНУТ РЕЗБ 25*3/4 DENIZ RAKOR I.D',
-'МУФТА С ВНУТ РЕЗБ 32*1 DENIZ RAKOR I.D',
-'МУФТА С НАРУЖ РЕЗБ 20*1/2 DENIZ RAKOR D.D',
-'МУФТА С НАРУЖ РЕЗБ 25*3/4 DENIZ RAKOR D.D',
-'МУФТА С НАРУЖ РЕЗБ 32*1 DENIZ RAKOR D.D',
-'ОТВОД ВОДОПР 20*45 DENIZ DIRSEK',
-'ОТВОД ВОДОПР 20*90 DENIZ DIRSEK',
-'ОТВОД ВОДОПР 25*45 DENIZ DIRSEK',
-'ОТВОД ВОДОПР 25*90 DENIZ DIRSEK',
-'ОТВОД ВОДОПР 32*45 DENIZ DIRSEK',
-'ОТВОД ВОДОПР 32*90 DENIZ DIRSEK',
-'ОТВОД ВОДОПР 40*90 DENIZ DIRSEK',
-'ТРОЙН ПЕРЕХОДНОЙ 25*20*25 DENIZ INEGAL TE',
-'ТРОЙН ПЕРЕХОДНОЙ 32*20*32 DENIZ INEGAL TE',
-'ТРОЙН ПЕРЕХОДНОЙ 32*25*32 DENIZ INEGAL TE',
-'ТРОЙН ВОДОПР ПРЯМОЙ 20*20 мм DENIZ TE CATAL',
-'ТРОЙН ВОДОПР ПРЯМОЙ 25*25 мм DENIZ TE CATAL',
-'ТРОЙН ВОДОПР ПРЯМОЙ 32*32 мм DENIZ TE CATAL',
-'КРЕПЛЕНИЕ Q20 мм БЕЛЫЙ DENIZ KELEPCE',
-'КРЕПЛЕНИЕ Q25 мм БЕЛЫЙ DENIZ KELEPCE',
-'КРЕПЛЕНИЕ Q32 мм БЕЛЫЙ DENIZ KELEPCE',
-'МУФТА ВОДОПР 20 мм БЕЛЫЙ DENIZ MANSON',
-'МУФТА ВОДОПР 25 мм БЕЛЫЙ DENIZ MANSON',
-'МУФТА ВОДОПР 32 мм БЕЛЫЙ DENIZ MANSON',
-'МУФТА С ВНУТ РЕЗБ 20*1/2 БЕЛЫЙ DENIZ RAKOR I.D',
-'МУФТА С ВНУТ РЕЗБ 25*3/4 БЕЛЫЙ DENIZ RAKOR I.D',
-'МУФТА С ВНУТ РЕЗБ 32*1 БЕЛЫЙ DENIZ RAKOR I.D',
-'МУФТА С НАРУЖ РЕЗБ 20*1/2 БЕЛЫЙ DENIZ RAKOR D.D',
-'МУФТА С НАРУЖ РЕЗБ 25*3/4 БЕЛЫЙ DENIZ RAKOR D.D',
-'МУФТА С НАРУЖ РЕЗБ 32*1 БЕЛЫЙ DENIZ RAKOR D.D',
-'ОТВОД ВОДОПР 20*45 БЕЛЫЙ DENIZ DIRSEK',
-'ОТВОД ВОДОПР 20*90 БЕЛЫЙ DENIZ DIRSEK',
-'ОТВОД ВОДОПР 25*45 БЕЛЫЙ DENIZ DIRSEK',
-'ОТВОД ВОДОПР 25*90 БЕЛЫЙ DENIZ DIRSEK',
-'ОТВОД ВОДОПР 32*45 БЕЛЫЙ DENIZ DIRSEK',
-'ОТВОД ВОДОПР 32*90 БЕЛЫЙ DENIZ DIRSEK',
-'ОТВОД ВОДОПР 40*90 БЕЛЫЙ DENIZ DIRSEK',
-'ТРОЙН ПЕРЕХОДНОЙ 25*20*25 БЕЛЫЙ DENIZ INEGAL TE',
-'ТРОЙН ПЕРЕХОДНОЙ 32*20*32 БЕЛЫЙ DENIZ INEGAL TE',
-'ТРОЙН ПЕРЕХОДНОЙ 32*25*32 БЕЛЫЙ DENIZ INEGAL TE',
-'ТРОЙН ВОДОПР ПРЯМОЙ 20*20 мм БЕЛЫЙ DENIZ TE CATAL',
-'ТРОЙН ВОДОПР ПРЯМОЙ 25*25 мм БЕЛЫЙ DENIZ TE CATAL',
-'ТРОЙН ВОДОПР ПРЯМОЙ 32*32 мм БЕЛЫЙ DENIZ TE CATAL',
-'БУТЫЛКА КАНАЛИЗ 100*50 REDUK DENIZ',
-'МУФТА КАНАЛИЗ 50 MANSON DENIZ',
-'МУФТА КАНАЛИЗ 100 MANSON DENIZ',
-'ОТВОД КАНАЛИЗ 50*45 DIRSEK DENIZ',
-'ОТВОД КАНАЛИЗ 50*90 DIRSEK DENIZ',
-'ОТВОД КАНАЛИЗ 100*45 DIRSEK DENIZ',
-'ОТВОД КАНАЛИЗ 100*90 DIRSEK DENIZ',
-'ТРОЙНИК KOCОЙ 50*50 TEK CATAL DENIZ',
-'ТРОЙНИК KOCОЙ 100*100 TEK CATAL DENIZ',
-'ТРОЙНИК ПРЯМОЙ 50*50 TE CATAL DENIZ',
-'ТРОЙНИК ПРЯМОЙ 100*50 TE CATAL DENIZ',
-'ТРОЙНИК ПРЯМОЙ 100*100 TE CATAL DENIZ',
-'ХОМУТ КАНАЛИЗ 50 KELEPCE DENIZ',
-'ХОМУТ КАНАЛИЗ 100 KELEPCE DENIZ',
-'ЗАГЛУШКА КАНАЛИЗ 50 KORTAPA DENIZ',
-'ЗАГЛУШКА КАНАЛИЗ 100 KORTAPA DENIZ',
-'МОСТ С 20MM DENIZ',
-'МОСТ С 20MM БЕЛЫЙ DENIZ',
-'ЗАГЛУШКА К ПОДОКОННИКУ АНТРАЦИТ 600mm KAVI',
-'ЗАГЛУШКА К ПОДОКОННИКУ МАХАГОН 600mm KAVI',
-'ЗАГЛУШКА К ПОДОКОННИКУ БЕЛЫЙ 600mm KAVI',
-'ЗАГЛУШКА К ПОДОКОННИКУ ЗОЛ.ДУБ 600mm KAVI',
-'ЗАГЛУШКА К ПОДОКОННИКУ МОР.ДУБ 600mm KAVI',
-'КОМПЛЕКТ 20*1/2 ДЛЯ СМЕСИТЕЛЯ DENIZ  БЕЛЫЙ',
-'КОМПЛЕКТ 20*1/2 ДЛЯ СМЕСИТЕЛЯ DENIZ  СЕРЫЙ',
-'МУФТА С НАРУЖ РЕЗБ 25*1/2 БЕЛЫЙ DENIZ',
-'МУФТА С НАРУЖ РЕЗБ 25*1/2 СЕРЫЙ DENIZ',
-'МУФТА С ВНУТ РЕЗБ 25*1/2 БЕЛЫЙ DENIZ',
-'МУФТА С ВНУТ РЕЗБ 25*1/2 СЕРЫЙ DENIZ',
-'МУФТА С НАРУЖ РЕЗБ 32*1/2 СЕРЫЙ DENIZ',
-'МУФТА С ВНУТ РЕЗБ 32*1/2 СЕРЫЙ DENIZ',
-'МУФТА С НАРУЖ РЕЗБ 32*3/4 СЕРЫЙ DENIZ',
-'МУФТА С ВНУТ РЕЗБ 32*3/4 СЕРЫЙ DENIZ',
-'МУФТА С НАРУЖ РЕЗБ 32*1/2 БЕЛЫЙ DENIZ',
-'МУФТА С ВНУТ РЕЗБ 32*1/2 БЕЛЫЙ DENIZ',
-'МУФТА С НАРУЖ РЕЗБ 32*3/4 БЕЛЫЙ DENIZ',
-'МУФТА С ВНУТ РЕЗБ 32*3/4 БЕЛЫЙ DENIZ',
-'АРМАТУРА С ВНУТ РЕЗБ 20*3/4 DENIZ OYNBAS RAKOR I.D',
-'АРМАТУРА С ВНУТ РЕЗБ 20*3/4 БЕЛАЯ DENIZ OYNBAS RAK',
-'АРМАТУРА С НАР РЕЗБ 20*3/4 DENIZ OYNBAS RAKOR D.D.',
-'АРМАТУРА С НАР РЕЗБ 20*3/4 БЕЛАЯ DENIZ OYNBAS RAKO',
-'ОТВОД С ВНУТ РЕЗБ 20*1/2 90 DENIZ DIRSEK I.D',
-'ОТВОД С ВНУТ РЕЗБ 20*1/2 90 БЕЛЫЙ DENIZ DIRSEK I.D',
-'ОТВОД С НАРУЖ РЕЗБ 20*1/2 90 DENIZ DIRSEK D.D',
-'ОТВОД С НАРУЖ РЕЗБ 20*1/2 90 БЕЛЫЙ DENIZ DIRSEK D.',
-'АРМАТУРА С ВНУТ РЕЗБ 40*1-1/4 DENIZ OYNBAS RAKOR I',
-'АРМАТУРА С ВНУТ РЕЗБ 40*1-1/4 БЕЛЫЙ DENIZ OYNBAS R ',
-'АРМАТУРА С НАР РЕЗБ 40*1-1/4 DENIZ OYNBAS RAKOR D.',
-'АРМАТУРА С НАР РЕЗБ 40*1-1/4 БЕЛЫЙ DENIZ OYNBAS RA',
-'ТРОЙНИК KOCОЙ 100*50 TEK CATAL DENIZ PP',
-'РЕВИЗИЯ 100*100 TEMIZLEME DENIZ PP',
-'КРЕСТОВИНА 100*100*90 ISTAVROZ DENIZ PP',
-'МУФТА * КАНАЛИЗ 110 MANSON OKYANUS PP',
-'ОТВОД * КАНАЛИЗ 110*45 DIRSEK OKYANUS PP',
-'ОТВОД * КАНАЛИЗ 110*90 DIRSEK OKYANUS PP',
-'ТРОЙНИК * KOCОЙ 110*110 TEK CATAL OKYANUS PP',
-'ТРОЙНИК * ПРЯМОЙ 110*110 TE CATAL OKYANUS PP',
-'ТРОЙНИК * KOCОЙ 100*50 TEK CATAL OKYANUS PP',
-'РЕВИЗИЯ * КАНАЛИЗ 100*100 TEMIZLEME OKYANUS PP',
-'КРЕСТОВИНА * КАНАЛИЗ 100*100*90 ISTAVROZ OKYANUS PP',
-'ОТВОД * КАНАЛИЗ 50*45 OKYANUS PP',
-'ОТВОД * КАНАЛИЗ 50*90 DIRSEK OKYANUS PP',
-'МУФТА * КАНАЛИЗ 50 MANSON OKYANUS PP',
-'ТРОЙНИК * ПРЯМОЙ 50*50 TE CATAL OKYANUS PP',
-'ТРОЙНИК KOCОЙ 50*50 TEK CATAL OKYANUS PP',
-'КРЫШКА РЕВИЗИЙ',]
+available_fit_names_1 = ['КРЕПЛЕНИЕ ',
+                            'МУФТА ',
+                            'ОТВОД ',
+                            'ТРОЙНИК ',
+                            'БУТЫЛКА ',
+                            'ХОМУТ ',
+                            'ЗАГЛУШКА ',
+                            'АРМАТУРА ',
+                            'КОМЛПЕКТ ',
+                            'РЕВИЗИЯ ',
+                            'КРЫШКА ']
 
+available_fit_names_2 = ['__ ',
+'ВОДОПР ',
+'ВНУТР РЕЗБ ',
+'НАРУЖ ',
+'ПЕРЕХОД ',
+'КАНАЛИЗ ',
+'КОСОЙ ',
+'ПОДОКОН ',
+'РЕВИЗИЙ ']
+
+
+available_fit_names_4 = ['DENIZ KELEPCE',
+                        'DENIZ MANSON',
+                        'DENIZ RAKOR I.D',
+                        'DENIZ DIRSEK',
+                        'DENIZ INEGAL TE',
+                        'DENIZ TE CATAL',
+                        'DENIZ KORTAPA']
 
 class SetParameterFit(StatesGroup):
     choosing_fitting_type = State()
@@ -147,7 +61,10 @@ class SetParameterFit(StatesGroup):
     choosing_fitting_line = State()
     choosing_fitting_name = State()
     choosing_tube_name = State()
-    choosing_fitting_tube = State()
+    choosing_fitting_tube_1 = State()
+    choosing_fitting_tube_2 = State()
+    choosing_fitting_tube_3 = State()
+    choosing_fitting_tube_4 = State()
     choosing_fitting_nom_diameter = State()
     choosing_fitting_view = State()
     choosing_fitting_functionality = State()
@@ -204,20 +121,62 @@ async def pprc_tube(message: Message, state: FSMContext):
         reply_markup=make_row_keyboard(available_tubes)
     )
     print('choose brand')
-    await state.set_state(SetParameterFit.choosing_fitting_tube)
+    await state.set_state(SetParameterFit.choosing_fitting_tube_1)
 
-@router.message(SetParameterFit.choosing_fitting_tube, F.text.in_(available_tubes))
+@router.message(SetParameterFit.choosing_fitting_tube_1)
 async def pprc_tube(message: Message, state: FSMContext):
-    await state.update_data(chosen_fit_name=message.text.lower())
+    await state.update_data(chosen_fit_name_1=message.text.lower())
+    button1 = KeyboardButton('КРЕПЛЕНИЕ ')
+    button2 = KeyboardButton('МУФТА ')
+    button3 = KeyboardButton('ОТВОД ')
+    button4 = KeyboardButton('ТРОЙНИК ')
+    button5 = KeyboardButton('БУТЫЛКА ')
+    button6 = KeyboardButton('ХОМУТ ')
+    button7 = KeyboardButton('ЗАГЛУШКА ')
+    button8 = KeyboardButton('АРМАТУРА ')
+    button9 = KeyboardButton('РЕВИЗИЯ ')
+    button10 = KeyboardButton('КРЫШКА ')
+    
+                            
+    markup3 = ReplyKeyboardMarkup().add(button1).add(button2).add(button3).add(button4).add(button5).add(button6).add(button7).add(button8).add(button9).add(button10)
     await message.answer(
-        text='Выберите изделие',
-        reply_markup=make_row_keyboard(available_fit_names)
+        text='Выберите изделие (1 слово)',
+        reply_markup=markup3#make_row_keyboard(available_fit_names_1)
     )
-    print('choose fit name')
+    print('choose fit name 1')
+    await state.set_state(SetParameterFit.choosing_fitting_tube_2)
+
+@router.message(SetParameterFit.choosing_fitting_tube_1)
+async def pprc_tube(message: Message, state: FSMContext):
+    await state.update_data(chosen_fit_name_2=message.text.lower())
+    await message.answer(
+        text='Выберите изделие (2 слово)',
+        reply_markup=make_row_keyboard(available_fit_names_2)
+    )
+    print('choose fit name 2')
+    await state.set_state(SetParameterFit.choosing_fitting_tube_3)
+
+@router.message(SetParameterFit.choosing_fitting_tube_1)
+async def pprc_tube(message: Message, state: FSMContext):
+    await state.update_data(chosen_fit_name_3=message.text.lower())
+    await message.answer(
+        text='Выберите изделие (3 слово)',
+        # reply_markup=make_row_keyboard(available_fit_names)
+    )
+    print('choose fit name 3')
+    await state.set_state(SetParameterFit.choosing_fitting_tube_4)
+
+@router.message(SetParameterFit.choosing_fitting_tube_4)
+async def pprc_tube(message: Message, state: FSMContext):
+    await state.update_data(chosen_fit_name_4=message.text.lower())
+    await message.answer(
+        text='Выберите изделие (4 слово)',
+        reply_markup=make_row_keyboard(available_fit_names_4)
+    )
+    print('choose fit name_4')
     await state.set_state(SetParameterFit.choosing_tube_name)
 
-
-@router.message(SetParameterFit.choosing_tube_name, F.text.in_(available_fit_names))
+@router.message(SetParameterFit.choosing_tube_name)
 async def pprc_nom_diameter(message: Message, state: FSMContext):
     await state.update_data(chosen_tube=message.text.lower())
     await message.answer(
