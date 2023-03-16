@@ -53,16 +53,16 @@ available_fit_names_4 = ['DENIZ KELEPCE',
                         'DENIZ INEGAL TE',
                         'DENIZ TE CATAL',
                         'DENIZ KORTAPA']
-button1 = KeyboardButton('КРЕПЛЕНИЕ ')
-button2 = KeyboardButton('МУФТА ')
-button3 = KeyboardButton('ОТВОД ')
-button4 = KeyboardButton('ТРОЙНИК ')
-button5 = KeyboardButton('БУТЫЛКА ')
-button6 = KeyboardButton('ХОМУТ ')
-button7 = KeyboardButton('ЗАГЛУШКА ')
-button8 = KeyboardButton('АРМАТУРА ')
-button9 = KeyboardButton('РЕВИЗИЯ ')
-button10 = KeyboardButton('КРЫШКА ')
+button1 = KeyboardButton(text='КРЕПЛЕНИЕ ')
+button2 = KeyboardButton(text='МУФТА ')
+button3 = KeyboardButton(text='ОТВОД ')
+button4 = KeyboardButton(text='ТРОЙНИК ')
+button5 = KeyboardButton(text='БУТЫЛКА ')
+button6 = KeyboardButton(text='ХОМУТ ')
+button7 = KeyboardButton(text='ЗАГЛУШКА ')
+button8 = KeyboardButton(text='АРМАТУРА ')
+button9 = KeyboardButton(text='РЕВИЗИЯ ')
+button10 = KeyboardButton(text='КРЫШКА ')
     
                             
 markup3 = ReplyKeyboardMarkup().add(button1).add(button2).add(button3).add(button4).add(button5).add(button6).add(button7).add(button8).add(button9).add(button10)
