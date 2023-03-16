@@ -145,7 +145,7 @@ async def pprc_tube(message: Message, state: FSMContext):
     print('choose fit name 1')
     await state.set_state(SetParameterFit.choosing_fitting_tube_2)
 
-@router.message(SetParameterFit.choosing_fitting_tube_1)
+@router.message(SetParameterFit.choosing_fitting_tube_2)
 async def pprc_tube(message: Message, state: FSMContext):
 
     button1 = KeyboardButton(text=' ')
@@ -166,7 +166,7 @@ async def pprc_tube(message: Message, state: FSMContext):
     print('choose fit name 2')
     await state.set_state(SetParameterFit.choosing_fitting_tube_3)
 
-@router.message(SetParameterFit.choosing_fitting_tube_1)
+@router.message(SetParameterFit.choosing_fitting_tube_3)
 async def pprc_tube(message: Message, state: FSMContext):
     await state.update_data(chosen_fit_name_3=message.text.lower())
     await message.answer(
