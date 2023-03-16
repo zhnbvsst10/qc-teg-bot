@@ -6,7 +6,7 @@ from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards.simple_row import make_row_keyboard, make_row_keyboard_2
 from datetime import datetime, timedelta
-from aiogram.utils.keyboard import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.utils.keyboard import ReplyKeyboardMarkup, KeyboardButton,ReplyKeyboardBuilder
 import psycopg2
 # from pydrive.auth import GoogleAuth
 # from pydrive.drive import GoogleDrive
@@ -65,7 +65,7 @@ button9 = KeyboardButton(text='РЕВИЗИЯ ')
 button10 = KeyboardButton(text='КРЫШКА ')
 # markup3 = ReplyKeyboardMarkup(keyboard=[button1, button2, button3, button4, button5, button6, button7, button8, button9, button10])
                             
-#markup3 = ReplyKeyboardMarkup().add(button1).add(button2).add(button3).add(button4).add(button5).add(button6).add(button7).add(button8).add(button9).add(button10)
+markup3 = ReplyKeyboardBuilder().add(button1).add(button2).add(button3).add(button4).add(button5).add(button6).add(button7).add(button8).add(button9).add(button10)
 class SetParameterFit(StatesGroup):
     choosing_fitting_type = State()
     choosing_fitting_controller = State()
@@ -140,7 +140,7 @@ async def pprc_tube(message: Message, state: FSMContext):
     await state.update_data(chosen_fit_name_1=message.text.lower())
     await message.answer(
         text='Выберите изделие (1 слово)',
-        reply_markup=make_row_keyboard_2(available_fit_names_1)
+        reply_markup=markup3#make_row_keyboard_2(available_fit_names_1)
     )
     print('choose fit name 1')
     await state.set_state(SetParameterFit.choosing_fitting_tube_2)
