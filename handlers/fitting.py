@@ -137,7 +137,7 @@ async def pprc_tube(message: Message, state: FSMContext):
     button10 = KeyboardButton(text='КРЫШКА ')
         
     markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).row(button9).row(button10).as_markup()
-    await state.update_data(chosen_fit_name_1=message.text.lower())
+    await state.update_data(chosen_tube=message.text.lower())
     await message.answer(
         text='Выберите название (1 слово)',
         reply_markup=markup1
@@ -158,7 +158,7 @@ async def pprc_tube(message: Message, state: FSMContext):
     button8 = KeyboardButton(text='ПОДОКОН ')
     button9 = KeyboardButton(text='РЕВИЗИЙ ')
     markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).row(button9).as_markup()##.add(button3).add(button4).add(button5).add(button6).add(button7).add(button8).add(button9).add(button10)
-    await state.update_data(chosen_fit_name_2=message.text.lower())
+    await state.update_data(chosen_fit_name_1=message.text.lower())
     await message.answer(
         text='Выберите описание (2 слово)',
         reply_markup=markup1
@@ -168,7 +168,7 @@ async def pprc_tube(message: Message, state: FSMContext):
 
 @router.message(SetParameterFit.choosing_fitting_tube_3)
 async def pprc_tube(message: Message, state: FSMContext):
-    await state.update_data(chosen_fit_name_3=message.text.lower())
+    await state.update_data(chosen_fit_name_2=message.text.lower())
     await message.answer(
         text='Введите размер вручную(3 слово)',
         # reply_markup=make_row_keyboard(available_fit_names)
@@ -207,7 +207,7 @@ async def pprc_tube(message: Message, state: FSMContext):
     button24 = KeyboardButton(text='  ') 
 
     markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).row(button9).row(button10).row(button11).row(button12).row(button13).row(button14).row(button15).row(button16).row(button17).row(button18).row(button19).row(button20).row(button21).row(button22).row(button23).row(button24).as_markup()##.add(button3).add(button4).add(button5).add(button6).add(button7).add(button8).add(button9).add(button10)         
-    await state.update_data(chosen_fit_name_4=message.text.lower())
+    await state.update_data(chosen_fit_name_3=message.text.lower())
     await message.answer(
         text='Выберите изделие (4 слово)',
         reply_markup=markup1
@@ -217,7 +217,7 @@ async def pprc_tube(message: Message, state: FSMContext):
 
 @router.message(SetParameterFit.choosing_tube_name)
 async def pprc_nom_diameter(message: Message, state: FSMContext):
-    await state.update_data(chosen_tube=message.text.lower())
+    await state.update_data(chosen_fit_name_4=message.text.lower())
     await message.answer(
         text="выберите номинальный диаметр фиттинга:",
         reply_markup=make_row_keyboard(available_diameters)
@@ -267,7 +267,7 @@ async def fitting_chosen(message: Message, state: FSMContext):
     )
     print('success fitting')
 
-    user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + user_data['chosen_fit_name_2'] + user_data['chosen_fit_name_3'] +  user_data['chosen_fit_name_4']   
+    user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + ' ' + user_data['chosen_fit_name_2'] + ' ' + user_data['chosen_fit_name_3'] + ' ' + user_data['chosen_fit_name_4']   
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
     cursor = conn.cursor()
     cursor.execute(f"""insert into fitting_params (WORKING,CONTROLLER_NAME, SHIFT, STANOK, FITTING_NAME, BRAND, NOMINAL_DIAMETER, VIEW, FUNCTIONALITY, MASTER, created_at, updated_at) values (TRUE,'{user_data['chosen_controller_name']}','{user_data['chosen_smena']}', '{user_data['chosen_stanok']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',  '{user_data['chosen_name']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
