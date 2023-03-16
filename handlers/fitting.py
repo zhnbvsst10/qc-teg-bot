@@ -53,19 +53,7 @@ available_fit_names_4 = ['DENIZ KELEPCE',
                         'DENIZ INEGAL TE',
                         'DENIZ TE CATAL',
                         'DENIZ KORTAPA']
-button1 = KeyboardButton(text='КРЕПЛЕНИЕ ')
-button2 = KeyboardButton(text='МУФТА ')
-button3 = KeyboardButton(text='ОТВОД ')
-button4 = KeyboardButton(text='ТРОЙНИК ')
-button5 = KeyboardButton(text='БУТЫЛКА ')
-button6 = KeyboardButton(text='ХОМУТ ')
-button7 = KeyboardButton(text='ЗАГЛУШКА ')
-button8 = KeyboardButton(text='АРМАТУРА ')
-button9 = KeyboardButton(text='РЕВИЗИЯ ')
-button10 = KeyboardButton(text='КРЫШКА ')
-# markup3 = ReplyKeyboardMarkup(keyboard=[button1, button2, button3, button4, button5, button6, button7, button8, button9, button10])
-#.row(buttons=[button1, button2, button3, button4], width=10)               
-markup3 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).row(button9).row(button10).as_markup()##.add(button3).add(button4).add(button5).add(button6).add(button7).add(button8).add(button9).add(button10)
+
 class SetParameterFit(StatesGroup):
     choosing_fitting_type = State()
     choosing_fitting_controller = State()
@@ -137,20 +125,43 @@ async def pprc_tube(message: Message, state: FSMContext):
 
 @router.message(SetParameterFit.choosing_fitting_tube_1)
 async def pprc_tube(message: Message, state: FSMContext):
+    button1 = KeyboardButton(text='КРЕПЛЕНИЕ ')
+    button2 = KeyboardButton(text='МУФТА ')
+    button3 = KeyboardButton(text='ОТВОД ')
+    button4 = KeyboardButton(text='ТРОЙНИК ')
+    button5 = KeyboardButton(text='БУТЫЛКА ')
+    button6 = KeyboardButton(text='ХОМУТ ')
+    button7 = KeyboardButton(text='ЗАГЛУШКА ')
+    button8 = KeyboardButton(text='АРМАТУРА ')
+    button9 = KeyboardButton(text='РЕВИЗИЯ ')
+    button10 = KeyboardButton(text='КРЫШКА ')
+        
+    markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).row(button9).row(button10).as_markup()
     await state.update_data(chosen_fit_name_1=message.text.lower())
     await message.answer(
-        text='Выберите изделие (1 слово)',
-        reply_markup=markup3#make_row_keyboard_2(available_fit_names_1)
+        text='Выберите название (1 слово)',
+        reply_markup=markup1
     )
     print('choose fit name 1')
     await state.set_state(SetParameterFit.choosing_fitting_tube_2)
 
 @router.message(SetParameterFit.choosing_fitting_tube_1)
 async def pprc_tube(message: Message, state: FSMContext):
+
+    button1 = KeyboardButton(text=' ')
+    button2 = KeyboardButton(text='ВОДОПР ')
+    button3 = KeyboardButton(text='ВНУТР РЕЗБ ')
+    button4 = KeyboardButton(text='НАРУЖ ')    
+    button5 = KeyboardButton(text='ПЕРЕХОД ')
+    button6 = KeyboardButton(text='КАНАЛИЗ ')
+    button7 = KeyboardButton(text='КОСОЙ ')
+    button8 = KeyboardButton(text='ПОДОКОН ')
+    button9 = KeyboardButton(text='РЕВИЗИЙ ')
+    markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).row(button9).as_markup()##.add(button3).add(button4).add(button5).add(button6).add(button7).add(button8).add(button9).add(button10)
     await state.update_data(chosen_fit_name_2=message.text.lower())
     await message.answer(
-        text='Выберите изделие (2 слово)',
-        reply_markup=make_row_keyboard(available_fit_names_2)
+        text='Выберите описание (2 слово)',
+        reply_markup=markup1
     )
     print('choose fit name 2')
     await state.set_state(SetParameterFit.choosing_fitting_tube_3)
@@ -159,7 +170,7 @@ async def pprc_tube(message: Message, state: FSMContext):
 async def pprc_tube(message: Message, state: FSMContext):
     await state.update_data(chosen_fit_name_3=message.text.lower())
     await message.answer(
-        text='Выберите изделие (3 слово)',
+        text='Введите размер (3 слово)',
         # reply_markup=make_row_keyboard(available_fit_names)
     )
     print('choose fit name 3')
@@ -167,10 +178,39 @@ async def pprc_tube(message: Message, state: FSMContext):
 
 @router.message(SetParameterFit.choosing_fitting_tube_4)
 async def pprc_tube(message: Message, state: FSMContext):
+    button1 = KeyboardButton(text='DENIZ KELEPCE')
+    button2 = KeyboardButton(text='DENIZ MANSON')
+    button3 = KeyboardButton(text='DENIZ DIRSEK')
+    button4 = KeyboardButton(text='DENIZ INEGAL TE')    
+    button5 = KeyboardButton(text='DENIZ TE CATAL')
+    button6 = KeyboardButton(text='DENIZ KORTAPA') 
+
+    button7 = KeyboardButton(text='KAVI')
+    button8 = KeyboardButton(text='DENIZ')
+    button9 = KeyboardButton(text='DENIZ OYNBAS RAKOR I.D')
+    button10 = KeyboardButton(text='DENIZ OYNBAS RAK')    
+    button11 = KeyboardButton(text='DENIZ OYNBAS RAKOR D.D.')
+    button12 = KeyboardButton(text='DENIZ OYNBAS RAKO') 
+
+    button13 = KeyboardButton(text='DENIZ DIRSEK I.D')
+    button14 = KeyboardButton(text='TEK CATAL DENIZ PP')
+    button15 = KeyboardButton(text='TEMIZLEME DENIZ PP')
+    button16 = KeyboardButton(text='ISTAVROZ DENIZ PP')    
+    button17 = KeyboardButton(text='MANSON OKYANUS PP')
+    button18 = KeyboardButton(text='DIRSEK OKYANUS PP') 
+
+    button19 = KeyboardButton(text='TEK CATAL OKYANUS PP')
+    button20 = KeyboardButton(text='TE CATAL OKYANUS PP')
+    button21 = KeyboardButton(text='TEMIZLEME OKYANUS PP')    
+    button22 = KeyboardButton(text='ISTAVROZ OKYANUS PP')
+    button23 = KeyboardButton(text='OKYANUS PP') 
+    button24 = KeyboardButton(text='  ') 
+
+    markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).row(button9).row(button10).row(button11).row(button12).row(button13).row(button14).row(button15).row(button16).row(button17).row(button18).row(button19).row(button20).row(button21).row(button22).row(button23).row(button24).as_markup()##.add(button3).add(button4).add(button5).add(button6).add(button7).add(button8).add(button9).add(button10)         
     await state.update_data(chosen_fit_name_4=message.text.lower())
     await message.answer(
         text='Выберите изделие (4 слово)',
-        reply_markup=make_row_keyboard(available_fit_names_4)
+        reply_markup=markup1
     )
     print('choose fit name_4')
     await state.set_state(SetParameterFit.choosing_tube_name)
@@ -226,6 +266,8 @@ async def fitting_chosen(message: Message, state: FSMContext):
             reply_markup=ReplyKeyboardRemove()
     )
     print('success fitting')
+
+    user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + user_data['chosen_fit_name_2'] + user_data['chosen_fit_name_3'] +  user_data['chosen_fit_name_4']   
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
     cursor = conn.cursor()
     cursor.execute(f"""insert into fitting_params (WORKING,CONTROLLER_NAME, SHIFT, STANOK, FITTING_NAME, BRAND, NOMINAL_DIAMETER, VIEW, FUNCTIONALITY, MASTER, created_at, updated_at) values (TRUE,'{user_data['chosen_controller_name']}','{user_data['chosen_smena']}', '{user_data['chosen_stanok']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',  '{user_data['chosen_name']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
