@@ -44,7 +44,7 @@ class SetParameterPVC3(StatesGroup):
 async def pvc_controller(message: Message, state: FSMContext):
     await state.clear()
     await message.answer(
-        text="Введите ФИО контроллера",
+        text="Выберите контроллера",
         reply_markup=make_row_keyboard(available_controllers)
     )
     print('choose controller')
