@@ -170,7 +170,7 @@ async def pprc_tube(message: Message, state: FSMContext):
 async def pprc_tube(message: Message, state: FSMContext):
     await state.update_data(chosen_fit_name_3=message.text.lower())
     await message.answer(
-        text='Введите размер (3 слово)',
+        text='Введите размер вручную(3 слово)',
         # reply_markup=make_row_keyboard(available_fit_names)
     )
     print('choose fit name 3')
