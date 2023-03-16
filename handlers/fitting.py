@@ -65,7 +65,7 @@ button9 = KeyboardButton(text='РЕВИЗИЯ ')
 button10 = KeyboardButton(text='КРЫШКА ')
 # markup3 = ReplyKeyboardMarkup(keyboard=[button1, button2, button3, button4, button5, button6, button7, button8, button9, button10])
 #.row(buttons=[button1, button2, button3, button4], width=10)               
-markup3 = ReplyKeyboardBuilder([[button1]]).add(button2).adjust(8,repeat=True).add(button3).adjust(repeat=True).as_markup()#.add(button3).add(button4).add(button5).add(button6).add(button7).add(button8).add(button9).add(button10)
+markup3 = ReplyKeyboardBuilder([[button1]]).add(button2).adjust(8).add(button3).adjust(8).as_markup()#.add(button3).add(button4).add(button5).add(button6).add(button7).add(button8).add(button9).add(button10)
 class SetParameterFit(StatesGroup):
     choosing_fitting_type = State()
     choosing_fitting_controller = State()
