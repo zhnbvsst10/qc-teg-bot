@@ -168,10 +168,61 @@ async def pprc_tube(message: Message, state: FSMContext):
 
 @router.message(SetParameterFit.choosing_fitting_tube_3)
 async def pprc_tube(message: Message, state: FSMContext):
+
+    button1 = KeyboardButton(text='Q20')
+    button2 = KeyboardButton(text='Q25')
+    button3 = KeyboardButton(text='Q32')
+    button4 = KeyboardButton(text='20')    
+    button5 = KeyboardButton(text='25')
+    button6 = KeyboardButton(text='32') 
+
+    button7 = KeyboardButton(text='20*1*2')
+    button8 = KeyboardButton(text='25*3/4')
+    button9 = KeyboardButton(text='32*1')
+    button10 = KeyboardButton(text='20*45')    
+    button11 = KeyboardButton(text='20*90')
+    button12 = KeyboardButton(text='25*45') 
+
+    button13 = KeyboardButton(text='25*90')
+    button14 = KeyboardButton(text='32*45')
+    button15 = KeyboardButton(text='32*90')
+    button16 = KeyboardButton(text='40*90')    
+    button17 = KeyboardButton(text='25*20*25')
+    button18 = KeyboardButton(text='32*20*32') 
+
+    button19 = KeyboardButton(text='32*25*32')
+    button20 = KeyboardButton(text='20*20')
+    button21 = KeyboardButton(text='25*25')    
+    button22 = KeyboardButton(text='32*32')
+    button23 = KeyboardButton(text='100*50') 
+    button24 = KeyboardButton(text='50') 
+
+    button25 = KeyboardButton(text='100')
+    button26 = KeyboardButton(text='50*45')
+    button27 = KeyboardButton(text='50*90')    
+    button28 = KeyboardButton(text='100*45')
+    button29 = KeyboardButton(text='100*90') 
+    button30 = KeyboardButton(text='50*50') 
+
+    button31 = KeyboardButton(text='100*100')
+    button32 = KeyboardButton(text='600')
+    button33 = KeyboardButton(text='25*1/2')    
+    button34 = KeyboardButton(text='32*1/2')
+    button35 = KeyboardButton(text='32*3/4') 
+    button36 = KeyboardButton(text='20*3/4') 
+
+    button37 = KeyboardButton(text='100*100*90')
+    button38 = KeyboardButton(text='110')
+    button39 = KeyboardButton(text='110*45')    
+    button40 = KeyboardButton(text='110*90')
+    button41 = KeyboardButton(text='110*110') 
+    button42 = KeyboardButton(text='___') 
+    button43 = KeyboardButton(text='40*1-1/4')
+    markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).row(button9).row(button10).row(button11).row(button12).row(button13).row(button14).row(button15).row(button16).row(button17).row(button18).row(button19).row(button20).row(button21).row(button22).row(button23).row(button24).row(button25).row(button26).row(button27).row(button28).row(button29).row(button30).row(button31).row(button32).row(button33).row(button34).row(button35).row(button36).row(button37).row(button38).row(button39).row(button40).row(button41).row(button42).row(button43).as_markup()
     await state.update_data(chosen_fit_name_2=message.text.lower())
     await message.answer(
         text='Введите размер вручную(3 слово)',
-        # reply_markup=make_row_keyboard(available_fit_names)
+        reply_markup=make_row_keyboard(markup1)
     )
     print('choose fit name 3')
     await state.set_state(SetParameterFit.choosing_fitting_tube_4)
@@ -239,10 +290,10 @@ async def pprc_view(message: Message, state: FSMContext):
 async def pprc_functionality(message: Message, state: FSMContext):
     await state.update_data(chosen_view=message.text.lower())
     await message.answer(
-        text="оцените внешний функциональность фиттинга:",
+        text="оцените функциональность фиттинга:",
         reply_markup=make_row_keyboard(available_answers)
     )
-    print('choose view')
+    print('choose func')
     await state.set_state(SetParameterFit.choosing_fitting_functionality)
 
 @router.message(SetParameterFit.choosing_fitting_functionality)
