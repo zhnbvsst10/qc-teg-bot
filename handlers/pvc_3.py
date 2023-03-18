@@ -135,7 +135,7 @@ async def pvc_weight(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPVC3.choosing_pvc_weight) #F.text.in_(available_food_names))
 async def pvc_width(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [8,11,14,17,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [0,8,11,14,17,20]:
         await state.update_data(chosen_weight=message.text.lower().replace(',', '.'))
         #chosen_weight = chosen_weight.replace(',', '.')
         await message.answer(
@@ -190,7 +190,7 @@ async def pvc_proch(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPVC3.choosing_pvc_proch)
 async def pvc_finish(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [8,11,14,17,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [0, 8,11,14,17,20]:
         await state.update_data(chosen_proch=message.text.lower())
         await message.answer(
             text="перейти к передаче данных",

@@ -154,7 +154,7 @@ async def pprc_weight(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.choosing_pprc_weight)
 async def pprc_finish(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [8,11,14,17,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [0, 8,11,14,17,20]:
         await state.update_data(chosen_weight=message.text.lower())
         await message.answer(
             text="перейти к передаче данных",
