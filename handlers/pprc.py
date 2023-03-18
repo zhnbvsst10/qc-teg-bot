@@ -164,7 +164,7 @@ async def pprc_finish(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.choosing_pprc_finish, F.text.in_(available_proceeds))
 async def pprc_chosen(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [ 8,11,14,17,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [0, 8,11,14,17,20]:
         user_data = await state.get_data()
         #await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
         await state.clear()

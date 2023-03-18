@@ -202,7 +202,7 @@ async def pvc_finish(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPVC3.choosing_pvc_finish, F.text.in_(available_proceeds))
 async def pvc_chosen(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [8,11,14,17,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [0, 8,11,14,17,20]:
         user_data = await state.get_data()
         await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
         await state.clear()
