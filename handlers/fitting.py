@@ -204,7 +204,7 @@ async def pprc_tube(message: Message, state: FSMContext):
     button21 = KeyboardButton(text='TEMIZLEME OKYANUS PP')    
     button22 = KeyboardButton(text='ISTAVROZ OKYANUS PP')
     button23 = KeyboardButton(text='OKYANUS PP') 
-    button24 = KeyboardButton(text='  ') 
+    button24 = KeyboardButton(text='___') 
 
     markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).row(button9).row(button10).row(button11).row(button12).row(button13).row(button14).row(button15).row(button16).row(button17).row(button18).row(button19).row(button20).row(button21).row(button22).row(button23).row(button24).as_markup()##.add(button3).add(button4).add(button5).add(button6).add(button7).add(button8).add(button9).add(button10)         
     await state.update_data(chosen_fit_name_3=message.text.lower())
