@@ -57,7 +57,7 @@ async def get_photo_pvc(message: Message, state: FSMContext):
     await bot.download_file(file_path, filename )
     upload_file_list = [filename]
     for upload_file in upload_file_list:
-        gfile = drive.CreateFile({'parents': [{'id': '1VHMD2m_CBy6zGobYF6YPCJtyhYQdoHGS'}]})
+        gfile = drive.CreateFile({'parents': [{'id': '1Dmbaj2-puU0mOo4s35-Ud-1aF8u-WVmK'}]})
         gfile.SetContentFile(upload_file)
         gfile.Upload()
 
@@ -95,7 +95,7 @@ async def get_photo_pprc(message: Message, state: FSMContext):
     await bot.download_file(file_path, filename )
     upload_file_list = [filename]
     for upload_file in upload_file_list:
-        gfile = drive.CreateFile({'parents': [{'id': '1VHMD2m_CBy6zGobYF6YPCJtyhYQdoHGS'}]})#1VHMD2m_CBy6zGobYF6YPCJtyhYQdoHGS#'1yaz2rotCLCAfzusoOujCe7gW1Ec1fFqU'
+        gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})#1VHMD2m_CBy6zGobYF6YPCJtyhYQdoHGS#'1yaz2rotCLCAfzusoOujCe7gW1Ec1fFqU'
         gfile.SetContentFile(upload_file)
         gfile.Upload()
 
