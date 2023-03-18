@@ -148,7 +148,7 @@ async def pprc_tube(message: Message, state: FSMContext):
 @router.message(SetParameterFit.choosing_fitting_tube_2)
 async def pprc_tube(message: Message, state: FSMContext):
 
-    button1 = KeyboardButton(text=' ')
+    button1 = KeyboardButton(text='___')
     button2 = KeyboardButton(text='ВОДОПР ')
     button3 = KeyboardButton(text='ВНУТР РЕЗБ ')
     button4 = KeyboardButton(text='НАРУЖ ')    
