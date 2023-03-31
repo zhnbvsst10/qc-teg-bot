@@ -7,10 +7,7 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards.simple_row import make_row_keyboard
 from datetime import datetime, timedelta
 import psycopg2
-# from pydrive.auth import GoogleAuth
-# from pydrive.drive import GoogleDrive
-# from aiogram.types.photo_size import PhotoSize
-# from bot import bot
+
 
 router2 = Router()
 available_answers = ['ok', 'not ok']
@@ -137,7 +134,6 @@ async def pvc_weight(message: Message, state: FSMContext):
 async def pvc_width(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [0,8,11,14,17,20]:
         await state.update_data(chosen_weight=message.text.lower().replace(',', '.'))
-        #chosen_weight = chosen_weight.replace(',', '.')
         await message.answer(
                 text="Теперь укажите толщину PVC трубы:",
                 reply_markup=ReplyKeyboardRemove()
@@ -146,7 +142,6 @@ async def pvc_width(message: Message, state: FSMContext):
         await state.set_state(SetParameterPVC3.choosing_pvc_width)
     elif (datetime.now()+ timedelta(hours = 6)).hour in [9,10,12,13,15,16,18,19]:
         await state.update_data(chosen_weight=message.text.lower().replace(',', '.'))
-        #chosen_weight = chosen_weight.replace(',', '.')
         await message.answer(
                  text="перейти к передаче данных",
                  reply_markup=make_row_keyboard(available_proceeds)
@@ -180,7 +175,6 @@ async def pvc_length(message: Message, state: FSMContext):
 @router2.message(SetParameterPVC3.choosing_pvc_length) #F.text.in_(available_food_names))
 async def pvc_proch(message: Message, state: FSMContext):
     await state.update_data(chosen_length=message.text.lower().replace(',', '.'))
-    #chosen_length = chosen_length.replace(',', '.')
     await message.answer(
             text="оцените прочность PVC трубы:",
             reply_markup=make_row_keyboard(available_answers)
@@ -239,22 +233,3 @@ async def pvc_chosen(message: Message, state: FSMContext):
             text="В данный момент работы не ведутся",
             reply_markup=ReplyKeyboardRemove()
         )
-    
-# @router2.message(SetParameterPVC3.send_photo, F.content_type.in_({'photo'}))
-# async def pvc_photo(message: Message, state: FSMContext):
-#     gauth = GoogleAuth()
-#     gauth.LocalWebserverAuth()        
-#     await state.clear()   
-#     drive = GoogleDrive(gauth)  
-#     file_id =  message.photo[-1].file_id
-#     file_unique_id = message.photo[-1].file_unique_id
-#     PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
-#     file = await bot.get_file(file_id)
-#     file_path = file.file_path
-#     filename = 'pvc_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
-#     await bot.download_file(file_path, filename )
-#     upload_file_list = [filename]
-#     for upload_file in upload_file_list:
-#         gfile = drive.CreateFile({'parents': [{'id': '1yaz2rotCLCAfzusoOujCe7gW1Ec1fFqU'}]})
-#         gfile.SetContentFile(upload_file)
-#         gfile.Upload()

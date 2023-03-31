@@ -8,10 +8,6 @@ from keyboards.simple_row import make_row_keyboard, make_row_keyboard_2
 from datetime import datetime, timedelta
 from aiogram.utils.keyboard import ReplyKeyboardMarkup, KeyboardButton,ReplyKeyboardBuilder
 import psycopg2
-# from pydrive.auth import GoogleAuth
-# from pydrive.drive import GoogleDrive
-# from aiogram.types.photo_size import PhotoSize
-# from bot import bot
 
 
 router = Router()
@@ -20,7 +16,7 @@ available_shifts = ['A','B','C']
 available_controllers = ['Madi', 'Zhanibek', 'Magzhan']
 available_masters_fitting = ['Salamat', 'Dauren', 'Anton']
 available_tubes = ['okyanus', 'deniz','kavi']
-available_diameters = ['50','110']
+available_diameters = ['20','25','32','50','110','_']
 available_proceeds = ['yes']
 available_stanoks = ['1','2','3','4','5','6']
 available_fit_names_1 = ['КРЕПЛЕНИЕ ',
@@ -52,7 +48,8 @@ available_fit_names_4 = ['DENIZ KELEPCE',
                         'DENIZ DIRSEK',
                         'DENIZ INEGAL TE',
                         'DENIZ TE CATAL',
-                        'DENIZ KORTAPA']
+                        'DENIZ KORTAPA',
+                        'KAVI']
 
 class SetParameterFit(StatesGroup):
     choosing_fitting_type = State()
@@ -91,18 +88,18 @@ async def fitting_smena(message: Message, state: FSMContext):
     print('choose smena')
     await state.set_state(SetParameterFit.choosing_fitting_smena)
 
+# @router.message(SetParameterFit.choosing_fitting_smena)
+# async def fitting_smena(message: Message, state: FSMContext):
+#     await state.update_data(chosen_stanok=message.text.lower())
+#     await message.answer(
+#         text="Выберите станок",
+#         reply_markup=make_row_keyboard(available_stanoks)
+#     )
+#     print('choose stanok')
+#     await state.set_state(SetParameterFit.choosing_fitting_line)
+
+
 @router.message(SetParameterFit.choosing_fitting_smena)
-async def fitting_smena(message: Message, state: FSMContext):
-    await state.update_data(chosen_stanok=message.text.lower())
-    await message.answer(
-        text="Выберите станок",
-        reply_markup=make_row_keyboard(available_stanoks)
-    )
-    print('choose stanok')
-    await state.set_state(SetParameterFit.choosing_fitting_line)
-
-
-@router.message(SetParameterFit.choosing_fitting_line)
 async def pprc_name(message: Message, state: FSMContext):
     await state.update_data(chosen_smena=message.text.lower())
     await message.answer(
@@ -326,22 +323,3 @@ async def fitting_chosen(message: Message, state: FSMContext):
     cursor.close()
     conn.close()
     await state.set_state(SetParameterFit.send_photo)
-
-# @router.message(SetParameterFit.send_photo, F.content_type.in_({'photo'}))
-# async def pvc_photo(message: Message, state: FSMContext):
-#     gauth = GoogleAuth()
-#     gauth.LocalWebserverAuth()  
-#     await state.clear()         
-#     drive = GoogleDrive(gauth)  
-#     file_id =  message.photo[-1].file_id
-#     file_unique_id = message.photo[-1].file_unique_id
-#     PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
-#     file = await bot.get_file(file_id)
-#     file_path = file.file_path
-#     filename = 'fitting_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
-#     await bot.download_file(file_path, filename )
-#     upload_file_list = [filename]
-#     for upload_file in upload_file_list:
-#         gfile = drive.CreateFile({'parents': [{'id': '1yaz2rotCLCAfzusoOujCe7gW1Ec1fFqU'}]})
-#         gfile.SetContentFile(upload_file)
-#         gfile.Upload()

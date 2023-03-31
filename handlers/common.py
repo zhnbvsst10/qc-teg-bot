@@ -6,12 +6,17 @@ from aiogram.types import Message, ReplyKeyboardRemove, KeyboardButton,ReplyKeyb
 from datetime import datetime, timedelta
 import psycopg2
 from keyboards.simple_row import make_row_keyboard
+from aiogram.fsm.state import StatesGroup, State
+
+class SetParameterFit(StatesGroup):
+    choosing_fitting_stanok = State()
 
 router = Router()
 
 available_options_pprc = ['работает PPR-C', 'ремонт PPR-C', 'остановка для настройки PPR-C']
 available_options_pvc = ['работает PVC', 'ремонт PVC', 'остановка для настройки PVC']
 available_options_fitting = ['работает фиттинг', 'ремонт фиттинг', 'остановка для настройки фиттинг']
+available_stanoks = ['1','2','3','4','5','6']
 
 
 @router.message(Command(commands=["hello"]))
@@ -22,7 +27,6 @@ async def hello(message: Message, state: FSMContext):
                         )
     print(msg)
 @router.message(Command(commands=["start"]))
-#@router.message(Text(text='работает'))
 async def cmd_start_3(message: Message, state: FSMContext):
     await state.clear()
     print()
@@ -41,8 +45,6 @@ async def cmd_start_3(message: Message, state: FSMContext):
 #@router.message(Command(commands=["start"]))
 @router.message(Text(text='PVC трубa'))
 async def working(message: Message, state: FSMContext):
-    kb6 = [[KeyboardButton(text='работает PVC'),KeyboardButton(text='остановка для настройки PVC'), KeyboardButton(text='ремонт PVC'), ]]
-    keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
     await message.answer(
                             text="Работает ли сейчас линия PVC трубы ?",
                             reply_markup=make_row_keyboard(available_options_pvc)
@@ -56,8 +58,16 @@ async def working(message: Message, state: FSMContext):
 
 @router.message(Text(text='Фиттинг'))
 async def working(message: Message, state: FSMContext):
-    kb6 = [[KeyboardButton(text='работает'),KeyboardButton(text='остановка для настройки'), KeyboardButton(text='ремонт'), ]]
-    keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
+    await message.answer(
+                            text="Выберите станок",
+                            reply_markup=make_row_keyboard(available_stanoks)
+                            )
+    await state.set_state(SetParameterFit.choosing_fitting_line)
+
+
+@router.message(SetParameterFit.choosing_fitting_stanok)
+async def working(message: Message, state: FSMContext):
+    await state.update_data(chosen_stanok=message.text.lower())
     await message.answer(
                             text="Работает ли сейчас линия фиттинг трубы?",
                             reply_markup=make_row_keyboard(available_options_fitting)
@@ -119,13 +129,16 @@ async def not_working(message: Message, state: FSMContext):
 
 @router.message(Text(text='ремонт фиттинг'))
 async def not_working(message: Message, state: FSMContext):
-    await state.clear()
+    
+    await state.update_data(chosen_stanok=message.text.lower())
+    user_data = await state.get_data()
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
     cursor = conn.cursor()
-    cursor.execute(f"""insert into fitting_params (working, created_at, updated_at) values (FALSE, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+    cursor.execute(f"""insert into fitting_params (working, STANOK,created_at, updated_at) values (FALSE, {user_data['chosen_stanok']}, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
     cursor.close()
     conn.close()
+    await state.clear()
     await message.answer(
             text="Благодарю за заполненные данные",
             reply_markup=ReplyKeyboardRemove())
@@ -133,13 +146,15 @@ async def not_working(message: Message, state: FSMContext):
 
 @router.message(Text(text='остановка для настройки фиттинг'))
 async def not_working(message: Message, state: FSMContext):
-    await state.clear()
+    await state.update_data(chosen_stanok=message.text.lower())
+    user_data = await state.get_data()
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
     cursor = conn.cursor()
-    cursor.execute(f"""insert into fitting_params (working, created_at, updated_at) values (FALSE, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+    cursor.execute(f"""insert into fitting_params (working, STANOK,created_at, updated_at) values (FALSE, {user_data['chosen_stanok']}, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
     cursor.close()
     conn.close()
+    await state.clear()
     await message.answer(
             text="Благодарю за заполненные данные",
             reply_markup=ReplyKeyboardRemove())

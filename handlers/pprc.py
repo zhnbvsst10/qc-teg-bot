@@ -7,10 +7,6 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards.simple_row import make_row_keyboard
 from datetime import datetime, timedelta
 import psycopg2
-# from pydrive.auth import GoogleAuth
-# from pydrive.drive import GoogleDrive
-# from aiogram.types.photo_size import PhotoSize
-# import bot
 
 router = Router()
 available_answers = ['ok', 'not ok']
@@ -122,7 +118,6 @@ async def pprc_width(message: Message, state: FSMContext):
 async def pprc_control_mark(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [8,11,14,17,20]:
         await state.update_data(chosen_width=message.text.lower().replace(',', '.'))
-        #chosen_weight = chosen_weight.replace(',', '.')
         await message.answer(
                 text="Оцените контрольную маркировку PPR-C трубы:",
                 reply_markup=make_row_keyboard(available_answers)
@@ -166,7 +161,6 @@ async def pprc_finish(message: Message, state: FSMContext):
 async def pprc_chosen(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [0, 8,11,14,17,20]:
         user_data = await state.get_data()
-        #await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
         await state.clear()
         await message.answer(
             text="Благодарю за заполненные данные. Отправьте фото подтверждение",
@@ -201,22 +195,3 @@ async def pprc_chosen(message: Message, state: FSMContext):
             text="В данный момент работы не ведутся",
             reply_markup=ReplyKeyboardRemove()
         )
-
-# @router.message(SetParameterPPRC.send_photo, F.content_type.in_({'photo'}))
-# async def pvc_photo(message: Message, state: FSMContext):
-#     gauth = GoogleAuth()
-#     gauth.LocalWebserverAuth() 
-#     await state.clear()          
-#     drive = GoogleDrive(gauth)  
-#     file_id =  message.photo[-1].file_id
-#     file_unique_id = message.photo[-1].file_unique_id
-#     # PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
-#     # file = await bot.get_file(file_id)
-#     # file_path = file.file_path
-#     # filename = 'pprc_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
-#     # await bot.download_file(file_path, filename )
-#     # upload_file_list = [filename]
-#     # for upload_file in upload_file_list:
-#     #     gfile = drive.CreateFile({'parents': [{'id': '1yaz2rotCLCAfzusoOujCe7gW1Ec1fFqU'}]})
-#     #     gfile.SetContentFile(upload_file)
-#     #     gfile.Upload()
