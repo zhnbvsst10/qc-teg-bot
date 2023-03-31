@@ -9,7 +9,7 @@ from keyboards.simple_row import make_row_keyboard
 from aiogram.fsm.state import StatesGroup, State
 
 class SetParameterFit(StatesGroup):
-    choosing_fitting_stanok = State()
+    choosing_fitting_line = State()
 
 router = Router()
 
@@ -65,7 +65,7 @@ async def working(message: Message, state: FSMContext):
     await state.set_state(SetParameterFit.choosing_fitting_line)
 
 
-@router.message(SetParameterFit.choosing_fitting_stanok)
+@router.message(SetParameterFit.choosing_fitting_line)
 async def working(message: Message, state: FSMContext):
     await state.update_data(chosen_stanok=message.text.lower())
     await message.answer(
