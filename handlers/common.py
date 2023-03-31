@@ -131,7 +131,6 @@ async def not_working(message: Message, state: FSMContext):
 @router.message(Text(text='ремонт фиттинг'))
 async def not_working(message: Message, state: FSMContext):
     
-    await state.update_data(chosen_stanok=message.text.lower())
     user_data = await state.get_data()
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
     cursor = conn.cursor()
@@ -147,7 +146,7 @@ async def not_working(message: Message, state: FSMContext):
 
 @router.message(Text(text='остановка для настройки фиттинг'))
 async def not_working(message: Message, state: FSMContext):
-    await state.update_data(chosen_stanok=message.text.lower())
+
     user_data = await state.get_data()
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
     cursor = conn.cursor()
