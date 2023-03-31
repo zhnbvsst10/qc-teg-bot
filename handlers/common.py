@@ -1,4 +1,4 @@
-from aiogram import Router
+from aiogram import Router,  F
 from aiogram.filters.command import Command
 from aiogram.filters.text import Text
 from aiogram.fsm.context import FSMContext
@@ -10,6 +10,7 @@ from aiogram.fsm.state import StatesGroup, State
 
 class SetParameterFit(StatesGroup):
     choosing_fitting_line = State()
+    choosing_fitting_state = State()
 
 router = Router()
 
@@ -65,7 +66,7 @@ async def working(message: Message, state: FSMContext):
     await state.set_state(SetParameterFit.choosing_fitting_line)
 
 
-@router.message(SetParameterFit.choosing_fitting_line)
+@router.message(SetParameterFit.choosing_fitting_line,  F.text.in_(available_stanoks))
 async def working(message: Message, state: FSMContext):
     await state.update_data(chosen_stanok=message.text.lower())
     await message.answer(
