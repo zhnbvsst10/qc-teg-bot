@@ -218,7 +218,7 @@ async def pprc_tube(message: Message, state: FSMContext):
     markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).row(button9).row(button10).row(button11).row(button12).row(button13).row(button14).row(button15).row(button16).row(button17).row(button18).row(button19).row(button20).row(button21).row(button22).row(button23).row(button24).row(button25).row(button26).row(button27).row(button28).row(button29).row(button30).row(button31).row(button32).row(button33).row(button34).row(button35).row(button36).row(button37).row(button38).row(button39).row(button40).row(button41).row(button42).row(button43).as_markup()
     await state.update_data(chosen_fit_name_2=message.text.lower())
     await message.answer(
-        text='Введите размер вручную(3 слово)',
+        text='Выберите размер(3 слово)',
         reply_markup=markup1
     )
     print('choose fit name 3')
