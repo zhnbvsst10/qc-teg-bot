@@ -116,7 +116,7 @@ async def pprc_width(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.choosing_pprc_width) #F.text.in_(available_food_names))
 async def pprc_control_mark(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [8,11,14,17,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
         await state.update_data(chosen_width=message.text.lower().replace(',', '.'))
         await message.answer(
                 text="Оцените контрольную маркировку PPR-C трубы:",
@@ -124,7 +124,7 @@ async def pprc_control_mark(message: Message, state: FSMContext):
         )
         print('choose control mark')
         await state.set_state(SetParameterPPRC.choosing_pprc_control_mark)
-    elif (datetime.now()+ timedelta(hours = 6)).hour in [9,10,12,13,15,16,18,19]:
+    elif (datetime.now()+ timedelta(hours = 6)).hour in [0,1,3,4,6,7,9,10,12,13,15,16,18,19,21,22]:
         await state.update_data(chosen_width=message.text.lower().replace(',', '.'))
         await message.answer(
                  text="перейти к передаче данных",
@@ -149,7 +149,7 @@ async def pprc_weight(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.choosing_pprc_weight)
 async def pprc_finish(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [0, 8,11,14,17,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
         await state.update_data(chosen_weight=message.text.lower())
         await message.answer(
             text="перейти к передаче данных",
@@ -159,7 +159,7 @@ async def pprc_finish(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.choosing_pprc_finish, F.text.in_(available_proceeds))
 async def pprc_chosen(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [0, 8,11,14,17,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
         user_data = await state.get_data()
         await state.clear()
         await message.answer(
@@ -174,7 +174,7 @@ async def pprc_chosen(message: Message, state: FSMContext):
         cursor.close()
         conn.close()
         await state.set_state(SetParameterPPRC.send_photo)
-    elif (datetime.now()+ timedelta(hours = 6)).hour in [ 9,10,12,13,15,16,18,19]:
+    elif (datetime.now()+ timedelta(hours = 6)).hour in [0,1,3,4,6,7,9,10,12,13,15,16,18,19,21,22]:
         print('sucess 3 params')
         user_data = await state.get_data()
         await state.clear()

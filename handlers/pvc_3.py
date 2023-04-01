@@ -132,7 +132,7 @@ async def pvc_weight(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPVC3.choosing_pvc_weight) #F.text.in_(available_food_names))
 async def pvc_width(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [0,8,11,14,17,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
         await state.update_data(chosen_weight=message.text.lower().replace(',', '.'))
         await message.answer(
                 text="Теперь укажите толщину PVC трубы:",
@@ -140,7 +140,7 @@ async def pvc_width(message: Message, state: FSMContext):
         )
         print('choose width')
         await state.set_state(SetParameterPVC3.choosing_pvc_width)
-    elif (datetime.now()+ timedelta(hours = 6)).hour in [9,10,12,13,15,16,18,19]:
+    elif (datetime.now()+ timedelta(hours = 6)).hour in [0,1,3,4,6,7,9,10,12,13,15,16,18,19,21,22]:
         await state.update_data(chosen_weight=message.text.lower().replace(',', '.'))
         await message.answer(
                  text="перейти к передаче данных",
@@ -184,7 +184,7 @@ async def pvc_proch(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPVC3.choosing_pvc_proch)
 async def pvc_finish(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [0, 8,11,14,17,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
         await state.update_data(chosen_proch=message.text.lower())
         await message.answer(
             text="перейти к передаче данных",
@@ -196,7 +196,7 @@ async def pvc_finish(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPVC3.choosing_pvc_finish, F.text.in_(available_proceeds))
 async def pvc_chosen(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [0, 8,11,14,17,20]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
         user_data = await state.get_data()
         await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
         await state.clear()
@@ -212,7 +212,7 @@ async def pvc_chosen(message: Message, state: FSMContext):
         cursor.close()
         conn.close()
         await state.set_state(SetParameterPVC3.send_photo)
-    elif (datetime.now()+ timedelta(hours = 6)).hour in [9,10,12,13,15,16,18,19]:
+    elif (datetime.now()+ timedelta(hours = 6)).hour in [0,1,3,4,6,7,9,10,12,13,15,16,18,19,21,22]:
         print('sucess 3 params')
         user_data = await state.get_data()
         # await state.clear()
