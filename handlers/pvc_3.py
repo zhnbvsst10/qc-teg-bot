@@ -12,7 +12,7 @@ import psycopg2
 router2 = Router()
 available_answers = ['ok', 'not ok']
 available_shifts = ['A','B','C']
-available_controllers = ['Madi', 'Zhanibek', 'Dimash']
+available_controllers = ['Madi', 'Zhanibek', 'Magzhan']
 available_names = ['Omirserik', 'Aziz', 'Kamil']
 available_tubes = ['okyanus/1.8', 'deniz type 1/4.0', 'deniz type 1/3.2', 'deniz type 2/2.2']
 available_diameters = ['50', '70','110','160']
