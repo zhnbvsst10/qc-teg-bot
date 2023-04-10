@@ -81,12 +81,12 @@ async def working(message: Message, state: FSMContext):
 async def working(message: Message, state: FSMContext):
     await state.update_data(chosen_stanok=message.text.lower())
     user_data = await state.get_data()
-    if user_data['chosen_type'] == 'Фиттинг водопр':
+    if user_data['chosen_type'] == 'фиттинг водопр':
         await message.answer(
                                 text="Работает ли сейчас линия фиттинг трубы?",
                                 reply_markup=make_row_keyboard(available_options_fitting_vodop)
                                 )
-    elif user_data['chosen_type'] == 'Фиттинг канализ':
+    elif user_data['chosen_type'] == 'фиттинг канализ':
         await message.answer(
                                 text="Работает ли сейчас линия фиттинг трубы?",
                                 reply_markup=make_row_keyboard(available_options_fitting_canal)
