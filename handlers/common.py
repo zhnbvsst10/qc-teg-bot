@@ -80,10 +80,17 @@ async def working(message: Message, state: FSMContext):
 @router.message(SetParameterFit.choosing_fitting_line,  F.text.in_(available_stanoks))
 async def working(message: Message, state: FSMContext):
     await state.update_data(chosen_stanok=message.text.lower())
-    await message.answer(
-                            text="Работает ли сейчас линия фиттинг трубы?",
-                            reply_markup=make_row_keyboard(available_options_fitting_vodop)
-                            )
+    user_data = await state.get_data()
+    if user_data['chosen_type'] == 'Фиттинг водопр':
+        await message.answer(
+                                text="Работает ли сейчас линия фиттинг трубы?",
+                                reply_markup=make_row_keyboard(available_options_fitting_vodop)
+                                )
+    elif user_data['chosen_type'] == 'Фиттинг канализ':
+        await message.answer(
+                                text="Работает ли сейчас линия фиттинг трубы?",
+                                reply_markup=make_row_keyboard(available_options_fitting_canal)
+                                )
 
 @router.message(Text(text='ремонт PVC'))
 async def not_working(message: Message, state: FSMContext):
