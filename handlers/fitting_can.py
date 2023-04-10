@@ -46,7 +46,7 @@ async def fitting_controller(message: Message, state: FSMContext):
         text="Выберите контроллера",
         reply_markup=make_row_keyboard(available_controllers)
     )
-    print('choose controller')
+    print('choose controller canal')
     await state.set_state(SetParameterFit.choosing_fitting_controller)
 
 @router.message(SetParameterFit.choosing_fitting_controller)
@@ -56,7 +56,7 @@ async def fitting_smena(message: Message, state: FSMContext):
         text="Выберите смену ",
         reply_markup=make_row_keyboard(available_shifts)
     )
-    print('choose smena')
+    print('choose smena canal')
     await state.set_state(SetParameterFit.choosing_fitting_smena)
 
 
@@ -67,7 +67,7 @@ async def pprc_name(message: Message, state: FSMContext):
         text="Кто является мастером на линии на текущий час ?",
         reply_markup=make_row_keyboard(available_masters_fitting)
     )
-    print('choose master')
+    print('choose master canal')
     await state.set_state(SetParameterFit.choosing_fitting_name)
 
 
@@ -78,7 +78,7 @@ async def pprc_tube(message: Message, state: FSMContext):
         text="Выберите бренд фиттинга:",
         reply_markup=make_row_keyboard(available_tubes)
     )
-    print('choose brand')
+    print('choose brand canal')
     await state.set_state(SetParameterFit.choosing_fitting_tube_1)
 
 @router.message(SetParameterFit.choosing_fitting_tube_1)
@@ -99,7 +99,7 @@ async def pprc_tube(message: Message, state: FSMContext):
         text='Выберите наименование продукции',
         reply_markup=markup1
     )
-    print('choose fit name 1')
+    print('choose fit name 1 canal ')
     await state.set_state(SetParameterFit.choosing_fitting_tube_2)
 
 
