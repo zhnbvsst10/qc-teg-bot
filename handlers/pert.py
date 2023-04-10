@@ -181,7 +181,7 @@ async def pvc_chosen(message: Message, state: FSMContext):
                                                     OUTER_DIAMETER, WIDTH_ST, WEIGHT_B, WEIGHT, MARK_CONTROL,
                                                      MASTER, created_at, updated_at) values 
                                                 (TRUE,'{user_data['chosen_controller_name']}','{user_data['chosen_smena']}','{user_data['chosen_tube']}',  
-                                                            '{user_data['chosen_view']}','{user_data['choosing_outer_diam']}',{user_data['chosen_width_s']}, 
+                                                            '{user_data['chosen_view']}','{user_data['chosen_outer_diam']}',{user_data['chosen_width_s']}, 
                                                             {user_data['chosen_weight_b']}, {user_data['chosen_weight']}, '{user_data['chosen_control_mark']}', '{user_data['chosen_name']}',
                                                               current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
         conn.commit()
@@ -203,7 +203,7 @@ async def pvc_chosen(message: Message, state: FSMContext):
                                                     OUTER_DIAMETER, WIDTH_ST, WEIGHT_B, 
                                                      MASTER, created_at, updated_at) values 
                                                 (TRUE,'{user_data['chosen_controller_name']}','{user_data['chosen_smena']}','{user_data['chosen_tube']}',  
-                                                            '{user_data['chosen_view']}','{user_data['choosing_outer_diam']}',{user_data['chosen_width_s']}, 
+                                                            '{user_data['chosen_view']}','{user_data['chosen_outer_diam']}',{user_data['chosen_width_s']}, 
                                                             {user_data['chosen_weight_b']},  '{user_data['chosen_name']}',
                                                               current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
         conn.commit()
