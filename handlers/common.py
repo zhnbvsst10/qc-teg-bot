@@ -42,10 +42,10 @@ async def cmd_start_3(message: Message, state: FSMContext):
 
     if (datetime.now()+ timedelta(hours = 6)).hour  in [0, 1,2,3,4,5,6,7, 8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]:
         # kb6 = [[KeyboardButton(text='PVC трубa'), KeyboardButton(text='PPR-C трубa'), KeyboardButton(text='Фиттинг водопр'), KeyboardButton(text='Фиттинг канализ'),KeyboardButton(text='Фиттинг др')]]
-        keyboard6 = ReplyKeyboardMarkup(keyboard=markup1,resize_keyboard=True)
+        # keyboard6 = ReplyKeyboardMarkup(keyboard=markup1,resize_keyboard=True)
         await message.answer(
                         text="Выберите изделие: ",
-                        reply_markup=keyboard6
+                        reply_markup=markup1
                         )
     else:
         msg = await message.answer(
