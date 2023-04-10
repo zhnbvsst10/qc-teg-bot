@@ -97,7 +97,7 @@ async def pvc_diameter(message: Message, state: FSMContext):
     print('choose width stenok')
     await state.set_state(SetParameterPERT.choosing_pvc_width_s)
 
-router2.message(SetParameterPERT.choosing_pvc_width_s) #F.text.in_(available_food_names))
+@router2.message(SetParameterPERT.choosing_pvc_width_s) #F.text.in_(available_food_names))
 async def pvc_diameter(message: Message, state: FSMContext):
     await state.update_data(chosen_width_s=message.text.lower())
     await message.answer(
