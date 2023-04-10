@@ -3,6 +3,7 @@ from aiogram.filters.command import Command
 from aiogram.filters.text import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, ReplyKeyboardRemove, KeyboardButton,ReplyKeyboardMarkup
+from aiogram.utils.keyboard import ReplyKeyboardMarkup, KeyboardButton,ReplyKeyboardBuilder
 from datetime import datetime, timedelta
 import psycopg2
 from keyboards.simple_row import make_row_keyboard
@@ -32,10 +33,16 @@ async def hello(message: Message, state: FSMContext):
 @router.message(Command(commands=["start"]))
 async def cmd_start_3(message: Message, state: FSMContext):
     await state.clear()
-    print()
+    button1 = KeyboardButton(text='PVC трубa')
+    button2 = KeyboardButton(text='PPR-C трубa')
+    button3 = KeyboardButton(text='Фиттинг водопр')
+    button4 = KeyboardButton(text='Фиттинг др')
+    button5 = KeyboardButton(text='Фиттинг канализ')
+    markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).as_markup()
+
     if (datetime.now()+ timedelta(hours = 6)).hour  in [0, 1,2,3,4,5,6,7, 8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]:
-        kb6 = [[KeyboardButton(text='PVC трубa'), KeyboardButton(text='PPR-C трубa'), KeyboardButton(text='Фиттинг водопр'), KeyboardButton(text='Фиттинг канализ'),KeyboardButton(text='Фиттинг др')]]
-        keyboard6 = ReplyKeyboardMarkup(keyboard=kb6,resize_keyboard=True)
+        # kb6 = [[KeyboardButton(text='PVC трубa'), KeyboardButton(text='PPR-C трубa'), KeyboardButton(text='Фиттинг водопр'), KeyboardButton(text='Фиттинг канализ'),KeyboardButton(text='Фиттинг др')]]
+        keyboard6 = ReplyKeyboardMarkup(keyboard=markup1,resize_keyboard=True)
         await message.answer(
                         text="Выберите изделие: ",
                         reply_markup=keyboard6
