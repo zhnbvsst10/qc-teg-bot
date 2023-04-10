@@ -143,17 +143,13 @@ async def pprc_tube(message: Message, state: FSMContext):
         reply_markup=markup1
     )
     print('choose fit name 3')
-    await state.set_state(SetParameterFitCanal.choosing_fitting_tube_3)
+    await state.set_state(SetParameterFitCanal.choosing_fitting_tube_4)
 
 
-@router.message(SetParameterFitCanal.choosing_fitting_tube_3)
+@router.message(SetParameterFitCanal.choosing_fitting_tube_4)
 async def pprc_tube(message: Message, state: FSMContext):
     button1 = KeyboardButton(text='PP')
     button2 = KeyboardButton(text='PVC')
-
-    
- 
-
     markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).as_markup()
     await state.update_data(chosen_fit_name_3=message.text.lower())
     await message.answer(
@@ -161,10 +157,10 @@ async def pprc_tube(message: Message, state: FSMContext):
         reply_markup=markup1
     )
     print('choose fit name_4')
-    await state.set_state(SetParameterFitCanal.choosing_fitting_tube_4)
+    await state.set_state(SetParameterFitCanal.choosing_fitting_tube_5)
 
 
-@router.message(SetParameterFitCanal.choosing_fitting_tube_4)
+@router.message(SetParameterFitCanal.choosing_fitting_tube_5)
 async def pprc_nom_diameter(message: Message, state: FSMContext):
     await state.update_data(chosen_fit_name_4=message.text.lower())
     await message.answer(
@@ -219,7 +215,7 @@ async def fitting_chosen(message: Message, state: FSMContext):
     user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + ' ' + user_data['chosen_fit_name_2'] + ' ' + user_data['chosen_fit_name_3'] + ' ' + user_data['chosen_fit_name_4'] 
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
     cursor = conn.cursor()
-    cursor.execute(f"""insert into fitting_canal_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND, NOMINAL_DIAMETER, VIEW, FUNCTIONALITY, MASTER, created_at, updated_at,TYPE_SYR,PRODUCT_TYPE) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',  '{user_data['chosen_name']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours',  '{user_data['chosen_fit_name_4']}', '{user_data['chosen_fit_name_3']}')""")
+    cursor.execute(f"""insert into fitting_canal_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND, NOMINAL_DIAMETER, VIEW, FUNCTIONALITY, MASTER, created_at, updated_at,TYPE_SYR,PRODUCT_TYPE) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',  '{user_data['chosen_name']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours',  '{user_data['chosen_fit_name_5']}', '{user_data['chosen_fit_name_4']}')""")
     conn.commit()
     cursor.close()
     conn.close()
