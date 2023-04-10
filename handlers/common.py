@@ -146,12 +146,7 @@ async def not_working(message: Message, state: FSMContext):
     
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
     cursor = conn.cursor()
-    if user_data['chosen_type'] == 'Фиттинг водопр':
-        cursor.execute(f"""insert into fitting_vodop_params (working, STANOK,created_at, updated_at) values (FALSE, {user_data['chosen_stanok']}, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
-    elif user_data['chosen_type'] == 'Фиттинг канализ':
-        cursor.execute(f"""insert into fitting_canal_params (working, STANOK,created_at, updated_at) values (FALSE, {user_data['chosen_stanok']}, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
-    else:
-        cursor.execute(f"""insert into fitting_other_params (working, STANOK,created_at, updated_at) values (FALSE, {user_data['chosen_stanok']}, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+    cursor.execute(f"""insert into fitting_vodop_params (working, STANOK,created_at, updated_at) values (FALSE, {user_data['chosen_stanok']}, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
     cursor.close()
     conn.close()
@@ -167,12 +162,7 @@ async def not_working(message: Message, state: FSMContext):
     user_data = await state.get_data()
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
     cursor = conn.cursor()
-    if user_data['chosen_type'] == 'Фиттинг водопр':
-        cursor.execute(f"""insert into fitting_vodop_params (working, STANOK,created_at, updated_at) values (FALSE, {user_data['chosen_stanok']}, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
-    elif user_data['chosen_type'] == 'Фиттинг канализ':
-        cursor.execute(f"""insert into fitting_canal_params (working, STANOK,created_at, updated_at) values (FALSE, {user_data['chosen_stanok']}, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
-    else:
-        cursor.execute(f"""insert into fitting_other_params (working, STANOK,created_at, updated_at) values (FALSE, {user_data['chosen_stanok']}, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+    cursor.execute(f"""insert into fitting_vodop_params (working, STANOK,created_at, updated_at) values (FALSE, {user_data['chosen_stanok']}, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
     cursor.close()
     conn.close()
@@ -180,6 +170,40 @@ async def not_working(message: Message, state: FSMContext):
     await message.answer(
             text="Благодарю за заполненные данные",
             reply_markup=ReplyKeyboardRemove())
+
+
+@router.message(Text(text='ремонт фиттинг канализ'))
+async def not_working(message: Message, state: FSMContext):
+    
+    user_data = await state.get_data()
+    
+    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+    cursor = conn.cursor()
+    cursor.execute(f"""insert into fitting_canal_params (working, STANOK,created_at, updated_at) values (FALSE, {user_data['chosen_stanok']}, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+    conn.commit()
+    cursor.close()
+    conn.close()
+    await state.clear()
+    await message.answer(
+            text="Благодарю за заполненные данные",
+            reply_markup=ReplyKeyboardRemove())
+
+
+@router.message(Text(text='остановка для настройки фиттинг канализ'))
+async def not_working(message: Message, state: FSMContext):
+
+    user_data = await state.get_data()
+    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+    cursor = conn.cursor()
+    cursor.execute(f"""insert into fitting_canal_params (working, STANOK,created_at, updated_at) values (FALSE, {user_data['chosen_stanok']}, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+    conn.commit()
+    cursor.close()
+    conn.close()
+    await state.clear()
+    await message.answer(
+            text="Благодарю за заполненные данные",
+            reply_markup=ReplyKeyboardRemove())
+            
 
 @router.message(Command(commands=["cancel"]))
 @router.message(Text(text="отмена", ))
