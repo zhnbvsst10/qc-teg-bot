@@ -39,7 +39,7 @@ class SetParameterFit(StatesGroup):
     choosing_fitting_finish = State()
     send_photo = State()
 
-@router.message(Text(text='работает фиттинг'))
+@router.message(Text(text='работает фиттинг водопр'))
 async def fitting_controller(message: Message, state: FSMContext):
     
     await message.answer(
