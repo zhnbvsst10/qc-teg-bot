@@ -1,10 +1,9 @@
 import asyncio
 import logging
-import aiogram
 from aiogram import Bot, F
 from aiogram import Dispatcher
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from handlers import common,  pvc_3, pprc, fitting
+from handlers import common, fitting_vodop,  pvc_3, pprc
 import os
 from aiogram.types import Message
 from aiogram.types.photo_size import PhotoSize
@@ -46,7 +45,7 @@ async def main():
     dp.include_router(common.router)
     dp.include_router(pvc_3.router2)
     dp.include_router(pprc.router)
-    dp.include_router(fitting.router)
+    dp.include_router(fitting_vodop.router)
 
     await dp.start_polling(bot, skip_updates=True)
 
@@ -69,7 +68,7 @@ async def get_photo_pvc(message: Message, state: FSMContext):
         gfile.SetContentFile(upload_file)
         gfile.Upload()
 
-@fitting.router.message(fitting.SetParameterFit.send_photo, F.content_type.in_({'photo'}))
+@fitting_vodop.router.message(fitting_vodop.SetParameterFit.send_photo, F.content_type.in_({'photo'}))
 async def get_photo_fit(message: Message, state: FSMContext):
     await state.clear()
     gauth = GoogleAuth()
