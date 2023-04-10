@@ -20,6 +20,7 @@ available_options_pvc = ['работает PVC', 'ремонт PVC', 'остан
 available_options_fitting_vodop = ['работает фиттинг водопр', 'ремонт фиттинг водопр', 'остановка для настройки фиттинг водопр']
 available_options_fitting_canal = ['работает фиттинг канализ', 'ремонт фиттинг канализ', 'остановка для настройки фиттинг канализ']
 available_options_fitting_other = ['работает фиттинг др', 'ремонт фиттинг др', 'остановка для настройки фиттинг др']
+available_options_pert = ['работает pert', 'ремонт pert', 'остановка для настройки pert']
 available_stanoks = ['1','2','3','4','5','6']
 
 
@@ -38,11 +39,10 @@ async def cmd_start_3(message: Message, state: FSMContext):
     button3 = KeyboardButton(text='Фиттинг водопр')
     button4 = KeyboardButton(text='Фиттинг др')
     button5 = KeyboardButton(text='Фиттинг канализ')
-    markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).as_markup()
+    button6 = KeyboardButton(text='pert')
+    markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).as_markup()
 
     if (datetime.now()+ timedelta(hours = 6)).hour  in [0, 1,2,3,4,5,6,7, 8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]:
-        # kb6 = [[KeyboardButton(text='PVC трубa'), KeyboardButton(text='PPR-C трубa'), KeyboardButton(text='Фиттинг водопр'), KeyboardButton(text='Фиттинг канализ'),KeyboardButton(text='Фиттинг др')]]
-        # keyboard6 = ReplyKeyboardMarkup(keyboard=markup1,resize_keyboard=True)
         await message.answer(
                         text="Выберите изделие: ",
                         reply_markup=markup1
@@ -52,7 +52,6 @@ async def cmd_start_3(message: Message, state: FSMContext):
                         text="В данный момент работы не ведутся ",
                         )
 
-#@router.message(Command(commands=["start"]))
 @router.message(Text(text='PVC трубa'))
 async def working(message: Message, state: FSMContext):
     await message.answer(
@@ -91,6 +90,14 @@ async def working(message: Message, state: FSMContext):
                             reply_markup=make_row_keyboard(available_stanoks)
                             )
     await state.set_state(SetParameterFit.choosing_fitting_line)
+
+@router.message(Text(text='pert'))
+async def working(message: Message, state: FSMContext):
+    await message.answer(
+                            text="Работает ли сейчас линия pert?",
+                            reply_markup=make_row_keyboard(available_options_pert)
+                            )
+
 
 @router.message(SetParameterFit.choosing_fitting_line,  F.text.in_(available_stanoks))
 async def working(message: Message, state: FSMContext):
@@ -138,6 +145,36 @@ async def not_working(message: Message, state: FSMContext):
     await message.answer(
             text="Благодарю за заполненные данные",
             reply_markup=ReplyKeyboardRemove())
+
+
+@router.message(Text(text='ремонт pert'))
+async def not_working(message: Message, state: FSMContext):
+    await state.clear()
+    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+    cursor = conn.cursor()
+    cursor.execute(f"""insert into pert_params (working, created_at, updated_at) values (FALSE, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+    conn.commit()
+    cursor.close()
+    conn.close()
+    await message.answer(
+            text="Благодарю за заполненные данные",
+            reply_markup=ReplyKeyboardRemove())
+
+
+@router.message(Text(text='остановка для настройки pert'))
+async def not_working(message: Message, state: FSMContext):
+    await state.clear()
+    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+    cursor = conn.cursor()
+    cursor.execute(f"""insert into pert_params (working, created_at, updated_at) values (FALSE, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+    conn.commit()
+    cursor.close()
+    conn.close()
+    await message.answer(
+            text="Благодарю за заполненные данные",
+            reply_markup=ReplyKeyboardRemove())
+
+
 
 @router.message(Text(text='ремонт PPR-C'))
 async def not_working(message: Message, state: FSMContext):
