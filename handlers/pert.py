@@ -74,12 +74,21 @@ async def pvc_tube(message: Message, state: FSMContext):
         reply_markup=make_row_keyboard(available_tubes)
     )
     print('choose brand')
-    await state.set_state(SetParameterPERT.choosing_pvc_view)
+    await state.set_state(SetParameterPERT.choosing_pvc_tube)
 
+@router2.message(SetParameterPERT.choosing_pvc_tube, F.text.in_(available_tubes))
+async def pvc_tube(message: Message, state: FSMContext):
+    await state.update_data(chosen_tube=message.text.lower())
+    await message.answer(
+        text="оцените внешний вид:",
+        reply_markup=make_row_keyboard(available_answers)
+    )
+    print('choose view')
+    await state.set_state(SetParameterPERT.choosing_pvc_view)
 
 @router2.message(SetParameterPERT.choosing_pvc_view)
 async def pvc_functionality(message: Message, state: FSMContext):
-    await state.update_data(chosen_tube=message.text.lower())
+    await state.update_data(chosen_view=message.text.lower())
     await message.answer(
         text="введите наружний диаметр:",
         reply_markup=ReplyKeyboardRemove()
