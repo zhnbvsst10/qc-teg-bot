@@ -143,10 +143,10 @@ async def pprc_tube(message: Message, state: FSMContext):
         reply_markup=markup1
     )
     print('choose fit name 3')
-    await state.set_state(SetParameterFitCanal.choosing_fitting_tube_4)
+    await state.set_state(SetParameterFitCanal.choosing_fitting_tube_3)
 
 
-@router.message(SetParameterFitCanal.choosing_fitting_tube_4)
+@router.message(SetParameterFitCanal.choosing_fitting_tube_3)
 async def pprc_tube(message: Message, state: FSMContext):
     button1 = KeyboardButton(text='PP')
     button2 = KeyboardButton(text='PVC')
@@ -161,10 +161,10 @@ async def pprc_tube(message: Message, state: FSMContext):
         reply_markup=markup1
     )
     print('choose fit name_4')
-    await state.set_state(SetParameterFitCanal.choosing_fitting_tube_5)
+    await state.set_state(SetParameterFitCanal.choosing_fitting_tube_4)
 
 
-@router.message(SetParameterFitCanal.choosing_tube_name)
+@router.message(SetParameterFitCanal.choosing_fitting_tube_4)
 async def pprc_nom_diameter(message: Message, state: FSMContext):
     await state.update_data(chosen_fit_name_4=message.text.lower())
     await message.answer(
