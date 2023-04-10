@@ -79,7 +79,7 @@ async def pvc_tube(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPERT.choosing_pvc_view)
 async def pvc_functionality(message: Message, state: FSMContext):
-    await state.update_data(chosen_brand=message.text.lower())
+    await state.update_data(chosen_tube=message.text.lower())
     await message.answer(
         text="введите наружний диаметр:",
         reply_markup=ReplyKeyboardRemove()
