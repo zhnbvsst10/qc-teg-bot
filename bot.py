@@ -3,7 +3,7 @@ import logging
 from aiogram import Bot, F
 from aiogram import Dispatcher
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from handlers import common, fitting_vodop,  pvc_3, pprc, fitting_can, fitting_other
+from handlers import common, fitting_vodop,  pvc_3, pprc, fitting_can, fitting_other, pert
 import os
 from aiogram.types import Message
 from aiogram.types.photo_size import PhotoSize
@@ -46,6 +46,7 @@ async def main():
     dp.include_router(fitting_vodop.router)
     dp.include_router(fitting_can.router)
     dp.include_router(fitting_other.router)
+    dp.include_router(pert.router2)
 
     await dp.start_polling(bot, skip_updates=True)
 
