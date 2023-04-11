@@ -66,27 +66,45 @@ async def pvc_smena(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPERT.choosing_pvc_smena)
 async def pvc_name(message: Message, state: FSMContext):
-    
-    print(message.text)
- 
-    await state.update_data(chosen_smena=message.text.lower())
-    await message.answer(
-    text="Кто является мастером на линии на текущий час ?",
-            reply_markup=make_row_keyboard(available_names)
-            )
-    print('choose master')
-    await state.set_state(SetParameterPERT.choosing_pvc_name)
-
-
-
-@router2.message(SetParameterPERT.choosing_pvc_name, F.text.in_(available_names))
-async def pvc_tube(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
         await state.set_state(SetParameterPERT.choosing_pvc_controller)
+    elif message.text == 'go':
+        await message.answer(
+        text="Кто является мастером на линии на текущий час ?",
+                reply_markup=make_row_keyboard(available_names)
+                )
+        print('choose master')
+        await state.set_state(SetParameterPERT.choosing_pvc_name)
+    else: 
+        await state.update_data(chosen_smena=message.text.lower())
+        await message.answer(
+        text="Кто является мастером на линии на текущий час ?",
+                reply_markup=make_row_keyboard(available_names)
+                )
+        print('choose master')
+        await state.set_state(SetParameterPERT.choosing_pvc_name)
+
+
+
+@router2.message(SetParameterPERT.choosing_pvc_name)
+async def pvc_tube(message: Message, state: FSMContext):
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterPERT.choosing_pvc_smena)
+    elif message.text == 'go':
+        await message.answer(
+            text="выберите бренд:",
+            reply_markup=make_row_keyboard(available_tubes)
+        )
+        print('choose brand')
+        await state.set_state(SetParameterPERT.choosing_pvc_tube)
     else:
         await state.update_data(chosen_name=message.text.lower())
         await message.answer(
@@ -96,45 +114,103 @@ async def pvc_tube(message: Message, state: FSMContext):
         print('choose brand')
         await state.set_state(SetParameterPERT.choosing_pvc_tube)
 
-@router2.message(SetParameterPERT.choosing_pvc_tube, F.text.in_(available_tubes))
+@router2.message(SetParameterPERT.choosing_pvc_tube)
 async def pvc_tube(message: Message, state: FSMContext):
-    await state.update_data(chosen_tube=message.text.lower())
-    await message.answer(
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterPERT.choosing_pvc_name)
+    elif message.text == 'go':
+        await message.answer(
         text="оцените внешний вид:",
         reply_markup=make_row_keyboard(available_answers)
-    )
-    print('choose view')
-    await state.set_state(SetParameterPERT.choosing_pvc_view)
+        )
+        print('choose view')
+        await state.set_state(SetParameterPERT.choosing_pvc_view)
+    else:
+        await state.update_data(chosen_tube=message.text.lower())
+        await message.answer(
+            text="оцените внешний вид:",
+            reply_markup=make_row_keyboard(available_answers)
+        )
+        print('choose view')
+        await state.set_state(SetParameterPERT.choosing_pvc_view)
 
 @router2.message(SetParameterPERT.choosing_pvc_view)
 async def pvc_functionality(message: Message, state: FSMContext):
-    await state.update_data(chosen_view=message.text.lower())
-    await message.answer(
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterPERT.choosing_pvc_tube)
+    elif message.text == 'go':
+        await message.answer(
         text="введите наружний диаметр:",
         reply_markup=ReplyKeyboardRemove()
-    )
-    print('choose outer_diam')
-    await state.set_state(SetParameterPERT.choosing_pvc_outer_diam)
+        )
+        print('choose outer_diam')
+        await state.set_state(SetParameterPERT.choosing_pvc_outer_diam)
+    else:
+        await state.update_data(chosen_view=message.text.lower())
+        await message.answer(
+            text="введите наружний диаметр:",
+            reply_markup=ReplyKeyboardRemove()
+        )
+        print('choose outer_diam')
+        await state.set_state(SetParameterPERT.choosing_pvc_outer_diam)
 
 @router2.message(SetParameterPERT.choosing_pvc_outer_diam) #F.text.in_(available_food_names))
 async def pvc_diameter(message: Message, state: FSMContext):
-    await state.update_data(chosen_outer_diam = message.text.lower())
-    await message.answer(
+    if message.text == 'back':
+            await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+            await state.set_state(SetParameterPERT.choosing_pvc_view)
+    elif message.text == 'go':
+        await message.answer(
         text="введите толщину стенок:",
         reply_markup=ReplyKeyboardRemove()
-    )
-    print('choose width stenok')
-    await state.set_state(SetParameterPERT.choosing_pvc_width_s)
+        )
+        print('choose width stenok')
+        await state.set_state(SetParameterPERT.choosing_pvc_width_s)
+    else:
+        
+        await state.update_data(chosen_outer_diam = message.text.lower())
+        await message.answer(
+            text="введите толщину стенок:",
+            reply_markup=ReplyKeyboardRemove()
+        )
+        print('choose width stenok')
+        await state.set_state(SetParameterPERT.choosing_pvc_width_s)
 
 @router2.message(SetParameterPERT.choosing_pvc_width_s) #F.text.in_(available_food_names))
 async def pvc_diameter(message: Message, state: FSMContext):
-    await state.update_data(chosen_width_s=message.text.lower())
-    await message.answer(
+    if message.text == 'back':
+            await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+            await state.set_state(SetParameterPERT.choosing_pvc_outer_diam)
+    elif message.text == 'go':
+        await message.answer(
         text="введите вес бухты:",
         reply_markup=ReplyKeyboardRemove()
-    )
-    print('choose weight b')
-    await state.set_state(SetParameterPERT.choosing_pvc_weight_b)
+        )
+        print('choose weight b')
+        await state.set_state(SetParameterPERT.choosing_pvc_weight_b)
+    else:
+
+        await state.update_data(chosen_width_s=message.text.lower())
+        await message.answer(
+            text="введите вес бухты:",
+            reply_markup=ReplyKeyboardRemove()
+        )
+        print('choose weight b')
+        await state.set_state(SetParameterPERT.choosing_pvc_weight_b)
 
 
 
