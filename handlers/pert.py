@@ -57,7 +57,9 @@ async def pvc_smena(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPERT.choosing_pvc_smena)
 async def pvc_name(message: Message, state: FSMContext):
+    print(message.text)
     if message.text == 'back':
+
         await state.set_state(SetParameterPERT.choosing_pvc_controller)
     else:
         await state.update_data(chosen_smena=message.text.lower())
