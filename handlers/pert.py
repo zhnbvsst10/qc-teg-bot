@@ -11,7 +11,7 @@ import psycopg2
 
 router2 = Router()
 available_answers = ['ok', 'not ok']
-available_shifts = ['A','B','C','back']
+available_shifts = ['A','B','C']
 available_controllers = ['Madi', 'Zhanibek', 'Magzhan']
 available_names = ['Talgat','Aibar','Bolat','back']
 available_tubes = ['PE-RT','OxyPE-RT']
@@ -47,28 +47,33 @@ async def pvc_controller(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPERT.choosing_pvc_controller)
 async def pvc_smena(message: Message, state: FSMContext):
-    await state.update_data(chosen_controller_name=message.text.lower())
-    await message.answer(
-            text="Выберите смену ",
-            reply_markup=make_row_keyboard(available_shifts)
-    )
-    print('choose smena')
-    await state.set_state(SetParameterPERT.choosing_pvc_smena)
+    if message.text != 'back':
+        await state.update_data(chosen_controller_name=message.text.lower())
+        await message.answer(
+                text="Выберите смену ",
+                reply_markup=make_row_keyboard(available_shifts)
+        )
+        print('choose smena')
+        await state.set_state(SetParameterPERT.choosing_pvc_smena)
+    else:
+        await message.answer(
+                text="Выберите смену ",
+                reply_markup=make_row_keyboard(available_shifts)
+        )
+        print('choose smena')
+        await state.set_state(SetParameterPERT.choosing_pvc_smena)
 
 @router2.message(SetParameterPERT.choosing_pvc_smena)
 async def pvc_name(message: Message, state: FSMContext):
     print(message.text)
-    if message.text == 'back':
-        await state.clear()
-        await state.set_state(SetParameterPERT.choosing_pvc_controller)
-    else:
-        await state.update_data(chosen_smena=message.text.lower())
-        await message.answer(
-        text="Кто является мастером на линии на текущий час ?",
+ 
+    await state.update_data(chosen_smena=message.text.lower())
+    await message.answer(
+    text="Кто является мастером на линии на текущий час ?",
             reply_markup=make_row_keyboard(available_names)
             )
-        print('choose master')
-        await state.set_state(SetParameterPERT.choosing_pvc_name)
+    print('choose master')
+    await state.set_state(SetParameterPERT.choosing_pvc_name)
 
 
 
