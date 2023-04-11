@@ -10,11 +10,11 @@ import psycopg2
 
 
 router2 = Router()
-available_answers = ['ok', 'not ok']
+available_answers = ['ok', 'not ok','back']
 available_shifts = ['A','B','C']
 available_controllers = ['Madi', 'Zhanibek', 'Magzhan']
 available_names = ['Talgat','Aibar','Bolat','back']
-available_tubes = ['PE-RT','OxyPE-RT']
+available_tubes = ['PE-RT','OxyPE-RT','back']
 available_proceeds = ['yes']
 
 
