@@ -56,12 +56,6 @@ async def pvc_smena(message: Message, state: FSMContext):
     print('choose smena')
     await state.set_state(SetParameterPERT.choosing_pvc_smena)
     
-    await message.answer(
-                text="Выберите смену ",
-                reply_markup=make_row_keyboard(available_shifts)
-        )
-    print('choose smena')
-    await state.set_state(SetParameterPERT.choosing_pvc_smena)
 
 @router2.message(SetParameterPERT.choosing_pvc_smena)
 async def pvc_name(message: Message, state: FSMContext):
@@ -81,6 +75,10 @@ async def pvc_name(message: Message, state: FSMContext):
 @router2.message(SetParameterPERT.choosing_pvc_name, F.text.in_(available_names))
 async def pvc_tube(message: Message, state: FSMContext):
     if message.text == 'back':
+        await message.answer(
+            text="go back",
+           
+            )
         await state.set_state(SetParameterPERT.choosing_pvc_controller)
     else:
         await state.update_data(chosen_name=message.text.lower())
