@@ -145,7 +145,7 @@ async def pvc_functionality(message: Message, state: FSMContext):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPERT.choosing_pvc_tube)
+        await state.set_state(SetParameterPERT.choosing_pvc_name)
     elif message.text == 'go':
         await message.answer(
         text="введите наружний диаметр:",
@@ -169,7 +169,7 @@ async def pvc_diameter(message: Message, state: FSMContext):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-            await state.set_state(SetParameterPERT.choosing_pvc_view)
+            await state.set_state(SetParameterPERT.choosing_pvc_tube)
     elif message.text == 'go':
         await message.answer(
         text="введите толщину стенок:",
@@ -194,7 +194,7 @@ async def pvc_diameter(message: Message, state: FSMContext):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-            await state.set_state(SetParameterPERT.choosing_pvc_outer_diam)
+            await state.set_state(SetParameterPERT.choosing_pvc_view)
     elif message.text == 'go':
         await message.answer(
         text="введите вес бухты:",
