@@ -66,7 +66,7 @@ async def pvc_name(message: Message, state: FSMContext):
         print('choose master')
         await state.set_state(SetParameterPERT.choosing_pvc_name)
     else:
-        state.set_state(SetParameterPERT.choosing_pvc_controller)
+        await state.set_state(SetParameterPERT.choosing_pvc_controller)
 
 
 @router2.message(SetParameterPERT.choosing_pvc_name, F.text.in_(available_names))
