@@ -97,7 +97,7 @@ async def pvc_tube(message: Message, state: FSMContext):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPERT.choosing_pvc_smena)
+        await state.set_state(SetParameterPERT.choosing_pvc_controller)
     elif message.text == 'go':
         await message.answer(
             text="выберите бренд:",
