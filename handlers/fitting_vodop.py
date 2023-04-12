@@ -92,7 +92,7 @@ async def pprc_name(message: Message, state: FSMContext):
         await state.set_state(SetParameterFit.choosing_fitting_name)
 
 
-@router.message(SetParameterFit.choosing_fitting_name, F.text.in_(available_masters_fitting))
+@router.message(SetParameterFit.choosing_fitting_name)
 async def pprc_tube(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
@@ -366,7 +366,7 @@ async def pprc_nom_diameter(message: Message, state: FSMContext):
         print('choose nom diameter')
         await state.set_state(SetParameterFit.choosing_fitting_nom_diameter)
 
-@router.message(SetParameterFit.choosing_fitting_nom_diameter, F.text.in_(available_diameters))
+@router.message(SetParameterFit.choosing_fitting_nom_diameter)
 async def pprc_view(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
