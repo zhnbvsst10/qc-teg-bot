@@ -11,13 +11,13 @@ import psycopg2
 
 
 router = Router()
-available_answers = ['ok', 'not ok']
+available_answers = ['ok', 'not ok','back']
 available_shifts = ['A','B','C']
 available_controllers = ['Madi', 'Zhanibek', 'Magzhan']
-available_masters_fitting = ['Salamat', 'Dauren', 'Anton']
-available_tubes = ['okyanus', 'deniz','kavi']
-available_diameters = ['600']
-available_proceeds = ['yes']
+available_masters_fitting = ['Salamat', 'Dauren', 'Anton','back']
+available_tubes = ['okyanus', 'deniz','kavi','back']
+available_diameters = ['600','back']
+available_proceeds = ['yes','back']
 available_stanoks = ['1','2','3','4','5','6']
 
 
@@ -51,147 +51,299 @@ async def fitting_controller(message: Message, state: FSMContext):
 
 @router.message(SetParameterFitOther.choosing_fitting_controller)
 async def fitting_smena(message: Message, state: FSMContext):
-    await state.update_data(chosen_controller_name=message.text.lower())
-    await message.answer(
-        text="Выберите смену ",
-        reply_markup=make_row_keyboard(available_shifts)
-    )
-    print('choose smena canal')
-    await state.set_state(SetParameterFitOther.choosing_fitting_smena)
+    if message.text == 'go':
+        await message.answer(
+            text="Выберите смену ",
+            reply_markup=make_row_keyboard(available_shifts)
+        )
+        print('choose smena canal')
+        await state.set_state(SetParameterFitOther.choosing_fitting_smena)
+    else:
+        await state.update_data(chosen_controller_name=message.text.lower())
+        await message.answer(
+            text="Выберите смену ",
+            reply_markup=make_row_keyboard(available_shifts)
+        )
+        print('choose smena canal')
+        await state.set_state(SetParameterFitOther.choosing_fitting_smena)
 
 
 @router.message(SetParameterFitOther.choosing_fitting_smena)
 async def pprc_name(message: Message, state: FSMContext):
-    await state.update_data(chosen_smena=message.text.lower())
-    await message.answer(
-        text="Кто является мастером на линии на текущий час ?",
-        reply_markup=make_row_keyboard(available_masters_fitting)
-    )
-    print('choose master canal')
-    await state.set_state(SetParameterFitOther.choosing_fitting_name)
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterFitOther.choosing_fitting_controller)
+    elif message.text == 'go':
+        await message.answer(
+            text="Кто является мастером на линии на текущий час ?",
+            reply_markup=make_row_keyboard(available_masters_fitting)
+        )
+        print('choose master canal')
+        await state.set_state(SetParameterFitOther.choosing_fitting_name)
+    else:
+        await state.update_data(chosen_smena=message.text.lower())
+        await message.answer(
+            text="Кто является мастером на линии на текущий час ?",
+            reply_markup=make_row_keyboard(available_masters_fitting)
+        )
+        print('choose master canal')
+        await state.set_state(SetParameterFitOther.choosing_fitting_name)
 
 
 @router.message(SetParameterFitOther.choosing_fitting_name, F.text.in_(available_masters_fitting))
 async def pprc_tube(message: Message, state: FSMContext):
-    await state.update_data(chosen_name=message.text.lower())
-    await message.answer(
-        text="Выберите бренд фиттинга:",
-        reply_markup=make_row_keyboard(available_tubes)
-    )
-    print('choose brand canal')
-    await state.set_state(SetParameterFitOther.choosing_fitting_tube_1)
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterFitOther.choosing_fitting_controller)
+    elif message.text == 'go':
+        await message.answer(
+            text="Выберите бренд фиттинга:",
+            reply_markup=make_row_keyboard(available_tubes)
+        )
+        print('choose brand canal')
+        await state.set_state(SetParameterFitOther.choosing_fitting_tube_1)
+    else:
+        await state.update_data(chosen_name=message.text.lower())
+        await message.answer(
+            text="Выберите бренд фиттинга:",
+            reply_markup=make_row_keyboard(available_tubes)
+        )
+        print('choose brand canal')
+        await state.set_state(SetParameterFitOther.choosing_fitting_tube_1)
 
 @router.message(SetParameterFitOther.choosing_fitting_tube_1)
 async def pprc_tube(message: Message, state: FSMContext):
-    button1 = KeyboardButton(text='Заглушка к подоконнику  ')
-
-        
-    markup1 = ReplyKeyboardBuilder([[button1]]).as_markup()
-    await state.update_data(chosen_tube=message.text.lower())
-    await message.answer(
-        text='Выберите наименование продукции',
-        reply_markup=markup1
-    )
-    print('choose fit name 1 canal ')
-    await state.set_state(SetParameterFitOther.choosing_fitting_tube_2)
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterFitOther.choosing_fitting_smena)
+    elif message.text == 'go':
+        button1 = KeyboardButton(text='Заглушка к подоконнику  ')
+        button2 = KeyboardButton(text= 'back')  
+        markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).as_markup()
+        await message.answer(
+            text='Выберите наименование продукции',
+            reply_markup=markup1
+        )
+        print('choose fit name 1 canal ')
+        await state.set_state(SetParameterFitOther.choosing_fitting_tube_2)
+    else:
+        button1 = KeyboardButton(text='Заглушка к подоконнику  ')
+        button2 = KeyboardButton(text= 'back') 
+        markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).as_markup()
+        await state.update_data(chosen_tube=message.text.lower())
+        await message.answer(
+            text='Выберите наименование продукции',
+            reply_markup=markup1
+        )
+        print('choose fit name 1 canal ')
+        await state.set_state(SetParameterFitOther.choosing_fitting_tube_2)
 
 
 @router.message(SetParameterFitOther.choosing_fitting_tube_2)
 async def pprc_tube(message: Message, state: FSMContext):
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterFitOther.choosing_fitting_name)
+    elif message.text == 'go':
 
-    button1 = KeyboardButton(text='600')
+        button1 = KeyboardButton(text='600')
+        button2 = KeyboardButton(text= 'back')  
 
 
+        markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).as_markup()
+        await message.answer(
+            text='Выберите размер',
+            reply_markup=markup1
+        )
+        print('choose fit name 3')
+        await state.set_state(SetParameterFitOther.choosing_fitting_tube_3)
+    else:
+        button1 = KeyboardButton(text='600')
+        button2 = KeyboardButton(text= 'back')  
 
-    markup1 = ReplyKeyboardBuilder([[button1]]).as_markup()
-    await state.update_data(chosen_fit_name_1=message.text.lower())
-    await message.answer(
-        text='Выберите размер',
-        reply_markup=markup1
-    )
-    print('choose fit name 3')
-    await state.set_state(SetParameterFitOther.choosing_fitting_tube_3)
+
+        markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).as_markup()
+        await state.update_data(chosen_fit_name_1=message.text.lower())
+        await message.answer(
+            text='Выберите размер',
+            reply_markup=markup1
+        )
+        print('choose fit name 3')
+        await state.set_state(SetParameterFitOther.choosing_fitting_tube_3)
 
 @router.message(SetParameterFitOther.choosing_fitting_tube_3)
 async def pprc_tube(message: Message, state: FSMContext):
-
-    button1 = KeyboardButton(text='антрацит')
-    button2 = KeyboardButton(text='белый')
-    button3 = KeyboardButton(text='зол дуб')
-    button4 = KeyboardButton(text='махагон')
-    button5 = KeyboardButton(text='мор дую')
-
-   
-
-
-    markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).as_markup()
-    await state.update_data(chosen_fit_name_2=message.text.lower())
-    await message.answer(
-        text='Выберите цвет',
-        reply_markup=markup1
-    )
-    print('choose fit name 3')
-    await state.set_state(SetParameterFitOther.choosing_fitting_tube_4)
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterFitOther.choosing_fitting_tube_1)
+    elif message.text == 'go':
+        button1 = KeyboardButton(text='антрацит')
+        button2 = KeyboardButton(text='белый')
+        button3 = KeyboardButton(text='зол дуб')
+        button4 = KeyboardButton(text='махагон')
+        button5 = KeyboardButton(text='мор дуб')
+        button6 = KeyboardButton(text='back')
+        markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).as_markup()
+        await state.update_data(chosen_fit_name_2=message.text.lower())
+        await message.answer(
+            text='Выберите цвет',
+            reply_markup=markup1
+        )
+        print('choose fit name 3')
+        await state.set_state(SetParameterFitOther.choosing_fitting_tube_4)
+    else:
+        button1 = KeyboardButton(text='антрацит')
+        button2 = KeyboardButton(text='белый')
+        button3 = KeyboardButton(text='зол дуб')
+        button4 = KeyboardButton(text='махагон')
+        button5 = KeyboardButton(text='мор дуб')
+        button6 = KeyboardButton(text='back')
+        markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).as_markup()
+        await state.update_data(chosen_fit_name_2=message.text.lower())
+        await message.answer(
+            text='Выберите цвет',
+            reply_markup=markup1
+        )
+        print('choose fit name 3')
+        await state.set_state(SetParameterFitOther.choosing_fitting_tube_4)
 
 
 
 @router.message(SetParameterFitOther.choosing_fitting_tube_4)
 async def pprc_nom_diameter(message: Message, state: FSMContext):
-    await state.update_data(chosen_fit_name_4=message.text.lower())
-    await message.answer(
-        text="выберите номинальный диаметр фиттинга:",
-        reply_markup=make_row_keyboard(available_diameters)
-    )
-    print('choose nom diameter')
-    await state.set_state(SetParameterFitOther.choosing_fitting_nom_diameter)
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterFitOther.choosing_fitting_tube_2)
+    elif message.text == 'go':
+        await message.answer(
+            text="выберите номинальный диаметр фиттинга:",
+            reply_markup=make_row_keyboard(available_diameters)
+        )
+        print('choose nom diameter')
+        await state.set_state(SetParameterFitOther.choosing_fitting_nom_diameter)
+    else:
+        await state.update_data(chosen_fit_name_4=message.text.lower())
+        await message.answer(
+            text="выберите номинальный диаметр фиттинга:",
+            reply_markup=make_row_keyboard(available_diameters)
+        )
+        print('choose nom diameter')
+        await state.set_state(SetParameterFitOther.choosing_fitting_nom_diameter)
 
-@router.message(SetParameterFitOther.choosing_fitting_nom_diameter, F.text.in_(available_diameters))
+
+@router.message(SetParameterFitOther.choosing_fitting_nom_diameter)
 async def pprc_view(message: Message, state: FSMContext):
-    await state.update_data(chosen_nom_diameter=message.text.lower())
-    await message.answer(
-        text="оцените внешний вид фиттинга:",
-        reply_markup=make_row_keyboard(available_answers)
-    )
-    print('choose view')
-    await state.set_state(SetParameterFitOther.choosing_fitting_view)
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterFitOther.choosing_fitting_tube_3)
+    elif message.text == 'go':
+        await message.answer(
+            text="оцените внешний вид фиттинга:",
+            reply_markup=make_row_keyboard(available_answers)
+        )
+        print('choose view')
+        await state.set_state(SetParameterFitOther.choosing_fitting_view)
+    else:
+        await state.update_data(chosen_nom_diameter=message.text.lower())
+        await message.answer(
+            text="оцените внешний вид фиттинга:",
+            reply_markup=make_row_keyboard(available_answers)
+        )
+        print('choose view')
+        await state.set_state(SetParameterFitOther.choosing_fitting_view)
 
-@router.message(SetParameterFitOther.choosing_fitting_view, F.text.in_(available_answers))
+@router.message(SetParameterFitOther.choosing_fitting_view)
 async def pprc_functionality(message: Message, state: FSMContext):
-    await state.update_data(chosen_view=message.text.lower())
-    await message.answer(
-        text="оцените функциональность фиттинга:",
-        reply_markup=make_row_keyboard(available_answers)
-    )
-    print('choose func')
-    await state.set_state(SetParameterFitOther.choosing_fitting_functionality)
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterFitOther.choosing_fitting_tube_4)
+    elif message.text == 'go':
+        await message.answer(
+            text="оцените функциональность фиттинга:",
+            reply_markup=make_row_keyboard(available_answers)
+        )
+        print('choose func')
+        await state.set_state(SetParameterFitOther.choosing_fitting_functionality)
+    else:
+        await state.update_data(chosen_view=message.text.lower())
+        await message.answer(
+            text="оцените функциональность фиттинга:",
+            reply_markup=make_row_keyboard(available_answers)
+        )
+        print('choose func')
+        await state.set_state(SetParameterFitOther.choosing_fitting_functionality)
 
 @router.message(SetParameterFitOther.choosing_fitting_functionality)
 async def pprc_finish(message: Message, state: FSMContext):
-    await state.update_data(chosen_functionality=message.text.lower())
-    await message.answer(
-            text="перейти к передаче данных",
-            reply_markup=make_row_keyboard(available_proceeds)
-    )
-    await state.set_state(SetParameterFitOther.choosing_fitting_finish)
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterFitOther.choosing_fitting_nom_diameter)
+    elif message.text == 'go':
+        await message.answer(
+                text="перейти к передаче данных",
+                reply_markup=make_row_keyboard(available_proceeds)
+        )
+        await state.set_state(SetParameterFitOther.choosing_fitting_finish)
+    else:
+        await state.update_data(chosen_functionality=message.text.lower())
+        await message.answer(
+                text="перейти к передаче данных",
+                reply_markup=make_row_keyboard(available_proceeds)
+        )
+        await state.set_state(SetParameterFitOther.choosing_fitting_finish)
+
 
 
 @router.message(SetParameterFitOther.choosing_fitting_finish, F.text.in_(available_proceeds))
 async def fitting_chosen(message: Message, state: FSMContext):
-   
-    user_data = await state.get_data()
-    await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
-    await state.clear()
-    await message.answer(
-            text="Благодарю за заполненные данные. Отправьте фото подтверждение",
-            reply_markup=ReplyKeyboardRemove()
-    )
-    print('success fitting')
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterFitOther.choosing_fitting_view)
+    else:
+        user_data = await state.get_data()
+        await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
+        await state.clear()
+        await message.answer(
+                text="Благодарю за заполненные данные. Отправьте фото подтверждение",
+                reply_markup=ReplyKeyboardRemove()
+        )
+        print('success fitting')
 
-    user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + ' ' + user_data['chosen_fit_name_2']  + user_data['chosen_fit_name_4'] 
-    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
-    cursor = conn.cursor()
-    cursor.execute(f"""insert into fitting_other_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND, NOMINAL_SIZE, VIEW, FUNCTIONALITY, MASTER, created_at, updated_at,COLOR) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',  '{user_data['chosen_name']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours',  '{user_data['chosen_fit_name_4']}')""")
-    conn.commit()
-    cursor.close()
-    conn.close()
-    await state.set_state(SetParameterFitOther.send_photo)
+        user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + ' ' + user_data['chosen_fit_name_2']  + user_data['chosen_fit_name_4'] 
+        conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+        cursor = conn.cursor()
+        cursor.execute(f"""insert into fitting_other_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND, NOMINAL_SIZE, VIEW, FUNCTIONALITY, MASTER, created_at, updated_at,COLOR) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',  '{user_data['chosen_name']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours',  '{user_data['chosen_fit_name_4']}')""")
+        conn.commit()
+        cursor.close()
+        conn.close()
+        await state.set_state(SetParameterFitOther.send_photo)
