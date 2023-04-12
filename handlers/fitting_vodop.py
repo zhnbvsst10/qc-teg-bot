@@ -390,7 +390,7 @@ async def pprc_view(message: Message, state: FSMContext):
         print('choose view')
         await state.set_state(SetParameterFit.choosing_fitting_view)
 
-@router.message(SetParameterFit.choosing_fitting_view, F.text.in_(available_answers))
+@router.message(SetParameterFit.choosing_fitting_view)
 async def pprc_functionality(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
