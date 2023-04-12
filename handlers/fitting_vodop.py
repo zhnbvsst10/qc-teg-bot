@@ -439,6 +439,13 @@ async def pprc_finish(message: Message, state: FSMContext):
 
 @router.message(SetParameterFit.choosing_fitting_finish, F.text.in_(available_proceeds))
 async def fitting_chosen(message: Message, state: FSMContext):
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterFit.choosing_fitting_view)
+    else:
 
         user_data = await state.get_data()
         await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
