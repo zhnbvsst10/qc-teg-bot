@@ -217,20 +217,42 @@ async def pvc_diameter(message: Message, state: FSMContext):
 @router2.message(SetParameterPERT.choosing_pvc_weight_b) #F.text.in_(available_food_names))
 async def pvc_width(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
-        await state.update_data(chosen_weight_b=message.text.lower().replace(',', '.'))
-        await message.answer(
-            text="Теперь укажите вес:",
-            reply_markup=ReplyKeyboardRemove()
-        )
-        print('choose weight')
-        await state.set_state(SetParameterPERT.choosing_pvc_weight)
+        if message.text == 'back':
+            await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+            await state.set_state(SetParameterPERT.choosing_pvc_outer_diam)
+        elif message.text == 'go':
+            await message.answer(
+                text="Теперь укажите вес:",
+                reply_markup=ReplyKeyboardRemove()
+            )
+            print('choose weight')
+            await state.set_state(SetParameterPERT.choosing_pvc_weight)
+        else:
+            await state.update_data(chosen_weight_b=message.text.lower().replace(',', '.'))
+            await message.answer(
+                text="Теперь укажите вес:",
+                reply_markup=ReplyKeyboardRemove()
+            )
+            print('choose weight')
+            await state.set_state(SetParameterPERT.choosing_pvc_weight)
     elif (datetime.now()+ timedelta(hours = 6)).hour in [0,1,3,4,6,7,9,10,12,13,15,16,18,19,21,22]:
-        await state.update_data(chosen_weight_b=message.text.lower().replace(',', '.'))
-        await message.answer(
-                 text="перейти к передаче данных",
-                 reply_markup=make_row_keyboard(available_proceeds)
-         )
-        await state.set_state(SetParameterPERT.choosing_pvc_finish)
+        if message.text == 'back':
+            await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+            await state.set_state(SetParameterPERT.choosing_pvc_outer_diam)
+        else:
+
+            await state.update_data(chosen_weight_b=message.text.lower().replace(',', '.'))
+            await message.answer(
+                    text="перейти к передаче данных",
+                    reply_markup=make_row_keyboard(available_proceeds)
+            )
+            await state.set_state(SetParameterPERT.choosing_pvc_finish)
     else:
         await message.answer(
             text="В данный момент работы не ведутся",
@@ -238,22 +260,44 @@ async def pvc_width(message: Message, state: FSMContext):
         )
 @router2.message(SetParameterPERT.choosing_pvc_weight) #F.text.in_(available_food_names))
 async def pvc_control_mark(message: Message, state: FSMContext):
-    await state.update_data(chosen_weight=message.text.lower().replace(',', '.'))
-    await message.answer(
+    if message.text == 'back':
+            await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+            await state.set_state(SetParameterPERT.choosing_pvc_width_s)
+    elif message.text == 'go':
+        await message.answer(
             text="оцените контрольную маркировку:",
             reply_markup=make_row_keyboard(available_answers)
-    )
-    print('choose control mark')
-    await state.set_state(SetParameterPERT.choosing_pvc_control_mark)
+        )
+        print('choose control mark')
+        await state.set_state(SetParameterPERT.choosing_pvc_control_mark)
+    else:
+
+        await state.update_data(chosen_weight=message.text.lower().replace(',', '.'))
+        await message.answer(
+                text="оцените контрольную маркировку:",
+                reply_markup=make_row_keyboard(available_answers)
+        )
+        print('choose control mark')
+        await state.set_state(SetParameterPERT.choosing_pvc_control_mark)
     
 @router2.message(SetParameterPERT.choosing_pvc_control_mark) #F.text.in_(available_food_names))
 async def pvc_length(message: Message, state: FSMContext):
-    await state.update_data(chosen_control_mark=message.text.lower())
-    await message.answer(
-            text="перейти к передаче данных",
-            reply_markup=make_row_keyboard(available_proceeds)
-        )
-    await state.set_state(SetParameterPERT.choosing_pvc_finish)
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterPERT.choosing_pvc_weight_b)
+    else:
+        await state.update_data(chosen_control_mark=message.text.lower())
+        await message.answer(
+                text="перейти к передаче данных",
+                reply_markup=make_row_keyboard(available_proceeds)
+            )
+        await state.set_state(SetParameterPERT.choosing_pvc_finish)
 
 
 
