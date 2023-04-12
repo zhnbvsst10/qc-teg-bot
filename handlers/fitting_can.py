@@ -51,8 +51,8 @@ async def fitting_controller(message: Message, state: FSMContext):
 
 @router.message(SetParameterFitCanal.choosing_fitting_controller)
 async def fitting_smena(message: Message, state: FSMContext):
-    if message.text != 'go':
-        await state.update_data(chosen_controller_name=message.text.lower())
+    if message.text == 'go':
+        
         await message.answer(
             text="Выберите смену ",
             reply_markup=make_row_keyboard(available_shifts)
@@ -60,6 +60,7 @@ async def fitting_smena(message: Message, state: FSMContext):
         print('choose smena canal')
         await state.set_state(SetParameterFitCanal.choosing_fitting_smena)
     else:
+        await state.update_data(chosen_controller_name=message.text.lower())
         await message.answer(
             text="Выберите смену ",
             reply_markup=make_row_keyboard(available_shifts)
@@ -94,7 +95,7 @@ async def pprc_name(message: Message, state: FSMContext):
         await state.set_state(SetParameterFitCanal.choosing_fitting_name)
 
 
-@router.message(SetParameterFitCanal.choosing_fitting_name, F.text.in_(available_masters_fitting))
+@router.message(SetParameterFitCanal.choosing_fitting_name)
 async def pprc_tube(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
