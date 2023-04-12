@@ -93,7 +93,7 @@ async def pprc_name(message: Message, state: FSMContext):
         await state.set_state(SetParameterFitOther.choosing_fitting_name)
 
 
-@router.message(SetParameterFitOther.choosing_fitting_name, F.text.in_(available_masters_fitting))
+@router.message(SetParameterFitOther.choosing_fitting_name)
 async def pprc_tube(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
