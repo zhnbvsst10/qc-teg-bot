@@ -347,18 +347,22 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
 @router.message(SetParameterPPRC.choosing_defects)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.update_data(chosen_def=message.text.lower())
-        await message.answer(
-            text="Введите описание дефекта?",
-            reply_markup=ReplyKeyboardRemove()
-        )
-        print('choose defects')
-        await state.set_state(SetParameterPPRC.defects_descr)
+        if message.text == 'yes':
+            await message.answer(
+                text="Введите описание дефекта",
+                reply_markup=ReplyKeyboardRemove()
+            )
+            print('choose defects')
+            await state.set_state(SetParameterPPRC.defects_descr)
+        else:
+            await state.set_state(SetParameterPPRC.defects_descr)
 
 
 @router.message(SetParameterPPRC.defects_descr)
 async def pprc_control_mark(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,15, 17,20,23]:
-            await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
+            if len(message.text) > 0:
+                await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
             await message.answer(
                     text="Оцените контрольную маркировку PPR-C трубы:",
                     reply_markup=make_row_keyboard(available_answers)
@@ -515,6 +519,7 @@ async def pprc_chosen(message: Message, state: FSMContext):
             await state.set_state(SetParameterPPRC.choosing_pprc_control_mark)
         else:
             user_data = await state.get_data()
+            user_data['chosen_def_descr'] = ''
             await state.clear()
             await message.answer(
                 text="Благодарю за заполненные данные. Отправьте фото подтверждение",
@@ -538,6 +543,7 @@ async def pprc_chosen(message: Message, state: FSMContext):
         else:
             print('sucess 3 params')
             user_data = await state.get_data()
+            user_data['chosen_def_descr'] = ''
             await state.clear()
             await message.answer(
                 text="Благодарю за заполненные данные. Отправьте фото подтверждение",
