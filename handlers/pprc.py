@@ -203,7 +203,9 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
     upload_file_list = [filename]
     for upload_file in upload_file_list:
         gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})
+        gfile.SetContentFile(upload_file)
         gfile.Upload()
+        
     await message.answer(
             text="продолжить",
             reply_markup=make_row_keyboard(['yes'])
