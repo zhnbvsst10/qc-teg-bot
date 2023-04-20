@@ -273,6 +273,14 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.send_photo_diameter_sent) 
 async def pprc_width(message: Message, state: FSMContext):
+    if message.text == 'go':
+        await message.answer(
+            text="Теперь укажите толщину PPR-C трубы:",
+            reply_markup=ReplyKeyboardRemove()
+        )
+        print('choose diameter')
+        await state.set_state(SetParameterPPRC.choosing_pprc_width)
+    else:
         await message.answer(
             text="Теперь укажите толщину PPR-C трубы:",
             reply_markup=ReplyKeyboardRemove()
