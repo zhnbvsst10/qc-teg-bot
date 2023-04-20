@@ -36,6 +36,7 @@ class SetParameterPPRC(StatesGroup):
     choosing_pprc_finish = State()
     send_photo = State()
     send_photo_view = State()
+    send_photo_view_sent = State()
 
 @router.message(Text(text='работает PPR-C'))
 async def pprc_controller(message: Message, state: FSMContext):
@@ -170,7 +171,11 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             reply_markup=make_row_keyboard(available_answers)
         )
     print('choose view photo')
+    await state.set_state(SetParameterPPRC.send_photo_view)
 
+    
+@router.message(SetParameterPPRC.send_photo_view,  F.content_type.in_({'photo'}))
+async def get_photo_pprc_view(message: Message, state: FSMContext):
     gauth = GoogleAuth()
     gauth.LocalWebserverAuth()           
     drive = GoogleDrive(gauth)  
@@ -186,10 +191,9 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})#1VHMD2m_CBy6zGobYF6YPCJtyhYQdoHGS#'1yaz2rotCLCAfzusoOujCe7gW1Ec1fFqU'
         gfile.SetContentFile(upload_file)
         gfile.Upload()
-    await state.set_state(SetParameterPPRC.send_photo_view)
+    await state.set_state(SetParameterPPRC.send_photo_view_sent)
 
-
-@router.message(SetParameterPPRC.send_photo_view, F.content_type.in_({'photo'}))
+@router.message(SetParameterPPRC.send_photo_view_sent)
 async def pprc_diameter(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
