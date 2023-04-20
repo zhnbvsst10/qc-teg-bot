@@ -7,6 +7,10 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards.simple_row import make_row_keyboard
 from datetime import datetime, timedelta
 import psycopg2
+from aiogram.types.photo_size import PhotoSize
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+from bot import bot
 
 router = Router()
 available_answers = ['ok', 'not ok','back']
@@ -31,6 +35,7 @@ class SetParameterPPRC(StatesGroup):
     choosing_pprc_control_mark = State()
     choosing_pprc_finish = State()
     send_photo = State()
+    send_photo_view = State()
 
 @router.message(Text(text='работает PPR-C'))
 async def pprc_controller(message: Message, state: FSMContext):
@@ -157,8 +162,28 @@ async def pprc_view(message: Message, state: FSMContext):
         print('choose view')
         await state.set_state(SetParameterPPRC.choosing_pprc_view)
 
+@router.message(SetParameterPPRC.choosing_pprc_view, F.content_type.in_({'photo'}))
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+    await state.update_data(chosen_view=message.text.lower())
+    gauth = GoogleAuth()
+    gauth.LocalWebserverAuth()           
+    drive = GoogleDrive(gauth)  
+    file_id =  message.photo[-1].file_id
+    file_unique_id = message.photo[-1].file_unique_id
+    PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+    file = await bot.get_file(file_id)
+    file_path = file.file_path
+    filename = 'pprc_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+    await bot.download_file(file_path, filename )
+    upload_file_list = [filename]
+    for upload_file in upload_file_list:
+        gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})#1VHMD2m_CBy6zGobYF6YPCJtyhYQdoHGS#'1yaz2rotCLCAfzusoOujCe7gW1Ec1fFqU'
+        gfile.SetContentFile(upload_file)
+        gfile.Upload()
+    await state.set_state(SetParameterPPRC.send_photo_view)
 
-@router.message(SetParameterPPRC.choosing_pprc_view)
+
+@router.message(SetParameterPPRC.send_photo_view)
 async def pprc_diameter(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
@@ -167,7 +192,7 @@ async def pprc_diameter(message: Message, state: FSMContext):
             )
         await state.set_state(SetParameterPPRC.choosing_pprc_tube)
     elif message.text == 'go':
-        await state.update_data(chosen_view=message.text.lower())
+        
         await message.answer(
             text="Теперь укажите диаметр PPR-C трубы:",
             reply_markup=ReplyKeyboardRemove()

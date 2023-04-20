@@ -145,7 +145,7 @@ async def get_photo_pprc(message: Message, state: FSMContext):
         gfile.SetContentFile(upload_file)
         gfile.Upload()
 
-@fitting_other.router.message(pprc.SetParameterPPRC.send_photo, F.content_type.in_({'photo'}))
+@pert.router.message(pprc.SetParameterPPRC.send_photo, F.content_type.in_({'photo'}))
 async def get_photo_pprc(message: Message, state: FSMContext):
     await state.clear()
     gauth = GoogleAuth()
