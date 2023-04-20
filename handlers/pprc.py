@@ -256,6 +256,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
 
         await message.answer(
             text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
         )
         print('choose diameter')
         await state.set_state(SetParameterPPRC.send_photo_diameter)
@@ -263,6 +264,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.update_data(chosen_diameter=message.text.lower())
         await message.answer(
             text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
         )
         print('choose diameter')
         await state.set_state(SetParameterPPRC.send_photo_diameter)
@@ -324,13 +326,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPPRC.choosing_pprc_tube)
-    elif message.text == 'go':
-        await message.answer(
-            text="отправьте фото",
-        )
-        print('choose diameter')
-        await state.set_state(SetParameterPPRC.send_photo_width)
+        await state.set_state(SetParameterPPRC.send_photo_view_sent)
     else:
         await state.update_data(chosen_width=message.text.lower())
         await message.answer(
