@@ -164,7 +164,13 @@ async def pprc_view(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.choosing_pprc_view, F.content_type.in_({'photo'}))
 async def get_photo_pprc_view(message: Message, state: FSMContext):
-    await state.update_data(chosen_view=message.text.lower())
+    
+    await message.answer(
+            text="отправьте фото",
+            reply_markup=make_row_keyboard(available_answers)
+        )
+    print('choose view photo')
+
     gauth = GoogleAuth()
     gauth.LocalWebserverAuth()           
     drive = GoogleDrive(gauth)  
@@ -192,7 +198,7 @@ async def pprc_diameter(message: Message, state: FSMContext):
             )
         await state.set_state(SetParameterPPRC.choosing_pprc_tube)
     elif message.text == 'go':
-        
+        await state.update_data(chosen_view=message.text.lower())
         await message.answer(
             text="Теперь укажите диаметр PPR-C трубы:",
             reply_markup=ReplyKeyboardRemove()
