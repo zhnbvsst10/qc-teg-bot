@@ -12,7 +12,8 @@ from aiogram.fsm.state import StatesGroup, State
 class SetParameterFit(StatesGroup):
     choosing_fitting_line = State()
     choosing_fitting_state = State()
-    state = State()
+    state_pprc_renov = State()
+    state_pprc_setting = State()
 
 router = Router()
 
@@ -183,9 +184,9 @@ async def not_working(message: Message, state: FSMContext):
     await message.answer(
             text="введите описание",
             )
-    await state.set_state(SetParameterFit.state)
+    await state.set_state(SetParameterFit.state_pprc_renov)
 
-@router.message(SetParameterFit.state)
+@router.message(SetParameterFit.state_pprc_renov)
 async def not_working(message: Message, state: FSMContext):
     await state.update_data(state_=message.text.lower())
     user_data = await state.get_data()
@@ -203,9 +204,18 @@ async def not_working(message: Message, state: FSMContext):
 @router.message(Text(text='остановка для настройки PPR-C'))
 async def not_working(message: Message, state: FSMContext):
     await state.clear()
+    await message.answer(
+            text="введите описание",
+            )
+    await state.set_state(SetParameterFit.state_pprc_setting)
+
+@router.message(SetParameterFit.state_pprc_setting)
+async def not_working(message: Message, state: FSMContext):
+    await state.update_data(state_=message.text.lower())
+    user_data = await state.get_data()
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
     cursor = conn.cursor()
-    cursor.execute(f"""insert into pprc_params (working, created_at, updated_at) values ('остановка для настройки', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+    cursor.execute(f"""insert into pprc_params (working, working_descr, created_at, updated_at) values ('ремонт', '{user_data['state_']}',current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
     cursor.close()
     conn.close()
