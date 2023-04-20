@@ -180,7 +180,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             )
         await state.set_state(SetParameterPPRC.choosing_pprc_tube)
     elif message.text == 'go':
-        await state.update_data(chosen_view=message.text.lower())
+        # await state.update_data(chosen_view=message.text.lower())
         await message.answer(
             text="отправьте фото",
             reply_markup=make_row_keyboard(['back'])
@@ -231,13 +231,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.send_photo_view_sent)
 async def pprc_diameter(message: Message, state: FSMContext):
-    if message.text == 'back':
-        await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-        await state.set_state(SetParameterPPRC.choosing_pprc_tube)
-    elif message.text == 'go':
+    if message.text == 'go':
         await message.answer(
             text="Теперь укажите диаметр PPR-C трубы:",
             reply_markup=ReplyKeyboardRemove()
@@ -245,7 +239,6 @@ async def pprc_diameter(message: Message, state: FSMContext):
         print('choose diameter')
         await state.set_state(SetParameterPPRC.choosing_pprc_diameter)
     else:
-        # await state.update_data(chosen_view=message.text.lower())
         await message.answer(
             text="Теперь укажите диаметр PPR-C трубы:",
             reply_markup=ReplyKeyboardRemove()
@@ -255,14 +248,7 @@ async def pprc_diameter(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.choosing_pprc_diameter)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
-    if message.text == 'back':
-        await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-        await state.set_state(SetParameterPPRC.choosing_pprc_tube)
-    elif message.text == 'go':
-
+    if message.text == 'go':
         await message.answer(
             text="отправьте фото",
             reply_markup=make_row_keyboard(['back'])
@@ -278,52 +264,46 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         print('choose diameter')
         await state.set_state(SetParameterPPRC.send_photo_diameter)
 
-@router.message(SetParameterPPRC.send_photo_diameter,  F.content_type.in_({'photo'}))
+@router.message(SetParameterPPRC.send_photo_diameter)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
-    gauth = GoogleAuth()
-    gauth.LocalWebserverAuth()           
-    drive = GoogleDrive(gauth)  
-    file_id =  message.photo[-1].file_id
-    print(message.photo[-1])
-    file_unique_id = message.photo[-1].file_unique_id
-    PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
-    file = await bot.get_file(file_id)
-    file_path = file.file_path
-    filename = 'pprc_diameter_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
-    await bot.download_file(file_path, filename )
-    upload_file_list = [filename]
-    for upload_file in upload_file_list:
-        gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})
-        gfile.SetContentFile(upload_file)
-        gfile.Upload()
-
-    await message.answer(
-            text="продолжить",
-            reply_markup=make_row_keyboard(['yes'])
-            )
-    await state.set_state(SetParameterPPRC.send_photo_diameter_sent)
-
-
-
-@router.message(SetParameterPPRC.send_photo_diameter_sent) 
-async def pprc_width(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPPRC.choosing_pprc_nom_diameter)
-    elif message.text == 'go':
-        await message.answer(
-            text="Теперь укажите толщину PPR-C трубы:",
-            reply_markup=ReplyKeyboardRemove()
-        )
-        print('choose width')
-        await state.set_state(SetParameterPPRC.choosing_pprc_width)
+        await state.set_state(SetParameterPPRC.send_photo_view_sent)
     else:
+
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'pprc_diameter_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
+
+        await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterPPRC.send_photo_diameter_sent)
+
+
+
+@router.message(SetParameterPPRC.send_photo_diameter_sent) 
+async def pprc_width(message: Message, state: FSMContext):
         await message.answer(
             text="Теперь укажите толщину PPR-C трубы:",
-            reply_markup=ReplyKeyboardRemove()
+            reply_markup=make_row_keyboard(['back'])
         )
         print('choose width')
         await state.set_state(SetParameterPPRC.choosing_pprc_width)
@@ -340,28 +320,37 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.update_data(chosen_width=message.text.lower())
         await message.answer(
             text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
         )
         print('choose diameter')
         await state.set_state(SetParameterPPRC.send_photo_width)
 
-@router.message(SetParameterPPRC.send_photo_width,  F.content_type.in_({'photo'}))
+@router.message(SetParameterPPRC.send_photo_width)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
-    gauth = GoogleAuth()
-    gauth.LocalWebserverAuth()           
-    drive = GoogleDrive(gauth)  
-    file_id =  message.photo[-1].file_id
-    print(message.photo[-1])
-    file_unique_id = message.photo[-1].file_unique_id
-    PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
-    file = await bot.get_file(file_id)
-    file_path = file.file_path
-    filename = 'pprc_width_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
-    await bot.download_file(file_path, filename )
-    upload_file_list = [filename]
-    for upload_file in upload_file_list:
-        gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})
-        gfile.SetContentFile(upload_file)
-        gfile.Upload()
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterPPRC.send_photo_diameter_sent)
+    else:
+
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'pprc_width_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
 
     await message.answer(
             text="продолжить",
@@ -374,21 +363,6 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
 @router.message(SetParameterPPRC.send_photo_width_sent)
 async def pprc_control_mark(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
-        if message.text == 'back':
-            await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-            await state.set_state(SetParameterPPRC.choosing_pprc_view)
-        elif message.text == 'go':
-            await message.answer(
-                    text="Оцените контрольную маркировку PPR-C трубы:",
-                    reply_markup=make_row_keyboard(available_answers)
-            )
-            print('choose control mark')
-            await state.set_state(SetParameterPPRC.choosing_pprc_control_mark)
-        else:
-            
             await message.answer(
                     text="Оцените контрольную маркировку PPR-C трубы:",
                     reply_markup=make_row_keyboard(available_answers)
@@ -397,13 +371,7 @@ async def pprc_control_mark(message: Message, state: FSMContext):
             await state.set_state(SetParameterPPRC.choosing_pprc_control_mark)
 
     elif (datetime.now()+ timedelta(hours = 6)).hour in [0,1,3,4,6,7,9,10,12,13,15,16,18,19,21,22]:
-        if message.text == 'back':
-            await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-            await state.set_state(SetParameterPPRC.choosing_pprc_view)
-        elif message.text == 'go':
+        if message.text == 'go':
             await message.answer(
                     text="перейти к передаче данных",
                     reply_markup=make_row_keyboard(available_proceeds)
@@ -428,65 +396,52 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPPRC.choosing_pprc_tube)
-    elif message.text == 'go':
-
-        await message.answer(
-            text="отправьте фото",
-        )
-        print('choose diameter')
-        await state.set_state(SetParameterPPRC.send_photo_control_mark)
+        await state.set_state(SetParameterPPRC.choosing_pprc_width)
     else:
         await state.update_data(chosen_control_mark=message.text.lower().replace(',', '.'))
         await message.answer(
             text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
         )
         print('choose diameter')
         await state.set_state(SetParameterPPRC.send_photo_control_mark)
 
 @router.message(SetParameterPPRC.send_photo_control_mark,  F.content_type.in_({'photo'}))
 async def get_photo_pprc_view(message: Message, state: FSMContext):
-    gauth = GoogleAuth()
-    gauth.LocalWebserverAuth()           
-    drive = GoogleDrive(gauth)  
-    file_id =  message.photo[-1].file_id
-    print(message.photo[-1])
-    file_unique_id = message.photo[-1].file_unique_id
-    PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
-    file = await bot.get_file(file_id)
-    file_path = file.file_path
-    filename = 'pprc_control_mark_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
-    await bot.download_file(file_path, filename )
-    upload_file_list = [filename]
-    for upload_file in upload_file_list:
-        gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})
-        gfile.SetContentFile(upload_file)
-        gfile.Upload()
-
-    await message.answer(
-            text="продолжить",
-            reply_markup=make_row_keyboard(['yes'])
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
             )
-    await state.set_state(SetParameterPPRC.send_photo_control_mark_sent)
+        await state.set_state(SetParameterPPRC.send_photo_width_sent)
+    else:
+
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'pprc_control_mark_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
+
+        await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterPPRC.send_photo_control_mark_sent)
 
 
 @router.message(SetParameterPPRC.send_photo_control_mark_sent) 
 async def pprc_weight(message: Message, state: FSMContext):
-    if message.text == 'back':
-            await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-            await state.set_state(SetParameterPPRC.choosing_pprc_diameter)
-    elif message.text == 'go':
-        await message.answer(
-            text="Теперь укажите вес PPR-C трубы:",
-            reply_markup=ReplyKeyboardRemove()
-        )
-        print('choose weight')
-        await state.set_state(SetParameterPPRC.choosing_pprc_weight)
-    else:
-        
         await message.answer(
             text="Теперь укажите вес PPR-C трубы:",
             reply_markup=ReplyKeyboardRemove()
@@ -501,14 +456,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPPRC.choosing_pprc_tube)
-    elif message.text == 'go':
-
-        await message.answer(
-            text="отправьте фото",
-        )
-        print('choose diameter')
-        await state.set_state(SetParameterPPRC.send_photo_weight)
+        await state.set_state(SetParameterPPRC.choosing_pprc_control_mark)
     else:
         await state.update_data(chosen_weight=message.text.lower())
         await message.answer(
@@ -517,30 +465,37 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         print('choose diameter')
         await state.set_state(SetParameterPPRC.send_photo_weight)
 
-@router.message(SetParameterPPRC.send_photo_weight,  F.content_type.in_({'photo'}))
+@router.message(SetParameterPPRC.send_photo_weight)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
-    gauth = GoogleAuth()
-    gauth.LocalWebserverAuth()           
-    drive = GoogleDrive(gauth)  
-    file_id =  message.photo[-1].file_id
-    print(message.photo[-1])
-    file_unique_id = message.photo[-1].file_unique_id
-    PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
-    file = await bot.get_file(file_id)
-    file_path = file.file_path
-    filename = 'pprc_control_mark_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
-    await bot.download_file(file_path, filename )
-    upload_file_list = [filename]
-    for upload_file in upload_file_list:
-        gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})
-        gfile.SetContentFile(upload_file)
-        gfile.Upload()
-
-    await message.answer(
-            text="продолжить",
-            reply_markup=make_row_keyboard(['yes'])
+    if message.text == 'back':
+        await message.answer(
+        text="go back",
+            reply_markup=make_row_keyboard(['go'])
             )
-    await state.set_state(SetParameterPPRC.send_photo_weight_sent)
+        await state.set_state(SetParameterPPRC.send_photo_width_sent)
+    else:
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'pprc_control_mark_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
+
+        await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterPPRC.send_photo_control_mark_sent)
 
 
 
