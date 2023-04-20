@@ -149,13 +149,8 @@ async def pprc_nom_diameter(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.choosing_pprc_nom_diameter)
 async def pprc_view(message: Message, state: FSMContext):
-    if message.text == 'back':
-        await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-        await state.set_state(SetParameterPPRC.choosing_pprc_name)
-    elif message.text == 'go':
+
+    if message.text == 'go':
         await message.answer(
             text="оцените внешний вид PPR-C трубы:",
             reply_markup=make_row_keyboard(available_answers)
@@ -173,21 +168,6 @@ async def pprc_view(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.choosing_pprc_view)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
-    if message.text == 'back':
-        await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-        await state.set_state(SetParameterPPRC.choosing_pprc_tube)
-    elif message.text == 'go':
-        # await state.update_data(chosen_view=message.text.lower())
-        await message.answer(
-            text="отправьте фото",
-            reply_markup=make_row_keyboard(['back'])
-        )
-        print('choose diameter')
-        await state.set_state(SetParameterPPRC.send_photo_view)
-    else:
         await state.update_data(chosen_view=message.text.lower())
         await message.answer(
             text="отправьте фото",
@@ -248,14 +228,6 @@ async def pprc_diameter(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.choosing_pprc_diameter)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
-    if message.text == 'go':
-        await message.answer(
-            text="отправьте фото",
-            reply_markup=make_row_keyboard(['back'])
-        )
-        print('choose diameter')
-        await state.set_state(SetParameterPPRC.send_photo_diameter)
-    else:
         await state.update_data(chosen_diameter=message.text.lower())
         await message.answer(
             text="отправьте фото",
@@ -303,20 +275,13 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
 async def pprc_width(message: Message, state: FSMContext):
         await message.answer(
             text="Теперь укажите толщину PPR-C трубы:",
-            reply_markup=make_row_keyboard(['back'])
+            reply_markup=ReplyKeyboardRemove()
         )
         print('choose width')
         await state.set_state(SetParameterPPRC.choosing_pprc_width)
 
 @router.message(SetParameterPPRC.choosing_pprc_width)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
-    if message.text == 'back':
-        await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-        await state.set_state(SetParameterPPRC.send_photo_view_sent)
-    else:
         await state.update_data(chosen_width=message.text.lower())
         await message.answer(
             text="отправьте фото",
@@ -391,13 +356,6 @@ async def pprc_control_mark(message: Message, state: FSMContext):
         )
 @router.message(SetParameterPPRC.choosing_pprc_control_mark)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
-    if message.text == 'back':
-        await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-        await state.set_state(SetParameterPPRC.choosing_pprc_width)
-    else:
         await state.update_data(chosen_control_mark=message.text.lower().replace(',', '.'))
         await message.answer(
             text="отправьте фото",
@@ -406,7 +364,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         print('choose diameter')
         await state.set_state(SetParameterPPRC.send_photo_control_mark)
 
-@router.message(SetParameterPPRC.send_photo_control_mark,  F.content_type.in_({'photo'}))
+@router.message(SetParameterPPRC.send_photo_control_mark)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
@@ -451,16 +409,10 @@ async def pprc_weight(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.choosing_pprc_weight)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
-    if message.text == 'back':
-        await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-        await state.set_state(SetParameterPPRC.choosing_pprc_control_mark)
-    else:
         await state.update_data(chosen_weight=message.text.lower())
         await message.answer(
             text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
         )
         print('choose diameter')
         await state.set_state(SetParameterPPRC.send_photo_weight)
@@ -472,7 +424,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPPRC.send_photo_width_sent)
+        await state.set_state(SetParameterPPRC.send_photo_control_mark_sent)
     else:
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()           
