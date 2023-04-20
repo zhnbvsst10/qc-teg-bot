@@ -447,7 +447,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
                 text="продолжить",
                 reply_markup=make_row_keyboard(['yes'])
                 )
-        await state.set_state(SetParameterPPRC.send_photo_control_mark_sent)
+        await state.set_state(SetParameterPPRC.send_photo_control_weight_sent)
 
 
 
