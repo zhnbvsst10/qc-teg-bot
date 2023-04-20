@@ -88,24 +88,24 @@ async def get_photo_fit(message: Message, state: FSMContext):
         gfile.SetContentFile(upload_file)
         gfile.Upload()
 
-@pprc.router.message(pprc.SetParameterPPRC.send_photo, F.content_type.in_({'photo'}))
-async def get_photo_pprc(message: Message, state: FSMContext):
-    await state.clear()
-    gauth = GoogleAuth()
-    gauth.LocalWebserverAuth()           
-    drive = GoogleDrive(gauth)  
-    file_id =  message.photo[-1].file_id
-    file_unique_id = message.photo[-1].file_unique_id
-    PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
-    file = await bot.get_file(file_id)
-    file_path = file.file_path
-    filename = 'pprc_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
-    await bot.download_file(file_path, filename )
-    upload_file_list = [filename]
-    for upload_file in upload_file_list:
-        gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})#1VHMD2m_CBy6zGobYF6YPCJtyhYQdoHGS#'1yaz2rotCLCAfzusoOujCe7gW1Ec1fFqU'
-        gfile.SetContentFile(upload_file)
-        gfile.Upload()
+# @pprc.router.message(pprc.SetParameterPPRC.send_photo, F.content_type.in_({'photo'}))
+# async def get_photo_pprc(message: Message, state: FSMContext):
+#     await state.clear()
+#     gauth = GoogleAuth()
+#     gauth.LocalWebserverAuth()           
+#     drive = GoogleDrive(gauth)  
+#     file_id =  message.photo[-1].file_id
+#     file_unique_id = message.photo[-1].file_unique_id
+#     PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+#     file = await bot.get_file(file_id)
+#     file_path = file.file_path
+#     filename = 'pprc_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+#     await bot.download_file(file_path, filename )
+#     upload_file_list = [filename]
+#     for upload_file in upload_file_list:
+#         gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})#1VHMD2m_CBy6zGobYF6YPCJtyhYQdoHGS#'1yaz2rotCLCAfzusoOujCe7gW1Ec1fFqU'
+#         gfile.SetContentFile(upload_file)
+#         gfile.Upload()
 
 @fitting_can.router.message(pprc.SetParameterPPRC.send_photo, F.content_type.in_({'photo'}))
 async def get_photo_pprc(message: Message, state: FSMContext):
