@@ -371,12 +371,12 @@ async def pprc_control_mark(message: Message, state: FSMContext):
             await state.set_state(SetParameterPPRC.choosing_pprc_control_mark)
 
     elif (datetime.now()+ timedelta(hours = 6)).hour in [0,1,3,4,6,7,9,10,12,13,15,16,18,19,21,22]:
-        if message.text == 'go':
+        if message.text == 'back':
             await message.answer(
-                    text="перейти к передаче данных",
-                    reply_markup=make_row_keyboard(available_proceeds)
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
             )
-            await state.set_state(SetParameterPPRC.choosing_pprc_finish)
+            await state.set_state(SetParameterPPRC.send_photo_diameter_sent)
         else:
             await state.update_data(chosen_control_mark=message.text.lower().replace(',', '.'))
             await message.answer(
