@@ -355,13 +355,18 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             print('choose defects')
             await state.set_state(SetParameterPPRC.defects_descr)
         else:
+            await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+            )
+            print('choose defects')
             await state.set_state(SetParameterPPRC.defects_descr)
 
 
 @router.message(SetParameterPPRC.defects_descr)
 async def pprc_control_mark(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,15, 17,20,23]:
-            if len(message.text) > 0:
+            if message.text != 'yes':
                 await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
             await message.answer(
                     text="Оцените контрольную маркировку PPR-C трубы:",
