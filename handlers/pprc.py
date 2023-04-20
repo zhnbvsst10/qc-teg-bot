@@ -335,7 +335,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.send_photo_width_sent)
 async def pprc_control_mark(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,15, 17,20,23]:
             await message.answer(
                     text="Оцените контрольную маркировку PPR-C трубы:",
                     reply_markup=make_row_keyboard(available_answers)
@@ -461,7 +461,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.send_photo_weight_sent)
 async def pprc_finish(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,15, 17,20,23]:
         if message.text == 'back':
             await message.answer(
             text="go back",
@@ -484,7 +484,7 @@ async def pprc_finish(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.choosing_pprc_finish, F.text.in_(available_proceeds))
 async def pprc_chosen(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
+    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,15, 17,20,23]:
         if message.text == 'back':
             await message.answer(
             text="go back",
