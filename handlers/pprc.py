@@ -165,13 +165,26 @@ async def pprc_view(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.choosing_pprc_view)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
-    
-    await message.answer(
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterPPRC.choosing_pprc_tube)
+    elif message.text == 'go':
+        await state.update_data(chosen_view=message.text.lower())
+        await message.answer(
             text="отправьте фото",
-            reply_markup=make_row_keyboard(available_answers)
         )
-    print('choose view photo')
-    await state.set_state(SetParameterPPRC.send_photo_view)
+        print('choose diameter')
+        await state.set_state(SetParameterPPRC.send_photo_view)
+    else:
+        await state.update_data(chosen_view=message.text.lower())
+        await message.answer(
+            text="отправьте фото",
+        )
+        print('choose diameter')
+        await state.set_state(SetParameterPPRC.send_photo_view)
 
     
 @router.message(SetParameterPPRC.send_photo_view,  F.content_type.in_({'photo'}))
@@ -184,13 +197,16 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
     PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
     file = await bot.get_file(file_id)
     file_path = file.file_path
-    filename = 'pprc_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+    filename = 'pprc_view' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
     await bot.download_file(file_path, filename )
     upload_file_list = [filename]
     for upload_file in upload_file_list:
-        gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})#1VHMD2m_CBy6zGobYF6YPCJtyhYQdoHGS#'1yaz2rotCLCAfzusoOujCe7gW1Ec1fFqU'
-        gfile.SetContentFile(upload_file)
+        gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})
         gfile.Upload()
+    await message.answer(
+            text="продолжить ?",
+            reply_markup=make_row_keyboard(['yes'])
+            )
     await state.set_state(SetParameterPPRC.send_photo_view_sent)
 
 @router.message(SetParameterPPRC.send_photo_view_sent)
@@ -210,7 +226,7 @@ async def pprc_diameter(message: Message, state: FSMContext):
         print('choose diameter')
         await state.set_state(SetParameterPPRC.choosing_pprc_diameter)
     else:
-        await state.update_data(chosen_view=message.text.lower())
+        # await state.update_data(chosen_view=message.text.lower())
         await message.answer(
             text="Теперь укажите диаметр PPR-C трубы:",
             reply_markup=ReplyKeyboardRemove()
