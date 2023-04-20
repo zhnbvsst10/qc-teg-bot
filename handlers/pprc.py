@@ -260,7 +260,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         print('choose diameter')
         await state.set_state(SetParameterPPRC.send_photo_diameter)
     else:
-        await state.update_data(chosen_view=message.text.lower())
+        await state.update_data(chosen_diameter=message.text.lower())
         await message.answer(
             text="отправьте фото",
         )
@@ -310,7 +310,6 @@ async def pprc_width(message: Message, state: FSMContext):
         print('choose width')
         await state.set_state(SetParameterPPRC.choosing_pprc_width)
     else:
-        await state.update_data(chosen_diameter=message.text.lower().replace(',', '.'))
         await message.answer(
             text="Теперь укажите толщину PPR-C трубы:",
             reply_markup=ReplyKeyboardRemove()
@@ -327,14 +326,13 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             )
         await state.set_state(SetParameterPPRC.choosing_pprc_tube)
     elif message.text == 'go':
-
         await message.answer(
             text="отправьте фото",
         )
         print('choose diameter')
         await state.set_state(SetParameterPPRC.send_photo_width)
     else:
-        await state.update_data(chosen_view=message.text.lower())
+        await state.update_data(chosen_width=message.text.lower())
         await message.answer(
             text="отправьте фото",
         )
@@ -385,7 +383,7 @@ async def pprc_control_mark(message: Message, state: FSMContext):
             print('choose control mark')
             await state.set_state(SetParameterPPRC.choosing_pprc_control_mark)
         else:
-            await state.update_data(chosen_width=message.text.lower().replace(',', '.'))
+            
             await message.answer(
                     text="Оцените контрольную маркировку PPR-C трубы:",
                     reply_markup=make_row_keyboard(available_answers)
@@ -407,7 +405,7 @@ async def pprc_control_mark(message: Message, state: FSMContext):
             )
             await state.set_state(SetParameterPPRC.choosing_pprc_finish)
         else:
-            await state.update_data(chosen_width=message.text.lower().replace(',', '.'))
+            await state.update_data(chosen_control_mark=message.text.lower().replace(',', '.'))
             await message.answer(
                     text="перейти к передаче данных",
                     reply_markup=make_row_keyboard(available_proceeds)
@@ -434,7 +432,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         print('choose diameter')
         await state.set_state(SetParameterPPRC.send_photo_control_mark)
     else:
-        await state.update_data(chosen_view=message.text.lower())
+        await state.update_data(chosen_control_mark=message.text.lower().replace(',', '.'))
         await message.answer(
             text="отправьте фото",
         )
@@ -483,7 +481,7 @@ async def pprc_weight(message: Message, state: FSMContext):
         print('choose weight')
         await state.set_state(SetParameterPPRC.choosing_pprc_weight)
     else:
-        await state.update_data(chosen_control_mark=message.text.lower().replace(',', '.'))
+        
         await message.answer(
             text="Теперь укажите вес PPR-C трубы:",
             reply_markup=ReplyKeyboardRemove()
@@ -507,7 +505,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         print('choose diameter')
         await state.set_state(SetParameterPPRC.send_photo_weight)
     else:
-        await state.update_data(chosen_view=message.text.lower())
+        await state.update_data(chosen_weight=message.text.lower())
         await message.answer(
             text="отправьте фото",
         )
@@ -557,7 +555,7 @@ async def pprc_finish(message: Message, state: FSMContext):
             )
             await state.set_state(SetParameterPPRC.choosing_pprc_finish)
         else:
-            await state.update_data(chosen_weight=message.text.lower())
+            
             await message.answer(
                 text="перейти к передаче данных",
                 reply_markup=make_row_keyboard(available_proceeds)
