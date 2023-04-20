@@ -162,7 +162,7 @@ async def pprc_view(message: Message, state: FSMContext):
         print('choose view')
         await state.set_state(SetParameterPPRC.choosing_pprc_view)
 
-@router.message(SetParameterPPRC.choosing_pprc_view, F.content_type.in_({'photo'}))
+@router.message(SetParameterPPRC.choosing_pprc_view)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
     
     await message.answer(
@@ -189,7 +189,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
     await state.set_state(SetParameterPPRC.send_photo_view)
 
 
-@router.message(SetParameterPPRC.send_photo_view)
+@router.message(SetParameterPPRC.send_photo_view, F.content_type.in_({'photo'}))
 async def pprc_diameter(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
