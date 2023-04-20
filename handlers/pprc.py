@@ -325,11 +325,11 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             gfile.SetContentFile(upload_file)
             gfile.Upload()
 
-    await message.answer(
-            text="продолжить",
-            reply_markup=make_row_keyboard(['yes'])
-            )
-    await state.set_state(SetParameterPPRC.send_photo_width_sent)
+        await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterPPRC.send_photo_width_sent)
 
 
 
