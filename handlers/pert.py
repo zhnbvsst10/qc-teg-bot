@@ -415,14 +415,16 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
 @router2.message(SetParameterPERT.defects_descr) #F.text.in_(available_food_names))
 async def pvc_width(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
-        if message.text == 'go':
-            await message.answer(
-                text="Теперь укажите вес:",
-                reply_markup=ReplyKeyboardRemove()
-            )
-            print('choose weight')
-            await state.set_state(SetParameterPERT.choosing_pvc_weight)
-        else:
+        # if message.text == 'go':
+        #     await message.answer(
+        #         text="Теперь укажите вес:",
+        #         reply_markup=ReplyKeyboardRemove()
+        #     )
+        #     print('choose weight')
+        #     await state.set_state(SetParameterPERT.choosing_pvc_weight)
+        # else:
+            if message.text != 'yes':
+                await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
             await message.answer(
                 text="Теперь укажите вес:",
                 reply_markup=ReplyKeyboardRemove()
@@ -437,6 +439,7 @@ async def pvc_width(message: Message, state: FSMContext):
             )
             await state.set_state(SetParameterPERT.choosing_pvc_outer_diam)
         else:
+            await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
             await message.answer(
                     text="перейти к передаче данных",
                     reply_markup=make_row_keyboard(available_proceeds)

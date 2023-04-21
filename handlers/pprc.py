@@ -527,7 +527,8 @@ async def pprc_chosen(message: Message, state: FSMContext):
             await state.set_state(SetParameterPPRC.choosing_pprc_control_mark)
         else:
             user_data = await state.get_data()
-            user_data['chosen_def_descr'] = ''
+            if ('chosen_def_descr' in user_data.keys()) == False:
+                user_data['chosen_def_descr'] = ''
             await state.clear()
             await message.answer(
                 text="Благодарю за заполненные данные. Отправьте фото подтверждение",
@@ -551,7 +552,8 @@ async def pprc_chosen(message: Message, state: FSMContext):
         else:
             print('sucess 3 params')
             user_data = await state.get_data()
-            user_data['chosen_def_descr'] = ''
+            if ('chosen_def_descr' in user_data.keys()) == False:
+                user_data['chosen_def_descr'] = ''
             await state.clear()
             await message.answer(
                 text="Благодарю за заполненные данные. Отправьте фото подтверждение",
