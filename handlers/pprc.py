@@ -10,7 +10,7 @@ import psycopg2
 from aiogram.types.photo_size import PhotoSize
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-from bot import bot
+# from bot import bot
 
 router = Router()
 available_answers = ['ok', 'not ok','back']
@@ -180,7 +180,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
 
     
 @router.message(SetParameterPPRC.send_photo_view)
-async def get_photo_pprc_view(message: Message, state: FSMContext):
+async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
     if message.text == 'back':
         await message.answer(
             text="go back",
@@ -239,7 +239,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.set_state(SetParameterPPRC.send_photo_diameter)
 
 @router.message(SetParameterPPRC.send_photo_diameter)
-async def get_photo_pprc_view(message: Message, state: FSMContext):
+async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
     if message.text == 'back':
         await message.answer(
             text="go back",
@@ -301,7 +301,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.set_state(SetParameterPPRC.send_photo_width)
 
 @router.message(SetParameterPPRC.send_photo_width)
-async def get_photo_pprc_view(message: Message, state: FSMContext):
+async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
     if message.text == 'back':
         await message.answer(
             text="go back",
@@ -405,7 +405,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.set_state(SetParameterPPRC.send_photo_control_mark)
 
 @router.message(SetParameterPPRC.send_photo_control_mark)
-async def get_photo_pprc_view(message: Message, state: FSMContext):
+async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
     if message.text == 'back':
         await message.answer(
             text="go back",
@@ -458,7 +458,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.set_state(SetParameterPPRC.send_photo_weight)
 
 @router.message(SetParameterPPRC.send_photo_weight)
-async def get_photo_pprc_view(message: Message, state: FSMContext):
+async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
     if message.text == 'back':
         await message.answer(
         text="go back",

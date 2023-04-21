@@ -10,7 +10,7 @@ import psycopg2
 from aiogram.types.photo_size import PhotoSize
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-from bot import bot
+# from bot import bot
 
 router2 = Router()
 available_answers = ['ok', 'not ok','back']
@@ -224,7 +224,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.set_state(SetParameterPERT.send_photo_outer_diam)
 
 @router2.message(SetParameterPERT.send_photo_outer_diam)
-async def get_photo_pprc_view(message: Message, state: FSMContext):
+async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
     if message.text == 'back':
         await message.answer(
             text="go back",
@@ -285,7 +285,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.set_state(SetParameterPERT.send_photo_width_s)
 
 @router2.message(SetParameterPERT.send_photo_width_s)
-async def get_photo_pprc_view(message: Message, state: FSMContext):
+async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
     if message.text == 'back':
         await message.answer(
             text="go back",
@@ -347,7 +347,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.set_state(SetParameterPERT.send_photo_weight_b)
 
 @router2.message(SetParameterPERT.send_photo_weight_b)
-async def get_photo_pprc_view(message: Message, state: FSMContext):
+async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
     if message.text == 'back':
         await message.answer(
             text="go back",
@@ -448,7 +448,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.set_state(SetParameterPERT.send_photo_control_mark)
 
 @router2.message(SetParameterPERT.send_photo_control_mark)
-async def get_photo_pprc_view(message: Message, state: FSMContext):
+async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
     if message.text == 'back':
         await message.answer(
             text="go back",
