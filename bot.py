@@ -3,7 +3,8 @@ import logging
 from aiogram import Bot, F
 from aiogram import Dispatcher
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from handlers import common, fitting_vodop,  pvc_3, pprc, fitting_can, fitting_other, pert
+from handlers import common, fitting_vodop,  pvc_3, pprc, fitting_can, fitting_other
+# , pert
 import os
 
 
