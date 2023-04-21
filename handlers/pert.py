@@ -170,7 +170,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPERT.choosing_pprc_nom_diameter)
+        await state.set_state(SetParameterPERT.choosing_pvc_view)
     else:
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()           
