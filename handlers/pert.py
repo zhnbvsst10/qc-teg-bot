@@ -445,7 +445,7 @@ async def pvc_width(message: Message, state: FSMContext):
 
 
 
-router2.message(SetParameterPERT.choosing_pvc_weight)
+@router2.message(SetParameterPERT.choosing_pvc_weight)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.update_data(chosen_weight=message.text.lower())
         await message.answer(
