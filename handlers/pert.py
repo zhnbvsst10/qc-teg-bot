@@ -173,7 +173,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPERT.choosing_pvc_view)
+        await state.set_state(SetParameterPERT.choosing_pvc_tube)
     else:
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()           
@@ -339,6 +339,7 @@ async def pvc_diameter(message: Message, state: FSMContext):
         await state.set_state(SetParameterPERT.choosing_pvc_weight_b)
 
 
+
 @router2.message(SetParameterPERT.choosing_pvc_weight_b)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.update_data(chosen_weight_b=message.text.lower())
@@ -356,7 +357,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPERT.send_photo_outer_diam_sent)
+        await state.set_state(SetParameterPERT.send_photo_width_s_sent)
     else:
 
         gauth = GoogleAuth()
@@ -382,7 +383,36 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
                 )
         await state.set_state(SetParameterPERT.send_photo_weight_b_sent)
 
-@router2.message(SetParameterPERT.send_photo_weight_b_sent) #F.text.in_(available_food_names))
+@router2.message(SetParameterPERT.send_photo_weight_b_sent)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_weight=message.text.lower())
+        await message.answer(
+            text="Есть ли дефекты?",
+            reply_markup=make_row_keyboard(['yes','no'])
+        )
+        print('choose defects')
+        await state.set_state(SetParameterPERT.choosing_defects)
+
+
+@router2.message(SetParameterPERT.choosing_defects)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_def=message.text.lower())
+        if message.text == 'yes':
+            await message.answer(
+                text="Введите описание дефекта",
+                reply_markup=ReplyKeyboardRemove()
+            )
+            print('choose defects')
+            await state.set_state(SetParameterPERT.defects_descr)
+        else:
+            await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+            )
+            print('choose defects')
+            await state.set_state(SetParameterPERT.defects_descr)
+
+@router2.message(SetParameterPERT.defects_descr) #F.text.in_(available_food_names))
 async def pvc_width(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
         if message.text == 'go':
@@ -393,7 +423,6 @@ async def pvc_width(message: Message, state: FSMContext):
             print('choose weight')
             await state.set_state(SetParameterPERT.choosing_pvc_weight)
         else:
-            await state.update_data(chosen_weight_b=message.text.lower().replace(',', '.'))
             await message.answer(
                 text="Теперь укажите вес:",
                 reply_markup=ReplyKeyboardRemove()
@@ -408,8 +437,6 @@ async def pvc_width(message: Message, state: FSMContext):
             )
             await state.set_state(SetParameterPERT.choosing_pvc_outer_diam)
         else:
-
-            await state.update_data(chosen_weight_b=message.text.lower().replace(',', '.'))
             await message.answer(
                     text="перейти к передаче данных",
                     reply_markup=make_row_keyboard(available_proceeds)
@@ -421,7 +448,51 @@ async def pvc_width(message: Message, state: FSMContext):
             reply_markup=ReplyKeyboardRemove()
         )
 
-@router2.message(SetParameterPERT.choosing_pvc_weight) #F.text.in_(available_food_names))
+
+
+router2.message(SetParameterPERT.choosing_pvc_weight)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_weight=message.text.lower())
+        await message.answer(
+            text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
+        )
+        print('choose diameter')
+        await state.set_state(SetParameterPERT.send_photo_weight)
+
+@router2.message(SetParameterPERT.send_photo_weight)
+async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterPERT.defects_descr)
+    else:
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'pert_weight_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1NwwKZX-0JbjnoagbHu5c5LpGCPia_rz3'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
+
+        await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterPERT.send_photo_weight_sent)
+
+@router2.message(SetParameterPERT.send_photo_weight_sent) #F.text.in_(available_food_names))
 async def pvc_control_mark(message: Message, state: FSMContext):
     if message.text == 'go':
         await message.answer(
@@ -431,8 +502,6 @@ async def pvc_control_mark(message: Message, state: FSMContext):
         print('choose control mark')
         await state.set_state(SetParameterPERT.choosing_pvc_control_mark)
     else:
-
-        await state.update_data(chosen_weight=message.text.lower().replace(',', '.'))
         await message.answer(
                 text="оцените контрольную маркировку:",
                 reply_markup=make_row_keyboard(available_answers)
@@ -442,7 +511,7 @@ async def pvc_control_mark(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPERT.choosing_pvc_control_mark)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
-        await state.update_data(chosen_view=message.text.lower())
+        await state.update_data(chosen_control_mark=message.text.lower())
         await message.answer(
             text="отправьте фото",
             reply_markup=make_row_keyboard(['back'])
@@ -506,7 +575,7 @@ async def pvc_length(message: Message, state: FSMContext):
 
 
 
-@router2.message(SetParameterPERT.choosing_pvc_finish, F.text.in_(available_proceeds))
+@router2.message(SetParameterPERT.choosing_pvc_finish)
 async def pvc_chosen(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
         user_data = await state.get_data()
@@ -521,10 +590,11 @@ async def pvc_chosen(message: Message, state: FSMContext):
         cursor = conn.cursor()
         cursor.execute(f"""insert into pert_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, VIEW, 
                                                     OUTER_DIAMETER, WIDTH_ST, WEIGHT_B, WEIGHT, MARK_CONTROL,
-                                                     MASTER, created_at, updated_at) values 
+                                                     MASTER,DEFECT,DEFECT_DESCR,  created_at, updated_at) values 
                                                 (TRUE,'{user_data['chosen_controller_name']}','{user_data['chosen_smena']}','{user_data['chosen_tube']}',  
                                                             '{user_data['chosen_view']}','{user_data['chosen_outer_diam']}',{user_data['chosen_width_s']}, 
                                                             {user_data['chosen_weight_b']}, {user_data['chosen_weight']}, '{user_data['chosen_control_mark']}', '{user_data['chosen_name']}',
+                                                            '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',
                                                               current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
         conn.commit()
         cursor.close()
@@ -543,10 +613,10 @@ async def pvc_chosen(message: Message, state: FSMContext):
         cursor = conn.cursor()
         cursor.execute(f"""insert into pert_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, VIEW, 
                                                     OUTER_DIAMETER, WIDTH_ST, WEIGHT_B, 
-                                                     MASTER, created_at, updated_at) values 
+                                                     MASTER,DEFECT,DEFECT_DESCR,  created_at, updated_at) values 
                                                 (TRUE,'{user_data['chosen_controller_name']}','{user_data['chosen_smena']}','{user_data['chosen_tube']}',  
                                                             '{user_data['chosen_view']}','{user_data['chosen_outer_diam']}',{user_data['chosen_width_s']}, 
-                                                            {user_data['chosen_weight_b']},  '{user_data['chosen_name']}',
+                                                            {user_data['chosen_weight_b']},  '{user_data['chosen_name']}','{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',
                                                               current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
         conn.commit()
         cursor.close()
