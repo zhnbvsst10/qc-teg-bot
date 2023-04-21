@@ -482,7 +482,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
 
 
     
-@router2.message(SetParameterPERT.send_photo_control_mark_sent) #F.text.in_(available_food_names))
+@router2.message(SetParameterPERT.send_photo_control_mark_sent)
 async def pvc_length(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
