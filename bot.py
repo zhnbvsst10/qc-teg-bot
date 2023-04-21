@@ -5,12 +5,7 @@ from aiogram import Dispatcher
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from handlers import common, fitting_vodop,  pvc_3, pprc, fitting_can, fitting_other, pert
 import os
-from aiogram.types import Message
-from aiogram.types.photo_size import PhotoSize
-from datetime import datetime, timedelta
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
-from aiogram.fsm.context import FSMContext
+
 
 token = os.getenv('TOKEN')
 dp = Dispatcher()
