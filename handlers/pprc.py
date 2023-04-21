@@ -10,7 +10,10 @@ import psycopg2
 from aiogram.types.photo_size import PhotoSize
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-# from bot import bot
+from aiogram import Bot
+import os
+token = os.getenv('TOKEN')
+bot = Bot(token=token)
 
 router = Router()
 available_answers = ['ok', 'not ok','back']
