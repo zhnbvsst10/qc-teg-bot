@@ -42,7 +42,7 @@ async def main():
     dp.include_router(fitting_vodop.router)
     dp.include_router(fitting_can.router)
     dp.include_router(fitting_other.router)
-    dp.include_router(pert.router2)
+    # dp.include_router(pert.router2)
 
     await dp.start_polling(bot, skip_updates=True)
 
