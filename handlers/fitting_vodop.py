@@ -597,7 +597,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
 
 
 # 1VHMD2m_CBy6zGobYF6YPCJtyhYQdoHGS
-@router.message(SetParameterFit.send_photo_weight_sent)
+@router.message(SetParameterFit.defects_descr)
 async def pprc_finish(message: Message, state: FSMContext):
     if message.text == 'go':
         await message.answer(
