@@ -500,7 +500,7 @@ async def pvc_width(message: Message, state: FSMContext):
             if message.text != 'yes':
                 await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
             else:
-                state.update_data(chosen_def_descr='')
+                await state.update_data(chosen_def_descr='')
             await message.answer(
                     text="Теперь укажите толщину PVC трубы:",
                     reply_markup=ReplyKeyboardRemove()
@@ -511,7 +511,7 @@ async def pvc_width(message: Message, state: FSMContext):
             if message.text != 'yes':
                     await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
             else:
-                state.update_data(chosen_def_descr='')
+                await state.update_data(chosen_def_descr='')
             await state.update_data(chosen_weight=message.text.lower().replace(',', '.'))
             await message.answer(
                     text="перейти к передаче данных",
