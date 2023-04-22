@@ -278,7 +278,6 @@ async def not_working(message: Message, state: FSMContext):
 
 @router.message(Text(text='ремонт фиттинг водопр'))
 async def not_working(message: Message, state: FSMContext):
-    await state.clear()
     await message.answer(
             text="введите описание",
             reply_markup=ReplyKeyboardRemove()
@@ -329,7 +328,6 @@ async def not_working(message: Message, state: FSMContext):
 
 @router.message(Text(text='ремонт фиттинг канализ'))
 async def not_working(message: Message, state: FSMContext):
-    await state.clear()
     await message.answer(
             text="введите описание",
             reply_markup=ReplyKeyboardRemove()
@@ -355,7 +353,7 @@ async def not_working(message: Message, state: FSMContext):
 
 @router.message(Text(text='остановка для настройки фиттинг канализ'))
 async def not_working(message: Message, state: FSMContext):
-    await state.clear()
+
     await message.answer(
             text="введите описание",
             reply_markup=ReplyKeyboardRemove()
@@ -379,7 +377,6 @@ async def not_working(message: Message, state: FSMContext):
 
 @router.message(Text(text='ремонт фиттинг др'))
 async def not_working(message: Message, state: FSMContext):
-    await state.clear()
     await message.answer(
             text="введите описание",
             reply_markup=ReplyKeyboardRemove()
