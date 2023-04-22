@@ -482,7 +482,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterFit.send_photo_view)
+        await state.set_state(SetParameterFit.send_photo_view_sent)
     else:
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()           
@@ -541,7 +541,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterFit.send_photo_func)
+        await state.set_state(SetParameterFit.send_photo_func_sent)
     else:
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()           
