@@ -402,7 +402,6 @@ async def not_working(message: Message, state: FSMContext):
 
 @router.message(Text(text='остановка для настройки фиттинг др'))
 async def not_working(message: Message, state: FSMContext):
-    await state.clear()
     await message.answer(
             text="введите описание",
             reply_markup=ReplyKeyboardRemove()
