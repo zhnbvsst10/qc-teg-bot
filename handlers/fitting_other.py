@@ -350,7 +350,7 @@ async def pprc_functionality(message: Message, state: FSMContext):
 async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.update_data(chosen_functionality=message.text.lower())
         await message.answer(
-            text="отправьте фото",
+            text="отправьте видео",
             reply_markup=make_row_keyboard(['back'])
         )
         print('choose diameter')

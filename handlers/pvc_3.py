@@ -374,7 +374,7 @@ async def pvc_weight(message: Message, state: FSMContext):
 async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.update_data(chosen_proch=message.text.lower())
         await message.answer(
-            text="отправьте фото",
+            text="отправьте видео",
             reply_markup=make_row_keyboard(['back'])
         )
         await state.set_state(SetParameterPVC3.send_photo_proch)
