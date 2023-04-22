@@ -8,7 +8,13 @@ from keyboards.simple_row import make_row_keyboard, make_row_keyboard_2
 from datetime import datetime, timedelta
 from aiogram.utils.keyboard import ReplyKeyboardMarkup, KeyboardButton,ReplyKeyboardBuilder
 import psycopg2
-
+from aiogram.types.photo_size import PhotoSize
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+from aiogram import Bot
+import os
+token = os.getenv('TOKEN')
+bot = Bot(token=token)
 
 router = Router()
 available_answers = ['ok', 'not ok','back']
@@ -38,6 +44,12 @@ class SetParameterFitOther(StatesGroup):
     choosing_fitting_functionality = State()
     choosing_fitting_finish = State()
     send_photo = State()
+    send_photo_func = State()
+    send_photo_func_sent = State()
+    send_photo_view = State()
+    send_photo_view_sent = State()
+    choosing_defects = State()
+    defects_descr = State()
 
 @router.message(Text(text='работает фиттинг др'))
 async def fitting_controller(message: Message, state: FSMContext):
@@ -247,7 +259,7 @@ async def pprc_nom_diameter(message: Message, state: FSMContext):
         )
         print('choose nom diameter')
         await state.set_state(SetParameterFitOther.choosing_fitting_nom_diameter)
-
+#1JsCMWFtu4SNODoEr51PPFGKj8tU_q9sk
 
 @router.message(SetParameterFitOther.choosing_fitting_nom_diameter)
 async def pprc_view(message: Message, state: FSMContext):
@@ -274,14 +286,52 @@ async def pprc_view(message: Message, state: FSMContext):
         await state.set_state(SetParameterFitOther.choosing_fitting_view)
 
 @router.message(SetParameterFitOther.choosing_fitting_view)
-async def pprc_functionality(message: Message, state: FSMContext):
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_view=message.text.lower())
+        await message.answer(
+            text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
+        )
+        print('choose diameter')
+        await state.set_state(SetParameterFitOther.send_photo_view)
+
+@router.message(SetParameterFitOther.send_photo_view)
+async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
     if message.text == 'back':
         await message.answer(
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterFitOther.choosing_fitting_tube_4)
-    elif message.text == 'go':
+        await state.set_state(SetParameterFitOther.choosing_fitting_nom_diameter)
+    else:
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'fitting_vodop_view_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1JsCMWFtu4SNODoEr51PPFGKj8tU_q9sk'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
+
+        await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterFitOther.send_photo_view_sent)
+
+
+
+@router.message(SetParameterFitOther.send_photo_view_sent)
+async def pprc_functionality(message: Message, state: FSMContext):
+    if message.text == 'go':
         await message.answer(
             text="оцените функциональность фиттинга:",
             reply_markup=make_row_keyboard(available_answers)
@@ -289,7 +339,6 @@ async def pprc_functionality(message: Message, state: FSMContext):
         print('choose func')
         await state.set_state(SetParameterFitOther.choosing_fitting_functionality)
     else:
-        await state.update_data(chosen_view=message.text.lower())
         await message.answer(
             text="оцените функциональность фиттинга:",
             reply_markup=make_row_keyboard(available_answers)
@@ -298,14 +347,79 @@ async def pprc_functionality(message: Message, state: FSMContext):
         await state.set_state(SetParameterFitOther.choosing_fitting_functionality)
 
 @router.message(SetParameterFitOther.choosing_fitting_functionality)
-async def pprc_finish(message: Message, state: FSMContext):
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_functionality=message.text.lower())
+        await message.answer(
+            text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
+        )
+        print('choose diameter')
+        await state.set_state(SetParameterFitOther.send_photo_func)
+
+@router.message(SetParameterFitOther.send_photo_func)
+async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
     if message.text == 'back':
         await message.answer(
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterFitOther.choosing_fitting_nom_diameter)
-    elif message.text == 'go':
+        await state.set_state(SetParameterFitOther.send_photo_view_sent)
+    else:
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'fitting_vodop_view_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1JsCMWFtu4SNODoEr51PPFGKj8tU_q9sk'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
+
+        await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterFitOther.send_photo_func_sent)
+@router.message(SetParameterFitOther.send_photo_func_sent)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await message.answer(
+            text="Есть ли дефекты?",
+            reply_markup=make_row_keyboard(['yes','no'])
+        )
+        print('choose defects')
+        await state.set_state(SetParameterFitOther.choosing_defects)
+
+
+@router.message(SetParameterFitOther.choosing_defects)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_def=message.text.lower())
+        if message.text == 'yes':
+            await message.answer(
+                text="Введите описание дефекта",
+                reply_markup=ReplyKeyboardRemove()
+            )
+            print('choose defects')
+            await state.set_state(SetParameterFitOther.defects_descr)
+        else:
+            await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+            )
+            print('choose defects')
+            await state.set_state(SetParameterFitOther.defects_descr)
+
+
+
+@router.message(SetParameterFitOther.defects_descr)
+async def pprc_finish(message: Message, state: FSMContext):
+    if message.text == 'go':
         await message.answer(
                 text="перейти к передаче данных",
                 reply_markup=make_row_keyboard(available_proceeds)
@@ -342,7 +456,7 @@ async def fitting_chosen(message: Message, state: FSMContext):
         user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + ' ' + user_data['chosen_fit_name_2']  + user_data['chosen_fit_name_4'] 
         conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
         cursor = conn.cursor()
-        cursor.execute(f"""insert into fitting_other_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND, NOMINAL_SIZE, VIEW, FUNCTIONALITY, MASTER, created_at, updated_at,COLOR) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',  '{user_data['chosen_name']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours',  '{user_data['chosen_fit_name_4']}')""")
+        cursor.execute(f"""insert into fitting_other_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND, NOMINAL_SIZE, VIEW, FUNCTIONALITY, MASTER, DEFECT,DEFECT_DESCR, created_at, updated_at,COLOR) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',  '{user_data['chosen_name']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours',  '{user_data['chosen_fit_name_4']}')""")
         conn.commit()
         cursor.close()
         conn.close()
