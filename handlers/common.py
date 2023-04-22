@@ -14,6 +14,10 @@ class SetParameterFit(StatesGroup):
     choosing_fitting_state = State()
     state_pprc_renov = State()
     state_pprc_setting = State()
+    state_pert_renov = State()
+    state_pert_setting = State()
+    state_pvc_renov = State()
+    state_pvc_setting = State()
 
 router = Router()
 
@@ -124,9 +128,18 @@ async def working(message: Message, state: FSMContext):
 @router.message(Text(text='ремонт PVC'))
 async def not_working(message: Message, state: FSMContext):
     await state.clear()
+    await message.answer(
+            text="введите описание",
+            )
+    await state.set_state(SetParameterFit.state_pvc_renov)
+    
+@router.message(SetParameterFit.state_pvc_renov)
+async def not_working(message: Message, state: FSMContext):
+    await state.update_data(state_=message.text.lower())
+    user_data = await state.get_data()
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
     cursor = conn.cursor()
-    cursor.execute(f"""insert into pvc_params (working, created_at, updated_at) values (FALSE, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+    cursor.execute(f"""insert into pvc_params (working, working_descr,created_at, updated_at) values ('ремонт', '{user_data['state_']}',current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
     cursor.close()
     conn.close()
@@ -138,9 +151,18 @@ async def not_working(message: Message, state: FSMContext):
 @router.message(Text(text='остановка для настройки PVC'))
 async def not_working(message: Message, state: FSMContext):
     await state.clear()
+    await message.answer(
+            text="введите описание",
+            )
+    await state.set_state(SetParameterFit.state_pvc_setting)
+
+@router.message(SetParameterFit.state_pvc_setting)
+async def not_working(message: Message, state: FSMContext):
+    await state.update_data(state_=message.text.lower())
+    user_data = await state.get_data()
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
     cursor = conn.cursor()
-    cursor.execute(f"""insert into pvc_params (working, created_at, updated_at) values (FALSE, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+    cursor.execute(f"""insert into pvc_params (working, working_descr, created_at, updated_at) values ('настройка', '{user_data['state_']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
     cursor.close()
     conn.close()
@@ -152,9 +174,18 @@ async def not_working(message: Message, state: FSMContext):
 @router.message(Text(text='ремонт pert'))
 async def not_working(message: Message, state: FSMContext):
     await state.clear()
+    await message.answer(
+            text="введите описание",
+            )
+    await state.set_state(SetParameterFit.state_pert_renov)
+
+@router.message(SetParameterFit.state_pert_renov)
+async def not_working(message: Message, state: FSMContext):
+    await state.update_data(state_=message.text.lower())
+    user_data = await state.get_data()
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
     cursor = conn.cursor()
-    cursor.execute(f"""insert into pert_params (working, created_at, updated_at) values (FALSE, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+    cursor.execute(f"""insert into pert_params (working, working_descr, created_at, updated_at) values ('ремонт', '{user_data['state_']}',current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
     cursor.close()
     conn.close()
@@ -166,9 +197,18 @@ async def not_working(message: Message, state: FSMContext):
 @router.message(Text(text='остановка для настройки pert'))
 async def not_working(message: Message, state: FSMContext):
     await state.clear()
+    await message.answer(
+            text="введите описание",
+            )
+    await state.set_state(SetParameterFit.state_pert_setting)
+
+@router.message(SetParameterFit.state_pert_setting)
+async def not_working(message: Message, state: FSMContext):
+    await state.update_data(state_=message.text.lower())
+    user_data = await state.get_data()
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
     cursor = conn.cursor()
-    cursor.execute(f"""insert into pert_params (working, created_at, updated_at) values (FALSE, current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+    cursor.execute(f"""insert into pert_params (working, working_descr, created_at, updated_at) values ('настройка', '{user_data['state_']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
     cursor.close()
     conn.close()
@@ -215,7 +255,7 @@ async def not_working(message: Message, state: FSMContext):
     user_data = await state.get_data()
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
     cursor = conn.cursor()
-    cursor.execute(f"""insert into pprc_params (working, working_descr, created_at, updated_at) values ('ремонт', '{user_data['state_']}',current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+    cursor.execute(f"""insert into pprc_params (working, working_descr, created_at, updated_at) values ('настройка', '{user_data['state_']}',current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
     cursor.close()
     conn.close()
