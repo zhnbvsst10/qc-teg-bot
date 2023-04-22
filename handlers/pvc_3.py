@@ -12,6 +12,7 @@ import os
 from aiogram.types.photo_size import PhotoSize
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
+from aiogram.utils.keyboard import ReplyKeyboardMarkup, KeyboardButton,ReplyKeyboardBuilder
 
 token = os.getenv('TOKEN')
 bot = Bot(token=token)
@@ -133,9 +134,16 @@ async def pvc_tube(message: Message, state: FSMContext):
         await state.set_state(SetParameterPVC3.choosing_pvc_tube)
     else:
         await state.update_data(chosen_name=message.text.lower())
+        available_tubes = ['okyanus/1.8', 'deniz type 1/4.0', 'deniz type 1/3.2', 'deniz type 2/2.2','back']
+        button1 = KeyboardButton(text='okyanus/1.8',)
+        button2 = KeyboardButton(text='deniz type 1/4.0')
+        button3 = KeyboardButton(text='deniz type 1/3.2')
+        button4 = KeyboardButton(text='deniz type 2/2.2')
+        button5 = KeyboardButton(text='back')
+        markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).as_markup()
         await message.answer(
             text="выберите бренд PVC трубы:",
-            reply_markup=make_row_keyboard(available_tubes)
+            reply_markup=markup1
         )
         print('choose brand')
         await state.set_state(SetParameterPVC3.choosing_pvc_tube)
