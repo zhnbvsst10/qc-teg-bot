@@ -319,7 +319,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPVC3.choosing_pvc_diameter)
+        await state.set_state(SetParameterPVC3.send_photo_functionality_sent)
     else:
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()           
@@ -352,10 +352,9 @@ async def pvc_weight(message: Message, state: FSMContext):
             text="Оцените прочность PVC трубы:",
             reply_markup=ReplyKeyboardRemove()
         )
-        print('choose weight')
+        print('choose proch')
         await state.set_state(SetParameterPVC3.choosing_pvc_proch)
     else:
-        await state.update_data(chosen_diameter=message.text.lower().replace(',', '.'))
         await message.answer(
             text="Оцените прочность PVC трубы:",
             reply_markup=ReplyKeyboardRemove()
@@ -363,7 +362,7 @@ async def pvc_weight(message: Message, state: FSMContext):
         print('choose weight')
         await state.set_state(SetParameterPVC3.choosing_pvc_proch)
 
-@router2.message(SetParameterPVC3.choosing_pvc_weight)
+@router2.message(SetParameterPVC3.choosing_pvc_proch)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.update_data(chosen_proch=message.text.lower())
         await message.answer(
@@ -380,7 +379,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPVC3.send_photo_weight_sent)
+        await state.set_state(SetParameterPVC3.send_photo_diameter_sent)
     else:
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()           
@@ -417,7 +416,6 @@ async def pvc_weight(message: Message, state: FSMContext):
         print('choose weight')
         await state.set_state(SetParameterPVC3.choosing_pvc_weight)
     else:
-        await state.update_data(chosen_diameter=message.text.lower().replace(',', '.'))
         await message.answer(
             text="Теперь укажите вес PVC трубы:",
             reply_markup=ReplyKeyboardRemove()
@@ -543,7 +541,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPVC3.choosing_pvc_width)
+        await state.set_state(SetParameterPVC3.defects_descr)
     else:
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()           
@@ -603,7 +601,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPVC3.send_photo_length)
+        await state.set_state(SetParameterPVC3.send_photo_width_s_sent)
     else:
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()           
@@ -690,31 +688,31 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
 
 
 
-@router2.message(SetParameterPVC3.send_photo_control_mark_sent) 
-async def pvc_proch(message: Message, state: FSMContext):
-    if message.text == 'back':
-            await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-            await state.set_state(SetParameterPVC3.choosing_pvc_width)
-    elif message.text == 'go':
-        await message.answer(
-                text="оцените прочность PVC трубы:",
-                reply_markup=make_row_keyboard(available_answers)
-        )
-        print('choose prochnost')
-        await state.set_state(SetParameterPVC3.choosing_pvc_proch)
-    else:
-        await state.update_data(chosen_proch=message.text.lower().replace(',', '.'))
-        await message.answer(
-                text="оцените прочность PVC трубы:",
-                reply_markup=make_row_keyboard(available_answers)
-        )
-        print('choose prochnost')
-        await state.set_state(SetParameterPVC3.choosing_pvc_proch)
+# @router2.message(SetParameterPVC3.send_photo_control_mark_sent) 
+# async def pvc_proch(message: Message, state: FSMContext):
+#     if message.text == 'back':
+#             await message.answer(
+#             text="go back",
+#             reply_markup=make_row_keyboard(['go'])
+#             )
+#             await state.set_state(SetParameterPVC3.choosing_pvc_width)
+#     elif message.text == 'go':
+#         await message.answer(
+#                 text="оцените прочность PVC трубы:",
+#                 reply_markup=make_row_keyboard(available_answers)
+#         )
+#         print('choose prochnost')
+#         await state.set_state(SetParameterPVC3.choosing_pvc_proch)
+#     else:
+#         await state.update_data(chosen_proch=message.text.lower().replace(',', '.'))
+#         await message.answer(
+#                 text="оцените прочность PVC трубы:",
+#                 reply_markup=make_row_keyboard(available_answers)
+#         )
+#         print('choose prochnost')
+#         await state.set_state(SetParameterPVC3.choosing_pvc_proch)
 
-@router2.message(SetParameterPVC3.choosing_pvc_proch)
+@router2.message(SetParameterPVC3.send_photo_control_mark_sent)
 async def pvc_finish(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
         if message.text == 'go':
@@ -753,7 +751,7 @@ async def pvc_chosen(message: Message, state: FSMContext):
             print('success 6 params')
             conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
             cursor = conn.cursor()
-            cursor.execute(f"""insert into pvc_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, NOMINAL_DIAMETER, VIEW, FUNCTIONALITY, DIAMETER, WEIGHT,WIDTH,MARK_CONTROL,LENGTH,STRENGTH, MASTER, created_at, updated_at) values (TRUE,'{user_data['chosen_controller_name']}','{user_data['chosen_smena']}','{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',{user_data['chosen_diameter']}, {user_data['chosen_weight']}, {user_data['chosen_width']}, '{user_data['chosen_control_mark']}', '{user_data['chosen_length']}', '{user_data['chosen_proch']}','{user_data['chosen_name']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+            cursor.execute(f"""insert into pvc_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, NOMINAL_DIAMETER, VIEW, FUNCTIONALITY, DIAMETER, WEIGHT,WIDTH,MARK_CONTROL,LENGTH,STRENGTH, MASTER, DEFECT,DEFECT_DESCR, created_at, updated_at) values (TRUE,'{user_data['chosen_controller_name']}','{user_data['chosen_smena']}','{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',{user_data['chosen_diameter']}, {user_data['chosen_weight']}, {user_data['chosen_width']}, '{user_data['chosen_control_mark']}', '{user_data['chosen_length']}', '{user_data['chosen_proch']}','{user_data['chosen_name']}','{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
             conn.commit()
             cursor.close()
             conn.close()
@@ -777,7 +775,7 @@ async def pvc_chosen(message: Message, state: FSMContext):
             
             conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
             cursor = conn.cursor()
-            cursor.execute(f"""insert into pvc_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, NOMINAL_DIAMETER, VIEW, FUNCTIONALITY, DIAMETER, WEIGHT, MASTER, created_at, updated_at) values (TRUE, '{user_data['chosen_controller_name']}','{user_data['chosen_smena']}', '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}','{user_data['chosen_view']}', '{user_data['chosen_functionality']}', {user_data['chosen_diameter']},  {user_data['chosen_weight']}, '{user_data['chosen_name']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+            cursor.execute(f"""insert into pvc_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, NOMINAL_DIAMETER, VIEW, FUNCTIONALITY, DIAMETER, WEIGHT, MASTER, DEFECT,DEFECT_DESCR, created_at, updated_at) values (TRUE, '{user_data['chosen_controller_name']}','{user_data['chosen_smena']}', '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}','{user_data['chosen_view']}', '{user_data['chosen_functionality']}', {user_data['chosen_diameter']},  {user_data['chosen_weight']}, '{user_data['chosen_name']}','{user_data['chosen_def']}', '{user_data['chosen_def_descr']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
             conn.commit()
             cursor.close()
             conn.close()
