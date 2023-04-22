@@ -382,6 +382,7 @@ async def not_working(message: Message, state: FSMContext):
             reply_markup=ReplyKeyboardRemove()
             )
     await state.set_state(SetParameterFit.state_fit_other_renov)
+    
 @router.message(SetParameterFit.state_fit_other_renov)
 async def not_working(message: Message, state: FSMContext):
     
