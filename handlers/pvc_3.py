@@ -631,14 +631,14 @@ async def pvc_length(message: Message, state: FSMContext):
     if message.text == 'go':
         await message.answer(
                 text="Оцените контрольную маркировку PVC трубы:",
-                reply_markup=ReplyKeyboardRemove()
+                reply_markup=make_row_keyboard(available_answers)
         )
         print('choose length')
         await state.set_state(SetParameterPVC3.choosing_pvc_control_mark)
     else:
         await message.answer(
                 text="Оцените контрольную маркировку PVC трубы:",
-                reply_markup=ReplyKeyboardRemove()
+                reply_markup=make_row_keyboard(available_answers)
         )
         print('choose length')
         await state.set_state(SetParameterPVC3.choosing_pvc_control_mark)
