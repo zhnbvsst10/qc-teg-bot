@@ -130,9 +130,10 @@ async def not_working(message: Message, state: FSMContext):
     await state.clear()
     await message.answer(
             text="введите описание",
+            reply_markup=ReplyKeyboardRemove()
             )
     await state.set_state(SetParameterFit.state_pvc_renov)
-    
+
 @router.message(SetParameterFit.state_pvc_renov)
 async def not_working(message: Message, state: FSMContext):
     await state.update_data(state_=message.text.lower())
@@ -153,6 +154,8 @@ async def not_working(message: Message, state: FSMContext):
     await state.clear()
     await message.answer(
             text="введите описание",
+            reply_markup=ReplyKeyboardRemove()
+            
             )
     await state.set_state(SetParameterFit.state_pvc_setting)
 
@@ -176,6 +179,7 @@ async def not_working(message: Message, state: FSMContext):
     await state.clear()
     await message.answer(
             text="введите описание",
+            reply_markup=ReplyKeyboardRemove()
             )
     await state.set_state(SetParameterFit.state_pert_renov)
 
@@ -199,6 +203,7 @@ async def not_working(message: Message, state: FSMContext):
     await state.clear()
     await message.answer(
             text="введите описание",
+            reply_markup=ReplyKeyboardRemove()
             )
     await state.set_state(SetParameterFit.state_pert_setting)
 
@@ -223,6 +228,7 @@ async def not_working(message: Message, state: FSMContext):
     await state.clear()
     await message.answer(
             text="введите описание",
+            reply_markup=ReplyKeyboardRemove()
             )
     await state.set_state(SetParameterFit.state_pprc_renov)
 
@@ -246,6 +252,7 @@ async def not_working(message: Message, state: FSMContext):
     await state.clear()
     await message.answer(
             text="введите описание",
+            reply_markup=ReplyKeyboardRemove()
             )
     await state.set_state(SetParameterFit.state_pprc_setting)
 
