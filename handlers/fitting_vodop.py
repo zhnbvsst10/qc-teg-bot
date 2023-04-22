@@ -569,7 +569,6 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
 
 @router.message(SetParameterFit.send_photo_weight_sent)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
-        await state.update_data(chosen_weight=message.text.lower())
         await message.answer(
             text="Есть ли дефекты?",
             reply_markup=make_row_keyboard(['yes','no'])
