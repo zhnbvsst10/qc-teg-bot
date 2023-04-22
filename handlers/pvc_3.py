@@ -7,7 +7,14 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards.simple_row import make_row_keyboard
 from datetime import datetime, timedelta
 import psycopg2
+from aiogram import Bot
+import os
+from aiogram.types.photo_size import PhotoSize
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
 
+token = os.getenv('TOKEN')
+bot = Bot(token=token)
 
 router2 = Router()
 available_answers = ['ok', 'not ok','back']
@@ -36,6 +43,24 @@ class SetParameterPVC3(StatesGroup):
     choosing_pvc_proch = State()
     choosing_pvc_finish = State()
     send_photo = State()
+    send_photo_view = State()
+    send_photo_view_sent = State()
+    send_photo_diameter = State()
+    send_photo_diameter_sent = State()
+    send_photo_width_s = State()
+    send_photo_width_s_sent = State()
+    send_photo_control_mark = State()
+    send_photo_control_mark_sent = State()
+    send_photo_weight = State()
+    send_photo_weight_sent = State()
+    send_photo_functionality = State()
+    send_photo_functionality_sent = State()
+    send_photo_proch = State()
+    send_photo_proch_sent = State()
+    send_photo_length = State()
+    send_photo_length_sent = State()
+    choosing_defects = State()
+    defects_descr = State()
 
 @router2.message(Text(text='работает PVC'))
 async def pvc_controller(message: Message, state: FSMContext):
@@ -142,13 +167,7 @@ async def pvc_nom_diameter(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPVC3.choosing_pvc_nom_diameter)
 async def pvc_view(message: Message, state: FSMContext):
-    if message.text == 'back':
-        await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-        await state.set_state(SetParameterPVC3.choosing_pvc_name)
-    elif message.text == 'go':
+    if message.text == 'go':
         await message.answer(
             text="оцените внешний вид PVC трубы:",
             reply_markup=make_row_keyboard(available_answers)
@@ -164,16 +183,52 @@ async def pvc_view(message: Message, state: FSMContext):
         print('choose view')
         await state.set_state(SetParameterPVC3.choosing_pvc_view)
 
-
 @router2.message(SetParameterPVC3.choosing_pvc_view)
-async def pvc_functionality(message: Message, state: FSMContext):
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_view=message.text.lower())
+        await message.answer(
+            text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
+        )
+        print('choose diameter')
+        await state.set_state(SetParameterPVC3.send_photo_view)
+
+@router2.message(SetParameterPVC3.send_photo_view)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
         await state.set_state(SetParameterPVC3.choosing_pvc_tube)
-    elif message.text == 'go':
+    else:
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'pvc_view_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1Dmbaj2-puU0mOo4s35-Ud-1aF8u-WVmK'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
+
+        await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterPVC3.send_photo_view_sent)
+
+
+@router2.message(SetParameterPVC3.send_photo_view_sent)
+async def pvc_functionality(message: Message, state: FSMContext):
+    if message.text == 'go':
         await message.answer(
             text="оцените функциональность PVC трубы:",
             reply_markup=make_row_keyboard(available_answers)
@@ -181,7 +236,6 @@ async def pvc_functionality(message: Message, state: FSMContext):
         print('choose functionality')
         await state.set_state(SetParameterPVC3.choosing_pvc_functionality)
     else:
-        await state.update_data(chosen_view=message.text.lower())
         await message.answer(
             text="оцените функциональность PVC трубы:",
             reply_markup=make_row_keyboard(available_answers)
@@ -190,39 +244,172 @@ async def pvc_functionality(message: Message, state: FSMContext):
         await state.set_state(SetParameterPVC3.choosing_pvc_functionality)
 
 
-@router2.message(SetParameterPVC3.choosing_pvc_functionality) #F.text.in_(available_food_names))
-async def pvc_diameter(message: Message, state: FSMContext):
-    if message.text == 'back':
-        await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-        await state.set_state(SetParameterPVC3.choosing_pvc_nom_diameter)
-    elif message.text == 'go':
-        await message.answer(
-            text="Теперь укажите диаметр PVC трубы:",
-            reply_markup=ReplyKeyboardRemove()
-        )
-        print('choose diameter')
-        await state.set_state(SetParameterPVC3.choosing_pvc_diameter)
-    else:
+@router2.message(SetParameterPVC3.choosing_pvc_functionality)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.update_data(chosen_functionality=message.text.lower())
         await message.answer(
+            text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
+        )
+        await state.set_state(SetParameterPVC3.send_photo_functionality)
+
+@router2.message(SetParameterPVC3.send_photo_functionality)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterPVC3.send_photo_view_sent)
+    else:
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'pvc_view_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1Dmbaj2-puU0mOo4s35-Ud-1aF8u-WVmK'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
+
+        await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterPVC3.send_photo_functionality_sent)
+
+@router2.message(SetParameterPVC3.send_photo_functionality_sent)
+async def pvc_diameter(message: Message, state: FSMContext):
+    if message.text == 'go':
+        await message.answer(
+            text="Теперь укажите диаметр PVC трубы:",
+            reply_markup=ReplyKeyboardRemove()
+        )
+        print('choose diameter')
+        await state.set_state(SetParameterPVC3.choosing_pvc_diameter)
+    else:
+        
+        await message.answer(
             text="Теперь укажите диаметр PVC трубы:",
             reply_markup=ReplyKeyboardRemove()
         )
         print('choose diameter')
         await state.set_state(SetParameterPVC3.choosing_pvc_diameter)
 
-@router2.message(SetParameterPVC3.choosing_pvc_diameter) #F.text.in_(available_food_names))
-async def pvc_weight(message: Message, state: FSMContext):
+@router2.message(SetParameterPVC3.choosing_pvc_diameter)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_diameter=message.text.lower())
+        await message.answer(
+            text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
+        )
+        await state.set_state(SetParameterPVC3.send_photo_diameter)
+
+@router2.message(SetParameterPVC3.send_photo_diameter)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPVC3.choosing_pvc_view)
-    elif message.text =='go':
+        await state.set_state(SetParameterPVC3.choosing_pvc_tube)
+    else:
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'pvc_diameter_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1Dmbaj2-puU0mOo4s35-Ud-1aF8u-WVmK'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
+
+        await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterPVC3.send_photo_diameter_sent)
+
+
+@router2.message(SetParameterPVC3.send_photo_diameter_sent)
+async def pvc_weight(message: Message, state: FSMContext):
+    if message.text =='go':
+        await message.answer(
+            text="Оцените прочность PVC трубы:",
+            reply_markup=ReplyKeyboardRemove()
+        )
+        print('choose weight')
+        await state.set_state(SetParameterPVC3.choosing_pvc_proch)
+    else:
+        await state.update_data(chosen_diameter=message.text.lower().replace(',', '.'))
+        await message.answer(
+            text="Оцените прочность PVC трубы:",
+            reply_markup=ReplyKeyboardRemove()
+        )
+        print('choose weight')
+        await state.set_state(SetParameterPVC3.choosing_pvc_proch)
+
+@router2.message(SetParameterPVC3.choosing_pvc_weight)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_proch=message.text.lower())
+        await message.answer(
+            text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
+        )
+        await state.set_state(SetParameterPVC3.send_photo_proch)
+
+
+@router2.message(SetParameterPVC3.send_photo_proch)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterPVC3.send_photo_weight_sent)
+    else:
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'pvc_strength_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1Dmbaj2-puU0mOo4s35-Ud-1aF8u-WVmK'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
+
+        await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterPVC3.send_photo_proch_sent)
+
+
+
+@router2.message(SetParameterPVC3.send_photo_proch_sent)
+async def pvc_weight(message: Message, state: FSMContext):
+    if message.text =='go':
         await message.answer(
             text="Теперь укажите вес PVC трубы:",
             reply_markup=ReplyKeyboardRemove()
@@ -238,25 +425,84 @@ async def pvc_weight(message: Message, state: FSMContext):
         print('choose weight')
         await state.set_state(SetParameterPVC3.choosing_pvc_weight)
 
+@router2.message(SetParameterPVC3.choosing_pvc_weight)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_weight=message.text.lower())
+        await message.answer(
+            text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
+        )
+        await state.set_state(SetParameterPVC3.send_photo_weight)
 
-@router2.message(SetParameterPVC3.choosing_pvc_weight) #F.text.in_(available_food_names))
-async def pvc_width(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
-        if message.text == 'back':
-            await message.answer(
+@router2.message(SetParameterPVC3.send_photo_weight)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+    if message.text == 'back':
+        await message.answer(
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-            await state.set_state(SetParameterPVC3.choosing_pvc_functionality)
-        elif message.text == 'go':
+        await state.set_state(SetParameterPVC3.send_photo_proch_sent)
+    else:
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'pvc_weight_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1Dmbaj2-puU0mOo4s35-Ud-1aF8u-WVmK'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
+
+        await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterPVC3.send_photo_weight_sent)
+
+
+@router2.message(SetParameterPVC3.send_photo_weight_sent)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+
+        await message.answer(
+            text="Есть ли дефекты?",
+            reply_markup=make_row_keyboard(['yes','no'])
+        )
+        print('choose defects')
+        await state.set_state(SetParameterPVC3.choosing_defects)
+
+
+@router2.message(SetParameterPVC3.choosing_defects)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_def=message.text.lower())
+        if message.text == 'yes':
             await message.answer(
-                    text="Теперь укажите толщину PVC трубы:",
-                    reply_markup=ReplyKeyboardRemove()
+                text="Введите описание дефекта",
+                reply_markup=ReplyKeyboardRemove()
             )
-            print('choose width')
-            await state.set_state(SetParameterPVC3.choosing_pvc_width)
+            print('choose defects')
+            await state.set_state(SetParameterPVC3.defects_descr)
         else:
-            await state.update_data(chosen_weight=message.text.lower().replace(',', '.'))
+            await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+            )
+            print('choose defects')
+            await state.set_state(SetParameterPVC3.defects_descr)
+
+@router2.message(SetParameterPVC3.defects_descr)
+async def pvc_width(message: Message, state: FSMContext):
+    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
+            if message.text != 'yes':
+                await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
+            else:
+                state.update_data(chosen_def_descr='')
             await message.answer(
                     text="Теперь укажите толщину PVC трубы:",
                     reply_markup=ReplyKeyboardRemove()
@@ -264,19 +510,10 @@ async def pvc_width(message: Message, state: FSMContext):
             print('choose width')
             await state.set_state(SetParameterPVC3.choosing_pvc_width)
     elif (datetime.now()+ timedelta(hours = 6)).hour in [0,1,3,4,6,7,9,10,12,13,15,16,18,19,21,22]:
-        if message.text == 'back':
-            await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-            await state.set_state(SetParameterPVC3.choosing_pvc_functionality)
-        elif message.text == 'go':
-            await message.answer(
-                    text="перейти к передаче данных",
-                    reply_markup=make_row_keyboard(available_proceeds)
-            )
-            await state.set_state(SetParameterPVC3.choosing_pvc_finish)
-        else:
+            if message.text != 'yes':
+                    await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
+            else:
+                state.update_data(chosen_def_descr='')
             await state.update_data(chosen_weight=message.text.lower().replace(',', '.'))
             await message.answer(
                     text="перейти к передаче данных",
@@ -288,39 +525,54 @@ async def pvc_width(message: Message, state: FSMContext):
             text="В данный момент работы не ведутся",
             reply_markup=ReplyKeyboardRemove()
         )
-@router2.message(SetParameterPVC3.choosing_pvc_width) #F.text.in_(available_food_names))
-async def pvc_control_mark(message: Message, state: FSMContext):
+
+
+@router2.message(SetParameterPVC3.choosing_pvc_width)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_width=message.text.lower())
+        await message.answer(
+            text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
+        )
+        await state.set_state(SetParameterPVC3.send_photo_width_s)
+
+@router2.message(SetParameterPVC3.send_photo_width_s)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
     if message.text == 'back':
-            await message.answer(
+        await message.answer(
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-            await state.set_state(SetParameterPVC3.choosing_pvc_diameter)
-    elif message.text == 'go':
-        await message.answer(
-                text="оцените контрольную маркировку PVC трубы:",
-                reply_markup=make_row_keyboard(available_answers)
-        )
-        print('choose control mark')
-        await state.set_state(SetParameterPVC3.choosing_pvc_control_mark)
+        await state.set_state(SetParameterPVC3.choosing_pvc_width)
     else:
-        await state.update_data(chosen_width=message.text.lower().replace(',', '.'))
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'pvc_width_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1Dmbaj2-puU0mOo4s35-Ud-1aF8u-WVmK'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
+
         await message.answer(
-                text="оцените контрольную маркировку PVC трубы:",
-                reply_markup=make_row_keyboard(available_answers)
-        )
-        print('choose control mark')
-        await state.set_state(SetParameterPVC3.choosing_pvc_control_mark)
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterPVC3.send_photo_width_s_sent)
+
+
     
-@router2.message(SetParameterPVC3.choosing_pvc_control_mark) #F.text.in_(available_food_names))
+@router2.message(SetParameterPVC3.send_photo_width_s_sent)
 async def pvc_length(message: Message, state: FSMContext):
-    if message.text == 'back':
-            await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-            await state.set_state(SetParameterPVC3.choosing_pvc_weight)
-    elif message.text == 'go':
+    if message.text == 'go':
         await message.answer(
                 text="Теперь укажите длину PVC трубы:",
                 reply_markup=ReplyKeyboardRemove()
@@ -328,7 +580,6 @@ async def pvc_length(message: Message, state: FSMContext):
         print('choose length')
         await state.set_state(SetParameterPVC3.choosing_pvc_length)
     else:
-        await state.update_data(chosen_control_mark=message.text.lower())
         await message.answer(
                 text="Теперь укажите длину PVC трубы:",
                 reply_markup=ReplyKeyboardRemove()
@@ -336,7 +587,110 @@ async def pvc_length(message: Message, state: FSMContext):
         print('choose length')
         await state.set_state(SetParameterPVC3.choosing_pvc_length)
 
-@router2.message(SetParameterPVC3.choosing_pvc_length) 
+@router2.message(SetParameterPVC3.choosing_pvc_length)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_length=message.text.lower())
+        await message.answer(
+            text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
+        )
+        await state.set_state(SetParameterPVC3.send_photo_length)
+
+@router2.message(SetParameterPVC3.send_photo_length)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterPVC3.send_photo_length)
+    else:
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'pvc_length_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1Dmbaj2-puU0mOo4s35-Ud-1aF8u-WVmK'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
+
+        await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterPVC3.send_photo_length_sent)
+
+@router2.message(SetParameterPVC3.send_photo_length_sent)
+async def pvc_length(message: Message, state: FSMContext):
+    if message.text == 'go':
+        await message.answer(
+                text="Оцените контрольную маркировку PVC трубы:",
+                reply_markup=ReplyKeyboardRemove()
+        )
+        print('choose length')
+        await state.set_state(SetParameterPVC3.choosing_pvc_control_mark)
+    else:
+        await message.answer(
+                text="Оцените контрольную маркировку PVC трубы:",
+                reply_markup=ReplyKeyboardRemove()
+        )
+        print('choose length')
+        await state.set_state(SetParameterPVC3.choosing_pvc_control_mark)
+
+@router2.message(SetParameterPVC3.choosing_pvc_control_mark)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_control_mark=message.text.lower())
+        await message.answer(
+            text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
+        )
+        await state.set_state(SetParameterPVC3.send_photo_control_mark)
+
+@router2.message(SetParameterPVC3.send_photo_control_mark)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterPVC3.send_photo_length_sent)
+    else:
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'pvc_diameter_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1Dmbaj2-puU0mOo4s35-Ud-1aF8u-WVmK'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
+
+        await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterPVC3.send_photo_control_mark_sent)
+
+
+
+
+
+@router2.message(SetParameterPVC3.send_photo_control_mark_sent) 
 async def pvc_proch(message: Message, state: FSMContext):
     if message.text == 'back':
             await message.answer(
@@ -352,7 +706,7 @@ async def pvc_proch(message: Message, state: FSMContext):
         print('choose prochnost')
         await state.set_state(SetParameterPVC3.choosing_pvc_proch)
     else:
-        await state.update_data(chosen_length=message.text.lower().replace(',', '.'))
+        await state.update_data(chosen_proch=message.text.lower().replace(',', '.'))
         await message.answer(
                 text="оцените прочность PVC трубы:",
                 reply_markup=make_row_keyboard(available_answers)
@@ -363,20 +717,13 @@ async def pvc_proch(message: Message, state: FSMContext):
 @router2.message(SetParameterPVC3.choosing_pvc_proch)
 async def pvc_finish(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
-        if message.text == 'back':
-            await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-            await state.set_state(SetParameterPVC3.choosing_pvc_control_mark)
-        elif message.text == 'go':
+        if message.text == 'go':
             await message.answer(
                 text="перейти к передаче данных",
                 reply_markup=make_row_keyboard(available_proceeds)
             )
             await state.set_state(SetParameterPVC3.choosing_pvc_finish)
         else:
-            await state.update_data(chosen_proch=message.text.lower())
             await message.answer(
                 text="перейти к передаче данных",
                 reply_markup=make_row_keyboard(available_proceeds)
