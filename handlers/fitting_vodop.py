@@ -99,6 +99,7 @@ async def pprc_name(message: Message, state: FSMContext):
         print('choose master')
         await state.set_state(SetParameterFit.choosing_fitting_name)
     else:
+        await state.update_data(chosen_smena=message.text.lower())
         await message.answer(
             text="Кто является мастером на линии на текущий час ?",
             reply_markup=make_row_keyboard(available_masters_fitting)
