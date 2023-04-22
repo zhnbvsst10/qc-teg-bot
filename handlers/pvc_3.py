@@ -319,7 +319,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPVC3.choosing_pvc_tube)
+        await state.set_state(SetParameterPVC3.choosing_pvc_diameter)
     else:
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()           
