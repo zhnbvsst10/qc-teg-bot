@@ -458,7 +458,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
         await state.set_state(SetParameterFitCanal.send_photo_func_sent)
 
 
-router.message(SetParameterFitCanal.send_photo_func_sent)
+@router.message(SetParameterFitCanal.send_photo_func_sent)
 async def pprc_functionality(message: Message, state: FSMContext):
     if message.text == 'go':
         await message.answer(
