@@ -426,7 +426,10 @@ async def pprc_finish(message: Message, state: FSMContext):
         )
         await state.set_state(SetParameterFitOther.choosing_fitting_finish)
     else:
-        await state.update_data(chosen_functionality=message.text.lower())
+        if message.text != 'yes':
+                await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
+        else:
+                await state.update_data(chosen_def_descr='')
         await message.answer(
                 text="перейти к передаче данных",
                 reply_markup=make_row_keyboard(available_proceeds)
