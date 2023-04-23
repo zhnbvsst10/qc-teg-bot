@@ -526,7 +526,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPERT.send_photo_control_mark_sent)
+        await state.set_state(SetParameterPERT.send_photo_weight_sent)
     else:
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()           
@@ -563,7 +563,6 @@ async def pvc_length(message: Message, state: FSMContext):
             )
         await state.set_state(SetParameterPERT.choosing_pvc_weight_b)
     else:
-        await state.update_data(chosen_control_mark=message.text.lower())
         await message.answer(
                 text="перейти к передаче данных",
                 reply_markup=make_row_keyboard(available_proceeds)
