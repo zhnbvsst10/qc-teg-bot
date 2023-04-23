@@ -19,7 +19,7 @@ bot = Bot(token=token)
 router = Router()
 available_answers = ['ok', 'not ok','back']
 available_shifts = ['A','B','C']
-available_controllers = ['Madi', 'Zhanibek', 'Magzhan']
+available_controllers = ['Madi', 'Adilet', 'Magzhan']
 available_masters_fitting = ['Salamat', 'Dauren', 'Anton','back']
 available_tubes = ['okyanus', 'deniz','kavi','back']
 available_diameters = ['50','110','back']

@@ -21,6 +21,7 @@ async def send_message(bot: Bot):
     await bot.send_message(1309686262, 'Проверка контроля качества. \n Перейти в /start')
     await bot.send_message(1247023320, 'Проверка контроля качества. \n Перейти в /start')
     
+    
 
     
     
