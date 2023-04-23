@@ -488,7 +488,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()           
         drive = GoogleDrive(gauth)  
-        file_id =  message.video[-1].file_id
+        file_id =  message.video.file_id
         file = await bot.get_file(file_id)
         file_path = file.file_path
         filename = 'fitting_vodop_func_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.mp4')
