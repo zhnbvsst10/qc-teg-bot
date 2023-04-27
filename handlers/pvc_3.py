@@ -62,6 +62,7 @@ class SetParameterPVC3(StatesGroup):
     send_photo_length_sent = State()
     choosing_defects = State()
     defects_descr = State()
+    continue_load = State()
 
 @router2.message(Text(text='работает PVC'))
 async def pvc_controller(message: Message, state: FSMContext):
@@ -507,35 +508,38 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             await state.set_state(SetParameterPVC3.defects_descr)
 
 @router2.message(SetParameterPVC3.defects_descr)
-async def pvc_width(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
-            if message.text != 'yes':
+async def continue_load(message: Message, state: FSMContext):
+    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,15, 17,20,23]:
+        if message.text != 'yes':
                 await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
-            else:
-                await state.update_data(chosen_def_descr='')
+                await message.answer(
+                    text='продолжить заполнение данных',
+                    reply_markup=ReplyKeyboardRemove()
+                )
+                await state.set_state(SetParameterPVC3.continue_load)
+    elif (datetime.now()+ timedelta(hours = 6)).hour in [0,1,3,4,6,7,9,10,12,13,15,16,18,19,21,22]:
+        if message.text == 'back':
+            await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+            await state.set_state(SetParameterPVC3.send_photo_weight_sent)
+        else:
+            await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
+            await message.answer(
+                    text="перейти к передаче данных",
+                    reply_markup=make_row_keyboard(available_proceeds)
+            )
+            await state.set_state(SetParameterPVC3.choosing_pvc_finish)
+
+@router2.message(SetParameterPVC3.defects_descr)
+async def pvc_width(message: Message, state: FSMContext):
             await message.answer(
                     text="Теперь укажите толщину PVC трубы:",
                     reply_markup=ReplyKeyboardRemove()
             )
             print('choose width')
             await state.set_state(SetParameterPVC3.choosing_pvc_width)
-    elif (datetime.now()+ timedelta(hours = 6)).hour in [0,1,3,4,6,7,9,10,12,13,15,16,18,19,21,22]:
-            if message.text != 'yes':
-                    await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
-            else:
-                await state.update_data(chosen_def_descr='')
-            await state.update_data(chosen_weight=message.text.lower().replace(',', '.'))
-            await message.answer(
-                    text="перейти к передаче данных",
-                    reply_markup=make_row_keyboard(available_proceeds)
-            )
-            await state.set_state(SetParameterPVC3.choosing_pvc_finish)
-    else:
-        await message.answer(
-            text="В данный момент работы не ведутся",
-            reply_markup=ReplyKeyboardRemove()
-        )
-
 
 @router2.message(SetParameterPVC3.choosing_pvc_width)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
