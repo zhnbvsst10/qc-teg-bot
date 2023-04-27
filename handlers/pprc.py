@@ -49,6 +49,7 @@ class SetParameterPPRC(StatesGroup):
     send_photo_weight = State()
     send_photo_weight_sent = State()
     choosing_defects = State()
+    continue_load = State()
     defects_descr = State()
 
 @router.message(Text(text='работает PPR-C'))
@@ -338,7 +339,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
 
 @router.message(SetParameterPPRC.send_photo_width_sent)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
-        await state.update_data(chosen_weight=message.text.lower())
+        ##await state.update_data(chosen_weight=message.text.lower())
         await message.answer(
             text="Есть ли дефекты?",
             reply_markup=make_row_keyboard(['yes','no'])
@@ -365,19 +366,17 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             print('choose defects')
             await state.set_state(SetParameterPPRC.defects_descr)
 
-
 @router.message(SetParameterPPRC.defects_descr)
-async def pprc_control_mark(message: Message, state: FSMContext):
+async def continue_load(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,15, 17,20,23]:
-            if message.text != 'yes':
+        if message.text != 'yes':
                 await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
-            await message.answer(
-                    text="Оцените контрольную маркировку PPR-C трубы:",
-                    reply_markup=make_row_keyboard(available_answers)
-            )
-            print('choose control mark')
-            await state.set_state(SetParameterPPRC.choosing_pprc_control_mark)
-
+                await message.answer(
+                    text='продолжить заполнение данных',
+                    reply_markup=ReplyKeyboardRemove()
+                )
+                await state.set_state(SetParameterPPRC.continue_load)
+                
     elif (datetime.now()+ timedelta(hours = 6)).hour in [0,1,3,4,6,7,9,10,12,13,15,16,18,19,21,22]:
         if message.text == 'back':
             await message.answer(
@@ -392,11 +391,19 @@ async def pprc_control_mark(message: Message, state: FSMContext):
                     reply_markup=make_row_keyboard(available_proceeds)
             )
             await state.set_state(SetParameterPPRC.choosing_pprc_finish)
-    else:
-        await message.answer(
-            text="В данный момент работы не ведутся",
-            reply_markup=ReplyKeyboardRemove()
-        )
+
+
+
+@router.message(SetParameterPPRC.continue_load)
+async def pprc_control_mark(message: Message, state: FSMContext):
+    await message.answer(
+                    text="Оцените контрольную маркировку PPR-C трубы:",
+                    reply_markup=make_row_keyboard(available_answers)
+            )
+    print('choose control mark')
+    await state.set_state(SetParameterPPRC.choosing_pprc_control_mark)
+
+   
 @router.message(SetParameterPPRC.choosing_pprc_control_mark)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.update_data(chosen_control_mark=message.text.lower().replace(',', '.'))
@@ -531,7 +538,7 @@ async def pprc_chosen(message: Message, state: FSMContext):
                 user_data['chosen_def_descr'] = ''
             await state.clear()
             await message.answer(
-                text="Благодарю за заполненные данные. Отправьте фото подтверждение",
+                text="Благодарю за заполненные данные",
                 reply_markup=ReplyKeyboardRemove()
             )
             print('success 5 params')
@@ -556,7 +563,7 @@ async def pprc_chosen(message: Message, state: FSMContext):
                 user_data['chosen_def_descr'] = ''
             await state.clear()
             await message.answer(
-                text="Благодарю за заполненные данные. Отправьте фото подтверждение",
+                text="Благодарю за заполненные данные",
                 reply_markup=ReplyKeyboardRemove()
             )
             

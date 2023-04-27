@@ -580,7 +580,7 @@ async def fitting_chosen(message: Message, state: FSMContext):
         await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
         await state.clear()
         await message.answer(
-                text="Благодарю за заполненные данные. Отправьте фото подтверждение",
+                text="Благодарю за заполненные данные",
                 reply_markup=ReplyKeyboardRemove()
         )
         print('success fitting')
