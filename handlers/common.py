@@ -318,7 +318,7 @@ async def not_working(message: Message, state: FSMContext):
     user_data = await state.get_data()
     conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
     cursor = conn.cursor()
-    cursor.execute(f"""insert into fitting_vodop_params (working,working_descr, STANOK, shift, created_at, updated_at) values ('ремонт','{user_data['state_']}', {user_data['chosen_stanok']}, '{user_data['chosen_smena']}' current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+    cursor.execute(f"""insert into fitting_vodop_params (working,working_descr, STANOK, shift, created_at, updated_at) values ('ремонт','{user_data['state_']}', {user_data['chosen_stanok']}, '{user_data['chosen_smena']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
     cursor.close()
     conn.close()
