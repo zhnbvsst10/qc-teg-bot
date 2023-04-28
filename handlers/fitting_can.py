@@ -64,36 +64,37 @@ async def fitting_controller(message: Message, state: FSMContext):
     print('choose controller canal')
     await state.set_state(SetParameterFitCanal.choosing_fitting_controller)
 
-@router.message(SetParameterFitCanal.choosing_fitting_controller)
-async def fitting_smena(message: Message, state: FSMContext):
-    if message.text == 'go':
+# @router.message(SetParameterFitCanal.choosing_fitting_controller)
+# async def fitting_smena(message: Message, state: FSMContext):
+#     if message.text == 'go':
         
-        await message.answer(
-            text="Выберите смену ",
-            reply_markup=make_row_keyboard(available_shifts)
-        )
-        print('choose smena canal')
-        await state.set_state(SetParameterFitCanal.choosing_fitting_smena)
-    else:
-        await state.update_data(chosen_controller_name=message.text.lower())
-        await message.answer(
-            text="Выберите смену ",
-            reply_markup=make_row_keyboard(available_shifts)
-        )
-        print('choose smena canal')
-        await state.set_state(SetParameterFitCanal.choosing_fitting_smena)
+#         await message.answer(
+#             text="Выберите смену ",
+#             reply_markup=make_row_keyboard(available_shifts)
+#         )
+#         print('choose smena canal')
+#         await state.set_state(SetParameterFitCanal.choosing_fitting_smena)
+#     else:
+#         await state.update_data(chosen_controller_name=message.text.lower())
+#         await message.answer(
+#             text="Выберите смену ",
+#             reply_markup=make_row_keyboard(available_shifts)
+#         )
+#         print('choose smena canal')
+#         await state.set_state(SetParameterFitCanal.choosing_fitting_smena)
 
 
 
-@router.message(SetParameterFitCanal.choosing_fitting_smena)
+@router.message(SetParameterFitCanal.choosing_fitting_controller)
 async def pprc_name(message: Message, state: FSMContext):
-    if message.text == 'back':
-        await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-        await state.set_state(SetParameterFitCanal.choosing_fitting_controller)
-    elif message.text == 'go':
+    # if message.text == 'back':
+    #     await message.answer(
+    #         text="go back",
+    #         reply_markup=make_row_keyboard(['go'])
+    #         )
+    #     await state.set_state(SetParameterFitCanal.choosing_fitting_controller)
+    # el
+    if message.text == 'go':
         await message.answer(
             text="Кто является мастером на линии на текущий час ?",
             reply_markup=make_row_keyboard(available_masters_fitting)
