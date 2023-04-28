@@ -364,14 +364,14 @@ async def pvc_weight(message: Message, state: FSMContext):
     if message.text =='go':
         await message.answer(
             text="Оцените прочность PVC трубы:",
-            reply_markup=make_row_keyboard(available_shifts)
+            reply_markup=make_row_keyboard(available_answers)
         )
         print('choose proch')
         await state.set_state(SetParameterPVC3.choosing_pvc_proch)
     else:
         await message.answer(
             text="Оцените прочность PVC трубы:",
-            reply_markup=make_row_keyboard(available_shifts)
+            reply_markup=make_row_keyboard(available_answers)
         )
         print('choose weight')
         await state.set_state(SetParameterPVC3.choosing_pvc_proch)
