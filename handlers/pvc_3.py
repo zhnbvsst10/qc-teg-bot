@@ -512,11 +512,14 @@ async def continue_load(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,15, 17,20,23]:
         if message.text != 'yes':
                 await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
-                await message.answer(
+                
+        else:
+                await state.update_data(chosen_def_descr='')
+        await message.answer(
                     text='продолжить заполнение данных',
                     reply_markup=ReplyKeyboardRemove()
                 )
-                await state.set_state(SetParameterPVC3.continue_load)
+        await state.set_state(SetParameterPVC3.continue_load)
     elif (datetime.now()+ timedelta(hours = 6)).hour in [0,1,3,4,6,7,9,10,12,13,15,16,18,19,21,22]:
         if message.text == 'back':
             await message.answer(
