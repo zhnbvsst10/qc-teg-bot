@@ -133,7 +133,6 @@ async def working(message: Message, state: FSMContext):
 
 @router.message(Text(text='ремонт PVC'))
 async def not_working(message: Message, state: FSMContext):
-    await state.clear()
     await message.answer(
             text="введите описание",
             reply_markup=ReplyKeyboardRemove()
@@ -157,7 +156,6 @@ async def not_working(message: Message, state: FSMContext):
 
 @router.message(Text(text='остановка для настройки PVC'))
 async def not_working(message: Message, state: FSMContext):
-    await state.clear()
     await message.answer(
             text="введите описание",
             reply_markup=ReplyKeyboardRemove()
@@ -182,7 +180,6 @@ async def not_working(message: Message, state: FSMContext):
 
 @router.message(Text(text='ремонт pert'))
 async def not_working(message: Message, state: FSMContext):
-    await state.clear()
     await message.answer(
             text="введите описание",
             reply_markup=ReplyKeyboardRemove()
@@ -206,7 +203,6 @@ async def not_working(message: Message, state: FSMContext):
 
 @router.message(Text(text='остановка для настройки pert'))
 async def not_working(message: Message, state: FSMContext):
-    await state.clear()
     await message.answer(
             text="введите описание",
             reply_markup=ReplyKeyboardRemove()
@@ -231,7 +227,6 @@ async def not_working(message: Message, state: FSMContext):
 
 @router.message(Text(text='ремонт PPR-C'))
 async def not_working(message: Message, state: FSMContext):
-    await state.clear()
     await message.answer(
             text="введите описание",
             reply_markup=ReplyKeyboardRemove()
@@ -255,7 +250,6 @@ async def not_working(message: Message, state: FSMContext):
 
 @router.message(Text(text='остановка для настройки PPR-C'))
 async def not_working(message: Message, state: FSMContext):
-    await state.clear()
     await message.answer(
             text="введите описание",
             reply_markup=ReplyKeyboardRemove()
@@ -303,7 +297,6 @@ async def not_working(message: Message, state: FSMContext):
 
 @router.message(Text(text='остановка для настройки фиттинг водопр'))
 async def not_working(message: Message, state: FSMContext):
-    await state.clear()
     await message.answer(
             text="введите описание",
             reply_markup=ReplyKeyboardRemove()
