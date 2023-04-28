@@ -517,7 +517,7 @@ async def continue_load(message: Message, state: FSMContext):
                 await state.update_data(chosen_def_descr='')
         await message.answer(
                     text='продолжить заполнение данных',
-                    reply_markup=ReplyKeyboardRemove()
+                    reply_markup=make_row_keyboard(['yes'])
                 )
         await state.set_state(SetParameterPVC3.continue_load)
     elif (datetime.now()+ timedelta(hours = 6)).hour in [0,1,3,4,6,7,9,10,12,13,15,16,18,19,21,22]:
@@ -535,8 +535,9 @@ async def continue_load(message: Message, state: FSMContext):
             )
             await state.set_state(SetParameterPVC3.choosing_pvc_finish)
 
-@router2.message(SetParameterPVC3.defects_descr)
+@router2.message(SetParameterPVC3.continue_load)
 async def pvc_width(message: Message, state: FSMContext):
+    if message.text == 'yes':
             await message.answer(
                     text="Теперь укажите толщину PVC трубы:",
                     reply_markup=ReplyKeyboardRemove()

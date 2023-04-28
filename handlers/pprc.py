@@ -375,7 +375,7 @@ async def continue_load(message: Message, state: FSMContext):
             await state.update_data(chosen_def_descr = ' ')
         await message.answer(
                     text='продолжить заполнение данных',
-                    reply_markup=ReplyKeyboardRemove()
+                    reply_markup=make_row_keyboard(['yes'])
                 )
         await state.set_state(SetParameterPPRC.continue_load)
                 
@@ -399,12 +399,13 @@ async def continue_load(message: Message, state: FSMContext):
 
 @router.message(SetParameterPPRC.continue_load)
 async def pprc_control_mark(message: Message, state: FSMContext):
-    await message.answer(
-                    text="Оцените контрольную маркировку PPR-C трубы:",
-                    reply_markup=make_row_keyboard(available_answers)
-            )
-    print('choose control mark')
-    await state.set_state(SetParameterPPRC.choosing_pprc_control_mark)
+    if message.text == 'yes':
+        await message.answer(
+                        text="Оцените контрольную маркировку PPR-C трубы:",
+                        reply_markup=make_row_keyboard(available_answers)
+                )
+        print('choose control mark')
+        await state.set_state(SetParameterPPRC.choosing_pprc_control_mark)
 
    
 @router.message(SetParameterPPRC.choosing_pprc_control_mark)
