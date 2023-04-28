@@ -35,7 +35,7 @@ available_options_fitting_canal = ['работает фиттинг канали
 available_options_fitting_other = ['работает фиттинг др', 'ремонт фиттинг др', 'остановка для настройки фиттинг др']
 available_options_pert = ['работает pert', 'ремонт pert', 'остановка для настройки pert']
 available_stanoks = ['1','2','3','4','5','6']
-available_shifts = ['A','B','C', 'back']
+available_shifts = ['A','B','C']
 
 
 @router.message(Command(commands=["hello"]))
