@@ -710,7 +710,6 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPVC3.send_photo_control_mark_sent)
 async def pvc_finish(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
         if message.text == 'go':
             await message.answer(
                 text="перейти к передаче данных",
