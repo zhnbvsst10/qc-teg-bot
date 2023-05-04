@@ -506,7 +506,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
 
 @router.message(SetParameterPPRC.send_photo_weight_sent)
 async def pprc_finish(message: Message, state: FSMContext):
-    if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,15, 17,20,23]:
+    # if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,15, 17,20,23]:
         if message.text == 'back':
             await message.answer(
             text="go back",
