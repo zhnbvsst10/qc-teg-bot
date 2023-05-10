@@ -53,6 +53,7 @@ class SetParameterFitCanal(StatesGroup):
     send_photo_view_sent = State()
     choosing_defects = State()
     defects_descr = State()
+    continue_load = State()
 
 @router.message(Text(text='работает фиттинг канализ'))
 async def fitting_controller(message: Message, state: FSMContext):
@@ -399,66 +400,9 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
         await state.set_state(SetParameterFitCanal.send_photo_view_sent)
 
 
+
+
 @router.message(SetParameterFitCanal.send_photo_view_sent)
-async def pprc_functionality(message: Message, state: FSMContext):
-    if message.text == 'go':
-        await message.answer(
-            text="оцените функциональность фиттинга:",
-            reply_markup=make_row_keyboard(available_answers)
-        )
-        print('choose func')
-        await state.set_state(SetParameterFitCanal.choosing_fitting_functionality)
-    else:
-        await message.answer(
-            text="оцените функциональность фиттинга:",
-            reply_markup=make_row_keyboard(available_answers)
-        )
-        print('choose func')
-        await state.set_state(SetParameterFitCanal.choosing_fitting_functionality)
-
-@router.message(SetParameterFitCanal.choosing_fitting_functionality)
-async def get_photo_pprc_view(message: Message, state: FSMContext):
-        await state.update_data(chosen_functionality=message.text.lower())
-        await message.answer(
-            text="отправьте видео",
-            reply_markup=make_row_keyboard(['back'])
-        )
-        print('choose diameter')
-        await state.set_state(SetParameterFitCanal.send_photo_func)
-
-@router.message(SetParameterFitCanal.send_photo_func)
-async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
-    if message.text == 'back':
-        await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-        await state.set_state(SetParameterFitCanal.send_photo_view_sent)
-    else:
-        gauth = GoogleAuth()
-        gauth.LocalWebserverAuth()           
-        drive = GoogleDrive(gauth)  
-        file_id =  message.video.file_id
-        # file_unique_id = message.photo[-1].file_unique_id
-        # PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
-        file = await bot.get_file(file_id)
-        file_path = file.file_path
-        filename = 'fitting_canal_func' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.mp4')
-        await bot.download_file(file_path, filename )
-        upload_file_list = [filename]
-        for upload_file in upload_file_list:
-            gfile = drive.CreateFile({'parents': [{'id': '1ARI8PS_-W0lqY9OXW3l_CmsXuk-c5reK'}]})
-            gfile.SetContentFile(upload_file)
-            gfile.Upload()
-
-        await message.answer(
-                text="продолжить",
-                reply_markup=make_row_keyboard(['yes'])
-                )
-        await state.set_state(SetParameterFitCanal.send_photo_func_sent)
-
-
-@router.message(SetParameterFitCanal.send_photo_func_sent)
 async def pprc_functionality(message: Message, state: FSMContext):
     if message.text == 'go':
         await message.answer(
@@ -549,48 +493,147 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
 
 @router.message(SetParameterFitCanal.defects_descr)
 async def pprc_finish(message: Message, state: FSMContext):
-    if message.text == 'go':
-        await message.answer(
-                text="перейти к передаче данных",
-                reply_markup=make_row_keyboard(available_proceeds)
-        )
-        await state.set_state(SetParameterFitCanal.choosing_fitting_finish)
+    if ((datetime.now() + timedelta(hours=6)).hour) in [0,2,4,6,8,10,12,14,16,18,20,22,24]:
+        if message.text == 'go':
+            await message.answer(
+                    text="перейти к передаче данных",
+                    reply_markup=make_row_keyboard(available_proceeds)
+            )
+            await state.set_state(SetParameterFitCanal.choosing_fitting_finish)
+        else:
+            if message.text != 'yes':
+                    await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
+            else:
+                    await state.update_data(chosen_def_descr='')
+            await message.answer(
+                    text="перейти к передаче данных",
+                    reply_markup=make_row_keyboard(available_proceeds)
+            )
+            await state.set_state(SetParameterFitCanal.choosing_fitting_finish)
     else:
         if message.text != 'yes':
-                await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
+            await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
         else:
-                await state.update_data(chosen_def_descr='')
+            await state.update_data(chosen_def_descr='')
+            
         await message.answer(
-                text="перейти к передаче данных",
-                reply_markup=make_row_keyboard(available_proceeds)
+            text="продолжить заполнение данных",
+            reply_markup=make_row_keyboard(['yes'])
         )
-        await state.set_state(SetParameterFitCanal.choosing_fitting_finish)
+        await  state.set_state(SetParameterFitCanal.continue_load)
 
 
-@router.message(SetParameterFitCanal.choosing_fitting_finish, F.text.in_(available_proceeds))
-async def fitting_chosen(message: Message, state: FSMContext):
+@router.message(SetParameterFitCanal.continue_load)
+async def pprc_functionality(message: Message, state: FSMContext):
+    if message.text == 'go':
+        await message.answer(
+            text="оцените функциональность фиттинга:",
+            reply_markup=make_row_keyboard(available_answers)
+        )
+        print('choose func')
+        await state.set_state(SetParameterFitCanal.choosing_fitting_functionality)
+    else:
+        await message.answer(
+            text="оцените функциональность фиттинга:",
+            reply_markup=make_row_keyboard(available_answers)
+        )
+        print('choose func')
+        await state.set_state(SetParameterFitCanal.choosing_fitting_functionality)
+
+@router.message(SetParameterFitCanal.choosing_fitting_functionality)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_functionality=message.text.lower())
+        await message.answer(
+            text="отправьте видео",
+            reply_markup=make_row_keyboard(['back'])
+        )
+        print('choose diameter')
+        await state.set_state(SetParameterFitCanal.send_photo_func)
+
+@router.message(SetParameterFitCanal.send_photo_func)
+async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
     if message.text == 'back':
         await message.answer(
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterFitCanal.choosing_fitting_view)
+        await state.set_state(SetParameterFitCanal.send_photo_view_sent)
     else:
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.video.file_id
+        # file_unique_id = message.photo[-1].file_unique_id
+        # PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'fitting_canal_func' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.mp4')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1ARI8PS_-W0lqY9OXW3l_CmsXuk-c5reK'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
 
-        user_data = await state.get_data()
-        await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
-        await state.clear()
         await message.answer(
-                text="Благодарю за заполненные данные",
-                reply_markup=ReplyKeyboardRemove()
-        )
-        print('success fitting')
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterFitCanal.choosing_fitting_finish)
 
-        user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + ' ' + user_data['chosen_fit_name_2'] + ' ' + user_data['chosen_fit_name_3'] + ' ' + user_data['chosen_fit_name_4'] 
-        conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
-        cursor = conn.cursor()
-        cursor.execute(f"""insert into fitting_canal_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND, NOMINAL_DIAMETER, VIEW, FUNCTIONALITY, MASTER, WEIGHT,DEFECT,DEFECT_DESCR, created_at, updated_at,TYPE_SYR,PRODUCT_TYPE) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',  '{user_data['chosen_name']}','{user_data['chosen_weight']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours',  '{user_data['chosen_fit_name_4']}', '{user_data['chosen_fit_name_3']}')""")
-        conn.commit()
-        cursor.close()
-        conn.close()
-        await state.set_state(SetParameterFitCanal.send_photo)
+
+
+@router.message(SetParameterFitCanal.choosing_fitting_finish, F.text.in_(available_proceeds))
+async def fitting_chosen(message: Message, state: FSMContext):
+    if (datetime.now() + timedelta(hours=6)).hour in [0,2,4,6,8,10,12,14,16,18,20,22,24]:
+        if message.text == 'back':
+            await message.answer(
+                text="go back",
+                reply_markup=make_row_keyboard(['go'])
+                )
+            await state.set_state(SetParameterFitCanal.choosing_fitting_view)
+        else:
+
+            user_data = await state.get_data()
+            await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
+            await state.clear()
+            await message.answer(
+                    text="Благодарю за заполненные данные",
+                    reply_markup=ReplyKeyboardRemove()
+            )
+            print('success fitting')
+
+            user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + ' ' + user_data['chosen_fit_name_2'] + ' ' + user_data['chosen_fit_name_3'] + ' ' + user_data['chosen_fit_name_4'] 
+            conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+            cursor = conn.cursor()
+            cursor.execute(f"""insert into fitting_canal_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND, NOMINAL_DIAMETER, VIEW, MASTER, WEIGHT,DEFECT,DEFECT_DESCR, created_at, updated_at,TYPE_SYR,PRODUCT_TYPE) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}', '{user_data['chosen_name']}','{user_data['chosen_weight']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours',  '{user_data['chosen_fit_name_4']}', '{user_data['chosen_fit_name_3']}')""")
+            conn.commit()
+            cursor.close()
+            conn.close()
+            await state.set_state(SetParameterFitCanal.send_photo)
+    else:
+        if message.text == 'back':
+            await message.answer(
+                text="go back",
+                reply_markup=make_row_keyboard(['go'])
+                )
+            await state.set_state(SetParameterFitCanal.choosing_fitting_view)
+        else:
+
+            user_data = await state.get_data()
+            await message.answer(text=" ".join([str(i[1]) for i in user_data.items()]) + " " + message.text.lower())
+            await state.clear()
+            await message.answer(
+                    text="Благодарю за заполненные данные",
+                    reply_markup=ReplyKeyboardRemove()
+            )
+            print('success fitting')
+
+            user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + ' ' + user_data['chosen_fit_name_2'] + ' ' + user_data['chosen_fit_name_3'] + ' ' + user_data['chosen_fit_name_4'] 
+            conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+            cursor = conn.cursor()
+            cursor.execute(f"""insert into fitting_canal_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND, NOMINAL_DIAMETER, VIEW, FUNCTIONALITY, MASTER, WEIGHT,DEFECT,DEFECT_DESCR, created_at, updated_at,TYPE_SYR,PRODUCT_TYPE) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',  '{user_data['chosen_name']}','{user_data['chosen_weight']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours',  '{user_data['chosen_fit_name_4']}', '{user_data['chosen_fit_name_3']}')""")
+            conn.commit()
+            cursor.close()
+            conn.close()
+            await state.set_state(SetParameterFitCanal.send_photo)

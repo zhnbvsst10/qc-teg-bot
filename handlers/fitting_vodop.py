@@ -13,6 +13,7 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from aiogram import Bot
 import os
+
 token = os.getenv('TOKEN')
 bot = Bot(token=token)
 
@@ -359,8 +360,32 @@ async def pprc_tube(message: Message, state: FSMContext):
         print('choose fit name_4')
         await state.set_state(SetParameterFit.choosing_tube_name)
 
+# @router.message(SetParameterFit.choosing_tube_name)
+# async def pprc_nom_diameter(message: Message, state: FSMContext):
+#     if message.text == 'back':
+#         await message.answer(
+#             text="go back",
+#             reply_markup=make_row_keyboard(['go'])
+#             )
+#         await state.set_state(SetParameterFit.choosing_fitting_tube_4)
+#     elif message.text == 'go':
+#         await message.answer(
+#             text="Введите номинальный диаметр фиттинга:",
+#             reply_markup=ReplyKeyboardRemove()
+#         )
+#         print('choose nom diameter')
+#         await state.set_state(SetParameterFit.choosing_fitting_nom_diameter)
+#     else:
+#         await state.update_data(chosen_fit_name_5=message.text.lower())
+#         await message.answer(
+#             text="Введите номинальный диаметр фиттинга:",
+#             reply_markup=ReplyKeyboardRemove()
+#         )
+#         print('choose nom diameter')
+#         await state.set_state(SetParameterFit.choosing_fitting_nom_diameter)
+
 @router.message(SetParameterFit.choosing_tube_name)
-async def pprc_nom_diameter(message: Message, state: FSMContext):
+async def pprc_view(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
             text="go back",
@@ -369,37 +394,13 @@ async def pprc_nom_diameter(message: Message, state: FSMContext):
         await state.set_state(SetParameterFit.choosing_fitting_tube_4)
     elif message.text == 'go':
         await message.answer(
-            text="Введите номинальный диаметр фиттинга:",
-            reply_markup=ReplyKeyboardRemove()
-        )
-        print('choose nom diameter')
-        await state.set_state(SetParameterFit.choosing_fitting_nom_diameter)
-    else:
-        await state.update_data(chosen_fit_name_5=message.text.lower())
-        await message.answer(
-            text="Введите номинальный диаметр фиттинга:",
-            reply_markup=ReplyKeyboardRemove()
-        )
-        print('choose nom diameter')
-        await state.set_state(SetParameterFit.choosing_fitting_nom_diameter)
-
-@router.message(SetParameterFit.choosing_fitting_nom_diameter)
-async def pprc_view(message: Message, state: FSMContext):
-    if message.text == 'back':
-        await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-        await state.set_state(SetParameterFit.choosing_fitting_tube_5)
-    elif message.text == 'go':
-        await message.answer(
             text="оцените внешний вид фиттинга:",
             reply_markup=make_row_keyboard(available_answers)
         )
         print('choose view')
         await state.set_state(SetParameterFit.choosing_fitting_view)
     else:
-        await state.update_data(chosen_nom_diameter=message.text.lower())
+        await state.update_data(chosen_fit_name_5=message.text.lower())
         await message.answer(
             text="оцените внешний вид фиттинга:",
             reply_markup=make_row_keyboard(available_answers)
@@ -583,7 +584,7 @@ async def fitting_chosen(message: Message, state: FSMContext):
         user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + ' ' + user_data['chosen_fit_name_2'] + ' ' + user_data['chosen_fit_name_3'] + ' ' + user_data['chosen_fit_name_4'] + ' ' + user_data['chosen_fit_name_5']  
         conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
         cursor = conn.cursor()
-        cursor.execute(f"""insert into fitting_vodop_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND, NOMINAL_DIAMETER, VIEW,  MASTER,WEIGHT,DEFECT,DEFECT_DESCR, created_at, updated_at,COLOR,STEP,PRODUCT_TYPE) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}','{user_data['chosen_name']}','{user_data['chosen_weight']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours', '{user_data['chosen_fit_name_5']}', '{user_data['chosen_fit_name_4']}', '{user_data['chosen_fit_name_3']}')""")
+        cursor.execute(f"""insert into fitting_vodop_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND,  VIEW,  MASTER,WEIGHT,DEFECT,DEFECT_DESCR, created_at, updated_at,COLOR,STEP,PRODUCT_TYPE) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}',  '{user_data['chosen_view']}','{user_data['chosen_name']}','{user_data['chosen_weight']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours', '{user_data['chosen_fit_name_5']}', '{user_data['chosen_fit_name_4']}', '{user_data['chosen_fit_name_3']}')""")
         conn.commit()
         cursor.close()
         conn.close()
