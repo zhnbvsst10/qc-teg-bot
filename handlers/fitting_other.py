@@ -311,7 +311,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
         file_id =  message.photo[-1].file_id
         print(message.photo[-1])
         file_unique_id = message.photo[-1].file_unique_id
-        PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
+        PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
         file = await bot.get_file(file_id)
         file_path = file.file_path
         filename = 'fitting_other_view_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
