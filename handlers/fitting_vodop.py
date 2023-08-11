@@ -41,13 +41,7 @@ name_dict = {
                 'АРМАТУРА С НАР РЕЗБ 40*1-1/4 DENIZ OYNBAS RAKOR D.',
                 'АРМАТУРА С НАР РЕЗБ 40*1-1/4 БЕЛЫЙ DENIZ OYNBAS RA',
             ],
-            'БУТЫЛКА': [    
-                'БУТЫЛКА КАНАЛИЗ 100*50 REDUK DENIZ',
-            ],
-            'ЗАГЛУШКА': [   
-                'ЗАГЛУШКА КАНАЛИЗ 100 KORTAPA DENIZ',
-                'ЗАГЛУШКА КАНАЛИЗ 50 KORTAPA DENIZ',
-            ],
+            
             'КОМПЛЕКТ': [
                 'КОМПЛЕКТ 20*1/2 ДЛЯ СМЕСИТЕЛЯ DENIZ  БЕЛЫЙ',
                 'КОМПЛЕКТ 20*1/2 ДЛЯ СМЕСИТЕЛЯ DENIZ  СЕРЫЙ',
@@ -74,8 +68,6 @@ name_dict = {
                 'МУФТА ВОДОПР 25 мм БЕЛЫЙ DENIZ MANSON',
                 'МУФТА ВОДОПР 32 мм DENIZ MANSON',
                 'МУФТА ВОДОПР 32 мм БЕЛЫЙ DENIZ MANSON',
-                'МУФТА КАНАЛИЗ 100 MANSON DENIZ',
-                'МУФТА КАНАЛИЗ 50 MANSON DENIZ',
                 'МУФТА ВОДОПР С ВНУТ РЕЗБ 20*1/2 DENIZ RAKOR I.D',
                 'МУФТА ВОДОПР С ВНУТ РЕЗБ 20*1/2 БЕЛЫЙ DENIZ RAKOR I.D',
                 'МУФТА ВОДОПР С ВНУТ РЕЗБ 25*1/2 БЕЛЫЙ DENIZ',
@@ -116,10 +108,6 @@ name_dict = {
                 'ОТВОД ВОДОПР 32*90 БЕЛЫЙ DENIZ DIRSEK',
                 'ОТВОД ВОДОПР 40*90 DENIZ DIRSEK',
                 'ОТВОД ВОДОПР 40*90 БЕЛЫЙ DENIZ DIRSEK',
-                'ОТВОД КАНАЛИЗ 100*45 DIRSEK DENIZ',
-                'ОТВОД КАНАЛИЗ 100*90 DIRSEK DENIZ',
-                'ОТВОД КАНАЛИЗ 50*45 DIRSEK DENIZ',
-                'ОТВОД КАНАЛИЗ 50*90 DIRSEK DENIZ',
                 'ОТВОД ВОДОПР С ВНУТ РЕЗБ 20*1/2 90 DENIZ DIRSEK I.D',
                 'ОТВОД ВОДОПР С ВНУТ РЕЗБ 20*1/2 90 БЕЛЫЙ DENIZ DIRSEK I.D',
                 'ОТВОД ВОДОПР С НАРУЖ РЕЗБ 20*1/2 90 DENIZ DIRSEK D.D',
@@ -142,18 +130,7 @@ name_dict = {
                 'ТРОЙН ПЕРЕХОДНОЙ 32*25*32 DENIZ INEGAL TE',
                 'ТРОЙН ПЕРЕХОДНОЙ 32*25*32 БЕЛЫЙ DENIZ INEGAL TE',
             ],
-            'ТРОЙНИК' : [
-                'ТРОЙНИК KOCОЙ 100*100 TEK CATAL DENIZ',
-                'ТРОЙНИК KOCОЙ 100*50 TEK CATAL DENIZ PP',
-                'ТРОЙНИК KOCОЙ 50*50 TEK CATAL DENIZ',
-                'ТРОЙНИК ПРЯМОЙ 100*100 TE CATAL DENIZ',
-                'ТРОЙНИК ПРЯМОЙ 100*50 TE CATAL DENIZ',
-                'ТРОЙНИК ПРЯМОЙ 50*50 TE CATAL DENIZ'
-            ],
-            'ХОМУТ' : [
-                'ХОМУТ КАНАЛИЗ 100 KELEPCE DENIZ',
-                'ХОМУТ КАНАЛИЗ 50 KELEPCE DENIZ'
-            ]
+            
         }
 
 class SetParameterFit(StatesGroup):

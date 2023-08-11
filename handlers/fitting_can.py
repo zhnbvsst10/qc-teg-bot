@@ -28,35 +28,57 @@ available_proceeds = ['yes','back']
 available_stanoks = ['1','2','3','4','5','6','back']
 
 name_dict = {
+    'БУТЫЛКА': [    
+                'БУТЫЛКА КАНАЛИЗ 100*50 REDUK DENIZ',
+            ],
     'МУФТА' : [
         'МУФТА * КАНАЛИЗ 110 MANSON OKYANUS PP',
         'МУФТА * КАНАЛИЗ 50 MANSON OKYANUS PP',
+        'МУФТА КАНАЛИЗ 100 MANSON DENIZ',
+        'МУФТА КАНАЛИЗ 50 MANSON DENIZ',
     ],
     'ОТВОД' : [
-        'ОТВОД * КАНАЛИЗ 50*90 DIRSEK OKYANUS PP',
-        'ОТВОД * КАНАЛИЗ 50*45 OKYANUS PP',
-        'ОТВОД * КАНАЛИЗ 110*90 DIRSEK OKYANUS PP',
         'ОТВОД * КАНАЛИЗ 110*45 DIRSEK OKYANUS PP',
+        'ОТВОД * КАНАЛИЗ 110*90 DIRSEK OKYANUS PP',
+        'ОТВОД * КАНАЛИЗ 50*45 OKYANUS PP',
+        'ОТВОД * КАНАЛИЗ 50*90 DIRSEK OKYANUS PP',
+        'ОТВОД КАНАЛИЗ 100*45 DIRSEK DENIZ',
+        'ОТВОД КАНАЛИЗ 100*45 DIRSEK DENIZ',
+        'ОТВОД КАНАЛИЗ 100*90 DIRSEK DENIZ',
+        'ОТВОД КАНАЛИЗ 100*90 DIRSEK DENIZ',
+        'ОТВОД КАНАЛИЗ 50*45 DIRSEK DENIZ',
+        'ОТВОД КАНАЛИЗ 50*45 DIRSEK DENIZ',
+        'ОТВОД КАНАЛИЗ 50*90 DIRSEK DENIZ',
+        'ОТВОД КАНАЛИЗ 50*90 DIRSEK DENIZ',
     ],
     'ТРОЙНИК' : [
-        'ТРОЙНИК KOCОЙ 50*50 TEK CATAL OKYANUS PP',
-        'ТРОЙНИК * ПРЯМОЙ 50*50 TE CATAL OKYANUS PP',
-        'ТРОЙНИК * ПРЯМОЙ 110*110 TE CATAL OKYANUS PP',
-        'ТРОЙНИК * KOCОЙ 110*110 TEK CATAL OKYANUS PP',
-        'ТРОЙНИК * KOCОЙ 100*50 TEK CATAL OKYANUS PP',
-    ],
+                'ТРОЙНИК * KOCОЙ 100*50 TEK CATAL OKYANUS PP',
+                'ТРОЙНИК * KOCОЙ 110*110 TEK CATAL OKYANUS PP',
+                'ТРОЙНИК * ПРЯМОЙ 110*110 TE CATAL OKYANUS PP',
+                'ТРОЙНИК * ПРЯМОЙ 50*50 TE CATAL OKYANUS PP',
+                'ТРОЙНИК KOCОЙ 100*100 TEK CATAL DENIZ',
+                'ТРОЙНИК KOCОЙ 100*50 TEK CATAL DENIZ PP',
+                'ТРОЙНИК KOCОЙ 50*50 TEK CATAL DENIZ',
+                'ТРОЙНИК KOCОЙ 50*50 TEK CATAL OKYANUS PP',
+                'ТРОЙНИК ПРЯМОЙ 100*100 TE CATAL DENIZ',
+                'ТРОЙНИК ПРЯМОЙ 100*50 TE CATAL DENIZ',
+                'ТРОЙНИК ПРЯМОЙ 50*50 TE CATAL DENIZ',
+            ],
+    'ХОМУТ' : [
+                'ХОМУТ КАНАЛИЗ 100 KELEPCE DENIZ',
+                'ХОМУТ КАНАЛИЗ 50 KELEPCE DENIZ',
+            ],
     'РЕВИЗИЯ' : [
-        'РЕВИЗИЯ * КАНАЛИЗ 100*100 TEMIZLEME OKYANUS PP'
+        'РЕВИЗИЯ * КАНАЛИЗ 100*100 TEMIZLEME OKYANUS PP',
+        'РЕВИЗИЯ 100*100 TEMIZLEME DENIZ PP',
     ],
     'КРЕСТОВИНА' : [
-        'КРЕСТОВИНА * КАНАЛИЗ 100*100*90 ISTAVROZ OKYANUS PP'
+        'КРЕСТОВИНА * КАНАЛИЗ 100*100*90 ISTAVROZ OKYANUS PP',
+        'КРЕСТОВИНА 100*100*90 ISTAVROZ DENIZ PP'
     ],
     'ЗАГЛУШКА' : [
-        'ЗАГЛУШКА К ПОДОКОННИКУ МОР.ДУБ 600mm KAVI',
-        'ЗАГЛУШКА К ПОДОКОННИКУ МАХАГОН 600mm KAVI',
-        'ЗАГЛУШКА К ПОДОКОННИКУ ЗОЛ.ДУБ 600mm KAVI',
-        'ЗАГЛУШКА К ПОДОКОННИКУ БЕЛЫЙ 600mm KAVI',
-        'ЗАГЛУШКА К ПОДОКОННИКУ АНТРАЦИТ 600mm KAVI',
+        'ЗАГЛУШКА КАНАЛИЗ 100 KORTAPA DENIZ',
+        'ЗАГЛУШКА КАНАЛИЗ 50 KORTAPA DENIZ',
     ],
     'КРЫШКА' : [
         'КРЫШКА РЕВИЗИЙ'
