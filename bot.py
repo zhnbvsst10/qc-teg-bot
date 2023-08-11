@@ -7,7 +7,8 @@ from handlers import common, fitting_vodop,  pvc_3, pprc, fitting_can, fitting_o
 import os
 
 
-token = os.getenv('TOKEN')
+#token = os.getenv('TOKEN')
+token = '6029120908:AAFJPrT_MHo4vUVEH4rCnl46UbVxT9goJ_g'
 dp = Dispatcher()
 bot = Bot(token=token)
 

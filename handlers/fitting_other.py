@@ -13,7 +13,8 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from aiogram import Bot
 import os
-token = os.getenv('TOKEN')
+#token = os.getenv('TOKEN')
+token = '6029120908:AAFJPrT_MHo4vUVEH4rCnl46UbVxT9goJ_g'
 bot = Bot(token=token)
 
 router = Router()
@@ -61,34 +62,10 @@ async def fitting_controller(message: Message, state: FSMContext):
     print('choose controller canal')
     await state.set_state(SetParameterFitOther.choosing_fitting_controller)
 
-# @router.message(SetParameterFitOther.choosing_fitting_controller)
-# async def fitting_smena(message: Message, state: FSMContext):
-#     if message.text == 'go':
-#         await message.answer(
-#             text="Выберите смену ",
-#             reply_markup=make_row_keyboard(available_shifts)
-#         )
-#         print('choose smena canal')
-#         await state.set_state(SetParameterFitOther.choosing_fitting_smena)
-#     else:
-#         await state.update_data(chosen_controller_name=message.text.lower())
-#         await message.answer(
-#             text="Выберите смену ",
-#             reply_markup=make_row_keyboard(available_shifts)
-#         )
-#         print('choose smena canal')
-#         await state.set_state(SetParameterFitOther.choosing_fitting_smena)
-
 
 @router.message(SetParameterFitOther.choosing_fitting_controller)
 async def pprc_name(message: Message, state: FSMContext):
-    # if message.text == 'back':
-    #     await message.answer(
-    #         text="go back",
-    #         reply_markup=make_row_keyboard(['go'])
-    #         )
-    #     await state.set_state(SetParameterFitOther.choosing_fitting_controller)
-    # el
+
     if message.text == 'go':
         await message.answer(
             text="Кто является мастером на линии на текущий час ?",
@@ -311,7 +288,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
         file_id =  message.photo[-1].file_id
         print(message.photo[-1])
         file_unique_id = message.photo[-1].file_unique_id
-        PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
+        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
         file = await bot.get_file(file_id)
         file_path = file.file_path
         filename = 'fitting_other_view_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')

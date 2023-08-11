@@ -12,7 +12,8 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from aiogram import Bot
 import os
-token = os.getenv('TOKEN')
+#token = os.getenv('TOKEN')
+token = '6029120908:AAFJPrT_MHo4vUVEH4rCnl46UbVxT9goJ_g'
 bot = Bot(token=token)
 
 router2 = Router()
@@ -181,7 +182,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         file_id =  message.photo[-1].file_id
         print(message.photo[-1])
         file_unique_id = message.photo[-1].file_unique_id
-        PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
+        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
         file = await bot.get_file(file_id)
         file_path = file.file_path
         filename = 'pert_view_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
@@ -242,7 +243,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
         file_id =  message.photo[-1].file_id
         print(message.photo[-1])
         file_unique_id = message.photo[-1].file_unique_id
-        PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
+        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
         file = await bot.get_file(file_id)
         file_path = file.file_path
         filename = 'pert_outer_diameter_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
@@ -303,7 +304,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
         file_id =  message.photo[-1].file_id
         print(message.photo[-1])
         file_unique_id = message.photo[-1].file_unique_id
-        PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
+        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
         file = await bot.get_file(file_id)
         file_path = file.file_path
         filename = 'pert_width_s_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
@@ -366,7 +367,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
         file_id =  message.photo[-1].file_id
         print(message.photo[-1])
         file_unique_id = message.photo[-1].file_unique_id
-        PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
+        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
         file = await bot.get_file(file_id)
         file_path = file.file_path
         filename = 'pert_weight_b_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
@@ -475,7 +476,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
         file_id =  message.photo[-1].file_id
         print(message.photo[-1])
         file_unique_id = message.photo[-1].file_unique_id
-        PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
+        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
         file = await bot.get_file(file_id)
         file_path = file.file_path
         filename = 'pert_weight_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
@@ -534,7 +535,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
         file_id =  message.photo[-1].file_id
         print(message.photo[-1])
         file_unique_id = message.photo[-1].file_unique_id
-        PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
+        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
         file = await bot.get_file(file_id)
         file_path = file.file_path
         filename = 'pert_control_mark_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')

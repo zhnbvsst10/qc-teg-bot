@@ -12,7 +12,8 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from aiogram import Bot
 import os
-token = os.getenv('TOKEN')
+#token = os.getenv('TOKEN')
+token = '6029120908:AAFJPrT_MHo4vUVEH4rCnl46UbVxT9goJ_g'
 bot = Bot(token=token)
 
 router = Router()
@@ -23,7 +24,7 @@ available_masters_pprc = ['Talgat','Aibar','Bolat','back']
 available_tubes = ['okyanus', 'deniz','pinar','back']
 available_diameters = ['20','25','32','40','50','63','back']
 available_proceeds = ['yes','back']
-available_tube_type = ['']
+available_tube_type = ['композит', 'обычный']
 class SetParameterPPRC(StatesGroup):
     choosing_pprc_type = State()
     choosing_pprc_controller = State()
@@ -37,6 +38,10 @@ class SetParameterPPRC(StatesGroup):
     choosing_pprc_weight = State()
     choosing_pprc_control_mark = State()
     choosing_pprc_finish = State()
+    choosing_pprc_tube_type = State()
+    choosing_pprc_number_package = State()
+    send_photo_num_pack = State()
+    send_photo_num_pack_sent = State()
     send_photo = State()
     send_photo_view = State()
     send_photo_view_sent = State()
@@ -51,6 +56,8 @@ class SetParameterPPRC(StatesGroup):
     choosing_defects = State()
     continue_load = State()
     defects_descr = State()
+    carantine = State()
+    def_gone = State()
 
 @router.message(Text(text='работает PPR-C'))
 async def pprc_controller(message: Message, state: FSMContext):
@@ -136,7 +143,7 @@ async def pprc_tube(message: Message, state: FSMContext):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPPRC.choosing_pprc_controller)
+        await state.set_state(SetParameterPPRC.choosing_pprc_smena)
     elif message.text == 'go':
         await message.answer(
             text="выберите тип PPR-C трубы:",
@@ -145,7 +152,7 @@ async def pprc_tube(message: Message, state: FSMContext):
         print('choose brand')
         await state.set_state(SetParameterPPRC.choosing_pprc_tube)
     else:
-        await state.update_data(chosen_name=message.text.lower())
+        await state.update_data(chosen_tube=message.text.lower())
         await message.answer(
             text="выберите тип PPR-C трубы:",
             reply_markup=make_row_keyboard(available_tube_type)
@@ -154,13 +161,82 @@ async def pprc_tube(message: Message, state: FSMContext):
         await state.set_state(SetParameterPPRC.choosing_pprc_tube)
 
 @router.message(SetParameterPPRC.choosing_pprc_tube)
+async def pprc_number_package(message: Message, state: FSMContext):
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterPPRC.choosing_pprc_name)
+    elif message.text == 'go':
+        await message.answer(
+            text="сколько штук в упаковке?",
+            reply_markup=ReplyKeyboardRemove()
+        )
+        print('choose num pack')
+        await state.set_state(SetParameterPPRC.choosing_pprc_number_package)
+    else:
+        await state.update_data(chosen_tube_type=message.text.lower())
+        await message.answer(
+            text="сколько штук в упаковке?",
+            reply_markup=ReplyKeyboardRemove()
+        )
+        print('choose num pack')
+        await state.set_state(SetParameterPPRC.choosing_pprc_number_package)
+
+@router.message(SetParameterPPRC.choosing_pprc_number_package)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(number_package=message.text.lower())
+        await message.answer(
+            text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
+        )
+        print('choose num_pack_photo')
+        await state.set_state(SetParameterPPRC.send_photo_num_pack)
+
+   
+@router.message(SetParameterPPRC.send_photo_num_pack)
+async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterPPRC.choosing_pprc_tube)
+    else:
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'pprc_num_pack_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1VnkFYt-wgCIyaEDoYUsOjjkYP0BzXQcE'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
+
+        await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterPPRC.send_photo_num_pack_sent)
+
+
+
+@router.message(SetParameterPPRC.send_photo_num_pack_sent)
 async def pprc_nom_diameter(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPPRC.choosing_pprc_smena)
+        await state.set_state(SetParameterPPRC.choosing_pprc_tube_type)
     elif message.text == 'go':
         await message.answer(
             text="выберите номинальный диаметр PPR-C трубы:",
@@ -169,7 +245,7 @@ async def pprc_nom_diameter(message: Message, state: FSMContext):
         print('choose nom diameter')
         await state.set_state(SetParameterPPRC.choosing_pprc_nom_diameter)
     else:
-        await state.update_data(chosen_tube=message.text.lower())
+        
         await message.answer(
             text="выберите номинальный диаметр PPR-C трубы:",
             reply_markup=make_row_keyboard(available_diameters)
@@ -222,7 +298,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
         file_id =  message.photo[-1].file_id
         print(message.photo[-1])
         file_unique_id = message.photo[-1].file_unique_id
-        PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
+        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
         file = await bot.get_file(file_id)
         file_path = file.file_path
         filename = 'pprc_view_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
@@ -282,7 +358,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
         file_id =  message.photo[-1].file_id
         print(message.photo[-1])
         file_unique_id = message.photo[-1].file_unique_id
-        PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
+        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
         file = await bot.get_file(file_id)
         file_path = file.file_path
         filename = 'pprc_diameter_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
@@ -344,7 +420,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
         file_id =  message.photo[-1].file_id
         print(message.photo[-1])
         file_unique_id = message.photo[-1].file_unique_id
-        PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
+        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
         file = await bot.get_file(file_id)
         file_path = file.file_path
         filename = 'pprc_width_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
@@ -371,7 +447,6 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         print('choose defects')
         await state.set_state(SetParameterPPRC.choosing_defects)
 
-
 @router.message(SetParameterPPRC.choosing_defects)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.update_data(chosen_def=message.text.lower())
@@ -389,6 +464,26 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             )
             print('choose defects')
             await state.set_state(SetParameterPPRC.defects_descr)
+
+# @router.message(SetParameterPPRC.defects_descr)
+# async def get_photo_pprc_view(message: Message, state: FSMContext):
+#         await state.update_data(chosen_weight=message.text.lower())
+#         await message.answer(
+#             text="Сколько ушло в карантин?",
+#             reply_markup=ReplyKeyboardRemove()
+#         )
+#         print('choose defects')
+#         await state.set_state(SetParameterPPRC.carantine)
+
+# @router.message(SetParameterPPRC.carantine)
+# async def get_photo_pprc_view(message: Message, state: FSMContext):
+#         ##await state.update_data(chosen_weight=message.text.lower())
+#         await message.answer(
+#             text="Сколько ушло в брак?",
+#             reply_markup=ReplyKeyboardRemove()
+#         )
+#         print('choose defects')
+#         await state.set_state(SetParameterPPRC.def_gone)
 
 @router.message(SetParameterPPRC.defects_descr)
 async def continue_load(message: Message, state: FSMContext):
@@ -458,7 +553,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
         file_id =  message.photo[-1].file_id
         print(message.photo[-1])
         file_unique_id = message.photo[-1].file_unique_id
-        PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
+        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
         file = await bot.get_file(file_id)
         file_path = file.file_path
         filename = 'pprc_control_mark_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
@@ -510,7 +605,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
         file_id =  message.photo[-1].file_id
         print(message.photo[-1])
         file_unique_id = message.photo[-1].file_unique_id
-        PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
+        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
         file = await bot.get_file(file_id)
         file_path = file.file_path
         filename = 'pprc_weight_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
@@ -572,7 +667,7 @@ async def pprc_chosen(message: Message, state: FSMContext):
             print('success 5 params')
             conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
             cursor = conn.cursor()
-            cursor.execute(f"""insert into pprc_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, NOMINAL_DIAMETER, VIEW, DIAMETER, WEIGHT,WIDTH,MARK_CONTROL, MASTER, DEFECT,DEFECT_DESCR,  created_at, updated_at) values ('работает','{user_data['chosen_controller_name']}','{user_data['chosen_smena']}','{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}',{user_data['chosen_diameter']}, {user_data['chosen_weight']}, {user_data['chosen_width']}, '{user_data['chosen_control_mark']}', '{user_data['chosen_name']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+            cursor.execute(f"""insert into pprc_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, NOMINAL_DIAMETER, VIEW, DIAMETER, WEIGHT,WIDTH,MARK_CONTROL, MASTER, DEFECT,DEFECT_DESCR,  created_at, updated_at, tube_type, number_package) values ('работает','{user_data['chosen_controller_name']}','{user_data['chosen_smena']}','{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}',{user_data['chosen_diameter']}, {user_data['chosen_weight']}, {user_data['chosen_width']}, '{user_data['chosen_control_mark']}', '{user_data['chosen_name']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours', '{user_data['chosen_tube_type']}', '{user_data['number_package']}')""")
             conn.commit()
             cursor.close()
             conn.close()
@@ -597,7 +692,7 @@ async def pprc_chosen(message: Message, state: FSMContext):
             
             conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
             cursor = conn.cursor()
-            cursor.execute(f"""insert into pprc_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, NOMINAL_DIAMETER, VIEW, DIAMETER, WIDTH, MASTER, DEFECT,DEFECT_DESCR, created_at, updated_at) values ('работает', '{user_data['chosen_controller_name']}','{user_data['chosen_smena']}', '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}','{user_data['chosen_view']}',  {user_data['chosen_diameter']},{user_data['chosen_width']}, '{user_data['chosen_name']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+            cursor.execute(f"""insert into pprc_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, NOMINAL_DIAMETER, VIEW, DIAMETER, WIDTH, MASTER, DEFECT,DEFECT_DESCR, created_at, updated_at, tube_type, number_package) values ('работает', '{user_data['chosen_controller_name']}','{user_data['chosen_smena']}', '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}','{user_data['chosen_view']}',  {user_data['chosen_diameter']},{user_data['chosen_width']}, '{user_data['chosen_name']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',current_timestamp + interval'6 hours', current_timestamp + interval'6 hours', '{user_data['chosen_tube_type']}', '{user_data['number_package']}')""")
             conn.commit()
             cursor.close()
             conn.close()
