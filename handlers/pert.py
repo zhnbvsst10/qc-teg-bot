@@ -622,12 +622,12 @@ async def pvc_chosen(message: Message, state: FSMContext):
         cursor = conn.cursor()
         cursor.execute(f"""insert into pert_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, VIEW, 
                                                     OUTER_DIAMETER, WIDTH_ST, WEIGHT_B, WEIGHT, MARK_CONTROL,
-                                                     MASTER,DEFECT,DEFECT_DESCR,  created_at, updated_at) values 
+                                                     MASTER,DEFECT,DEFECT_DESCR,  created_at, updated_at, carantine_num, defect_num) values 
                                                 (TRUE,'{user_data['chosen_controller_name']}','{user_data['chosen_smena']}','{user_data['chosen_tube']}',  
                                                             '{user_data['chosen_view']}','{user_data['chosen_outer_diam']}',{user_data['chosen_width_s']}, 
                                                             {user_data['chosen_weight_b']}, {user_data['chosen_weight']}, '{user_data['chosen_control_mark']}', '{user_data['chosen_name']}',
                                                             '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',
-                                                              current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+                                                              current_timestamp + interval'6 hours', current_timestamp + interval'6 hours',{user_data['carantine']}, {user_data['def_send']})""")
         conn.commit()
         cursor.close()
         conn.close()
@@ -647,11 +647,11 @@ async def pvc_chosen(message: Message, state: FSMContext):
         cursor = conn.cursor()
         cursor.execute(f"""insert into pert_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, VIEW, 
                                                     OUTER_DIAMETER, WIDTH_ST, WEIGHT_B, WEIGHT,
-                                                     MASTER,DEFECT,DEFECT_DESCR,  created_at, updated_at) values 
+                                                     MASTER,DEFECT,DEFECT_DESCR,  created_at, updated_at, carantine_num, defect_num) values 
                                                 (TRUE,'{user_data['chosen_controller_name']}','{user_data['chosen_smena']}','{user_data['chosen_tube']}',  
                                                             '{user_data['chosen_view']}','{user_data['chosen_outer_diam']}',{user_data['chosen_width_s']}, 
                                                             {user_data['chosen_weight_b']}, {user_data['chosen_weight']}, '{user_data['chosen_name']}','{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',
-                                                              current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
+                                                              current_timestamp + interval'6 hours', current_timestamp + interval'6 hours',{user_data['carantine']}, {user_data['def_send']})""")
         conn.commit()
         cursor.close()
         conn.close()
