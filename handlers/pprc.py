@@ -23,7 +23,7 @@ available_masters_pprc = ['Talgat','Aibar','Bolat','back']
 available_tubes = ['okyanus', 'deniz','pinar','back']
 available_diameters = ['20','25','32','40','50','63','back']
 available_proceeds = ['yes','back']
-
+available_tube_type = ['']
 class SetParameterPPRC(StatesGroup):
     choosing_pprc_type = State()
     choosing_pprc_controller = State()
@@ -125,6 +125,30 @@ async def pprc_tube(message: Message, state: FSMContext):
         await message.answer(
             text="выберите бренд PPR-C трубы:",
             reply_markup=make_row_keyboard(available_tubes)
+        )
+        print('choose brand')
+        await state.set_state(SetParameterPPRC.choosing_pprc_tube_type)
+
+@router.message(SetParameterPPRC.choosing_pprc_tube_type)
+async def pprc_tube(message: Message, state: FSMContext):
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterPPRC.choosing_pprc_controller)
+    elif message.text == 'go':
+        await message.answer(
+            text="выберите тип PPR-C трубы:",
+            reply_markup=make_row_keyboard(available_tube_type)
+        )
+        print('choose brand')
+        await state.set_state(SetParameterPPRC.choosing_pprc_tube)
+    else:
+        await state.update_data(chosen_name=message.text.lower())
+        await message.answer(
+            text="выберите тип PPR-C трубы:",
+            reply_markup=make_row_keyboard(available_tube_type)
         )
         print('choose brand')
         await state.set_state(SetParameterPPRC.choosing_pprc_tube)

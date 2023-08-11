@@ -4,9 +4,9 @@ from aiogram.filters.text import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message, ReplyKeyboardRemove
-from keyboards.simple_row import make_row_keyboard, make_row_keyboard_2
+from keyboards.simple_row import make_row_keyboard
 from datetime import datetime, timedelta
-from aiogram.utils.keyboard import ReplyKeyboardMarkup, KeyboardButton,ReplyKeyboardBuilder
+from aiogram.utils.keyboard import KeyboardButton,ReplyKeyboardBuilder,InlineKeyboardBuilder
 import psycopg2
 from aiogram.types.photo_size import PhotoSize
 from pydrive.auth import GoogleAuth
@@ -26,7 +26,41 @@ available_diameters = ['50','110','back']
 available_proceeds = ['yes','back']
 available_stanoks = ['1','2','3','4','5','6','back']
 
-
+name_dict = {
+    'МУФТА' : [
+        'МУФТА * КАНАЛИЗ 110 MANSON OKYANUS PP',
+        'МУФТА * КАНАЛИЗ 50 MANSON OKYANUS PP',
+    ],
+    'ОТВОД' : [
+        'ОТВОД * КАНАЛИЗ 50*90 DIRSEK OKYANUS PP',
+        'ОТВОД * КАНАЛИЗ 50*45 OKYANUS PP',
+        'ОТВОД * КАНАЛИЗ 110*90 DIRSEK OKYANUS PP',
+        'ОТВОД * КАНАЛИЗ 110*45 DIRSEK OKYANUS PP',
+    ],
+    'ТРОЙНИК' : [
+        'ТРОЙНИК KOCОЙ 50*50 TEK CATAL OKYANUS PP',
+        'ТРОЙНИК * ПРЯМОЙ 50*50 TE CATAL OKYANUS PP',
+        'ТРОЙНИК * ПРЯМОЙ 110*110 TE CATAL OKYANUS PP',
+        'ТРОЙНИК * KOCОЙ 110*110 TEK CATAL OKYANUS PP',
+        'ТРОЙНИК * KOCОЙ 100*50 TEK CATAL OKYANUS PP',
+    ],
+    'РЕВИЗИЯ' : [
+        'РЕВИЗИЯ * КАНАЛИЗ 100*100 TEMIZLEME OKYANUS PP'
+    ],
+    'КРЕСТОВИНА' : [
+        'КРЕСТОВИНА * КАНАЛИЗ 100*100*90 ISTAVROZ OKYANUS PP'
+    ],
+    'ЗАГЛУШКА' : [
+        'ЗАГЛУШКА К ПОДОКОННИКУ МОР.ДУБ 600mm KAVI',
+        'ЗАГЛУШКА К ПОДОКОННИКУ МАХАГОН 600mm KAVI',
+        'ЗАГЛУШКА К ПОДОКОННИКУ ЗОЛ.ДУБ 600mm KAVI',
+        'ЗАГЛУШКА К ПОДОКОННИКУ БЕЛЫЙ 600mm KAVI',
+        'ЗАГЛУШКА К ПОДОКОННИКУ АНТРАЦИТ 600mm KAVI',
+    ],
+    'КРЫШКА' : [
+        'КРЫШКА РЕВИЗИЙ'
+    ]
+}
 class SetParameterFitCanal(StatesGroup):
     choosing_fitting_type = State()
     choosing_fitting_controller = State()
@@ -186,7 +220,6 @@ async def pprc_tube(message: Message, state: FSMContext):
             print('choose fit name 1 canal ')
             await state.set_state(SetParameterFitCanal.choosing_fitting_tube_2)
 
-
 @router.message(SetParameterFitCanal.choosing_fitting_tube_2)
 async def pprc_tube(message: Message, state: FSMContext):
     if message.text == 'back':
@@ -195,50 +228,72 @@ async def pprc_tube(message: Message, state: FSMContext):
             reply_markup=make_row_keyboard(['go'])
             )
         await state.set_state(SetParameterFitCanal.choosing_fitting_name)
-    elif message.text == 'go':
-        button1 = KeyboardButton(text='110')
-        button2 = KeyboardButton(text='50')
-        button3 = KeyboardButton(text='50*45')
-        button4 = KeyboardButton(text='50*90')
-        button5 = KeyboardButton(text='110*45')    
-        button6 = KeyboardButton(text='110*90')
-        button7 = KeyboardButton(text='50*50') 
-
-        button8 = KeyboardButton(text='110*50')
-        button9 = KeyboardButton(text='110*110')
-        button10 = KeyboardButton(text='110*110*90')
-        button11 = KeyboardButton(text='back')
-
-
-        markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).row(button9).row(button10).row(button11).as_markup()
-        
-        await message.answer(
-            text='Выберите размер',
-            reply_markup=markup1
-        )
-        print('choose fit name 3')
-        await state.set_state(SetParameterFitCanal.choosing_fitting_tube_3)
-    else:
-        button1 = KeyboardButton(text='110')
-        button2 = KeyboardButton(text='50')
-        button3 = KeyboardButton(text='50*45')
-        button4 = KeyboardButton(text='50*90')
-        button5 = KeyboardButton(text='110*45')    
-        button6 = KeyboardButton(text='110*90')
-        button7 = KeyboardButton(text='50*50') 
-        button8 = KeyboardButton(text='110*50')
-        button9 = KeyboardButton(text='110*110')
-        button10 = KeyboardButton(text='110*110*90')
-        button11 = KeyboardButton(text='back')
-
-        markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).row(button9).row(button10).row(button11).as_markup()
+        builder = InlineKeyboardBuilder()
+        for index in range(len(name_dict[message.text])):
+            builder.button(text=f"Set {name_dict[message.text][index]}")
+        another_builder = InlineKeyboardBuilder()  # Another builder with some buttons
+        another_builder.button(text=f"back")
+        builder.add(another_builder)
         await state.update_data(chosen_fit_name_1=message.text.lower())
         await message.answer(
             text='Выберите размер',
-            reply_markup=markup1
+            reply_markup=builder.as_markup()
         )
-        print('choose fit name 3')
-        await state.set_state(SetParameterFitCanal.choosing_fitting_tube_3)
+      
+        await state.set_state(SetParameterFitCanal.choosing_tube_name)
+
+# @router.message(SetParameterFitCanal.choosing_fitting_tube_2)
+# async def pprc_tube(message: Message, state: FSMContext):
+#     if message.text == 'back':
+#         await message.answer(
+#             text="go back",
+#             reply_markup=make_row_keyboard(['go'])
+#             )
+#         await state.set_state(SetParameterFitCanal.choosing_fitting_name)
+#     elif message.text == 'go':
+#         button1 = KeyboardButton(text='110')
+#         button2 = KeyboardButton(text='50')
+#         button3 = KeyboardButton(text='50*45')
+#         button4 = KeyboardButton(text='50*90')
+#         button5 = KeyboardButton(text='110*45')    
+#         button6 = KeyboardButton(text='110*90')
+#         button7 = KeyboardButton(text='50*50') 
+
+#         button8 = KeyboardButton(text='110*50')
+#         button9 = KeyboardButton(text='110*110')
+#         button10 = KeyboardButton(text='110*110*90')
+#         button11 = KeyboardButton(text='back')
+
+
+#         markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).row(button9).row(button10).row(button11).as_markup()
+        
+#         await message.answer(
+#             text='Выберите размер',
+#             reply_markup=markup1
+#         )
+#         print('choose fit name 3')
+#         await state.set_state(SetParameterFitCanal.choosing_fitting_tube_3)
+#     else:
+#         button1 = KeyboardButton(text='110')
+#         button2 = KeyboardButton(text='50')
+#         button3 = KeyboardButton(text='50*45')
+#         button4 = KeyboardButton(text='50*90')
+#         button5 = KeyboardButton(text='110*45')    
+#         button6 = KeyboardButton(text='110*90')
+#         button7 = KeyboardButton(text='50*50') 
+#         button8 = KeyboardButton(text='110*50')
+#         button9 = KeyboardButton(text='110*110')
+#         button10 = KeyboardButton(text='110*110*90')
+#         button11 = KeyboardButton(text='back')
+
+#         markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).row(button9).row(button10).row(button11).as_markup()
+#         await state.update_data(chosen_fit_name_1=message.text.lower())
+#         await message.answer(
+#             text='Выберите размер',
+#             reply_markup=markup1
+#         )
+#         print('choose fit name 3')
+#         await state.set_state(SetParameterFitCanal.choosing_fitting_tube_3)
 
 @router.message(SetParameterFitCanal.choosing_fitting_tube_3)
 async def pprc_tube(message: Message, state: FSMContext):
@@ -307,7 +362,7 @@ async def pprc_tube(message: Message, state: FSMContext):
         await state.set_state(SetParameterFitCanal.choosing_fitting_tube_5)
 
 
-@router.message(SetParameterFitCanal.choosing_fitting_tube_5)
+@router.message(SetParameterFitCanal.choosing_tube_name)
 async def pprc_nom_diameter(message: Message, state: FSMContext):
     if message.text == 'back':
         await message.answer(
