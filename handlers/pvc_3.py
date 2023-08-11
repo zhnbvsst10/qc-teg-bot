@@ -65,6 +65,8 @@ class SetParameterPVC3(StatesGroup):
     choosing_defects = State()
     defects_descr = State()
     continue_load = State()
+    carantine = State()
+    def_send = State()
 
 @router2.message(Text(text='работает PVC'))
 async def pvc_controller(message: Message, state: FSMContext):
@@ -302,15 +304,8 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         gauth.LocalWebserverAuth()           
         drive = GoogleDrive(gauth)  
         file_id =  message.video.file_id
-        # file_unique_id = message.photo[-1].file_unique_id
-        # PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
         file = await bot.get_file(file_id)
         file_path = file.file_path
-        # file_id =  message.photo[-1].file_id
-        # print(message.photo[-1])
-        # file_unique_id = message.photo[-1].file_unique_id
-        # PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
-        # file = await bot.get_file(file_id)
         file_path = file.file_path
         filename = 'pvc_func_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.mp4')
         await bot.download_file(file_path, filename )
@@ -426,8 +421,6 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
         gauth.LocalWebserverAuth()           
         drive = GoogleDrive(gauth)  
         file_id =  message.video.file_id
-        # file_unique_id = message.photo[-1].file_unique_id
-        # PhotoSize(file_id=file_id, file_unique_id=file_unique_id, width='1920', height='1080')
         file = await bot.get_file(file_id)
         file_path = file.file_path
         filename = 'pvc_strength_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.mp4')
@@ -534,14 +527,33 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             print('choose defects')
             await state.set_state(SetParameterPVC3.defects_descr)
 
+
 @router2.message(SetParameterPVC3.defects_descr)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_def_descr=message.text.lower())
+        await message.answer(
+                text="сколько штук поставлено в карантин",
+                reply_markup=ReplyKeyboardRemove()
+            )
+        await state.set_state(SetParameterPVC3.carantine)
+
+@router2.message(SetParameterPVC3.carantine)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(carantine=message.text.lower())
+        await message.answer(
+                text="сколько штук ушло в брак?",
+                reply_markup=ReplyKeyboardRemove()
+            )
+        await state.set_state(SetParameterPVC3.def_send)
+
+@router2.message(SetParameterPVC3.def_send)
 async def continue_load(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,15, 17,20,23]:
         if message.text != 'yes':
-                await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
+                await state.update_data(def_send=message.text.lower().replace(',', '.'))
                 
         else:
-                await state.update_data(chosen_def_descr='')
+                await state.update_data(def_send='')
         await message.answer(
                     text='продолжить заполнение данных',
                     reply_markup=make_row_keyboard(['yes'])
@@ -555,7 +567,7 @@ async def continue_load(message: Message, state: FSMContext):
             )
             await state.set_state(SetParameterPVC3.send_photo_weight_sent)
         else:
-            await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
+            await state.update_data(def_send=message.text.lower().replace(',', '.'))
             await message.answer(
                     text="перейти к передаче данных",
                     reply_markup=make_row_keyboard(available_proceeds)
@@ -771,6 +783,10 @@ async def pvc_chosen(message: Message, state: FSMContext):
                 reply_markup=ReplyKeyboardRemove()
             )
             print('success 6 params')
+            if ('carantine' in user_data.keys()) == False:
+                user_data['carantine'] = ' '
+                user_data['def_send'] = ' '
+                user_data['chosen_def_descr'] = ' '
             conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
             cursor = conn.cursor()
             cursor.execute(f"""insert into pvc_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, NOMINAL_DIAMETER, nominal_length, VIEW, FUNCTIONALITY, DIAMETER, WEIGHT,WIDTH,MARK_CONTROL,LENGTH,STRENGTH, MASTER, DEFECT,DEFECT_DESCR, created_at, updated_at) values (TRUE,'{user_data['chosen_controller_name']}','{user_data['chosen_smena']}','{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}','{user_data['chosen_length_nom']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',{user_data['chosen_diameter']}, {user_data['chosen_weight']}, {user_data['chosen_width']}, '{user_data['chosen_control_mark']}', '{user_data['chosen_length']}', '{user_data['chosen_proch']}','{user_data['chosen_name']}','{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
@@ -794,7 +810,10 @@ async def pvc_chosen(message: Message, state: FSMContext):
                 text="Благодарю за заполненные данные",
                 reply_markup=ReplyKeyboardRemove()
             )
-            
+            if ('carantine' in user_data.keys()) == False:
+                user_data['carantine'] = ' '
+                user_data['def_send'] = ' '
+                user_data['chosen_def_descr'] = ' '
             conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
             cursor = conn.cursor()
             cursor.execute(f"""insert into pvc_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, NOMINAL_DIAMETER, nominal_length, VIEW, FUNCTIONALITY, DIAMETER, WEIGHT, MASTER, DEFECT,DEFECT_DESCR, created_at, updated_at) values (TRUE, '{user_data['chosen_controller_name']}','{user_data['chosen_smena']}', '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}','{user_data['chosen_length_nom']}','{user_data['chosen_view']}', '{user_data['chosen_functionality']}', {user_data['chosen_diameter']},  {user_data['chosen_weight']}, '{user_data['chosen_name']}','{user_data['chosen_def']}', '{user_data['chosen_def_descr']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")

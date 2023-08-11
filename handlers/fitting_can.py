@@ -111,6 +111,8 @@ class SetParameterFitCanal(StatesGroup):
     choosing_defects = State()
     defects_descr = State()
     continue_load = State()
+    carantine = State()
+    def_send = State()
 
 @router.message(Text(text='работает фиттинг канализ'))
 async def fitting_controller(message: Message, state: FSMContext):
@@ -420,9 +422,25 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             print('choose defects')
             await state.set_state(SetParameterFitCanal.defects_descr)
 
-
-
 @router.message(SetParameterFitCanal.defects_descr)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_def_descr=message.text.lower())
+        await message.answer(
+                text="сколько штук поставлено в карантин",
+                reply_markup=ReplyKeyboardRemove()
+            )
+        await state.set_state(SetParameterFitCanal.carantine)
+
+@router.message(SetParameterFitCanal.carantine)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(carantine=message.text.lower())
+        await message.answer(
+                text="сколько штук ушло в брак?",
+                reply_markup=ReplyKeyboardRemove()
+            )
+        await state.set_state(SetParameterFitCanal.def_send)
+
+@router.message(SetParameterFitCanal.def_send)
 async def pprc_finish(message: Message, state: FSMContext):
     if ((datetime.now() + timedelta(hours=6)).hour) in [0,2,4,6,8,10,12,14,16,18,20,22,24]:
         if message.text == 'go':
@@ -433,9 +451,9 @@ async def pprc_finish(message: Message, state: FSMContext):
             await state.set_state(SetParameterFitCanal.choosing_fitting_finish)
         else:
             if message.text != 'yes':
-                    await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
+                await state.update_data(def_send=message.text.lower().replace(',', '.'))
             else:
-                    await state.update_data(chosen_def_descr='')
+                await state.update_data(def_send = '')
             await message.answer(
                     text="перейти к передаче данных",
                     reply_markup=make_row_keyboard(available_proceeds)
@@ -443,9 +461,9 @@ async def pprc_finish(message: Message, state: FSMContext):
             await state.set_state(SetParameterFitCanal.choosing_fitting_finish)
     else:
         if message.text != 'yes':
-            await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
+                await state.update_data(def_send=message.text.lower().replace(',', '.'))
         else:
-            await state.update_data(chosen_def_descr='')
+                await state.update_data(def_send = '')
             
         await message.answer(
             text="продолжить заполнение данных",
@@ -533,7 +551,10 @@ async def fitting_chosen(message: Message, state: FSMContext):
                     reply_markup=ReplyKeyboardRemove()
             )
             
-
+            if ('carantine' in user_data.keys()) == False:
+                user_data['carantine'] = ' '
+                user_data['def_send'] = ' '
+                user_data['chosen_def_descr'] = ' '
             #user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + ' ' + user_data['chosen_fit_name_2'] + ' ' + user_data['chosen_fit_name_3'] + ' ' + user_data['chosen_fit_name_4'] 
             conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
             cursor = conn.cursor()
@@ -560,7 +581,10 @@ async def fitting_chosen(message: Message, state: FSMContext):
                     reply_markup=ReplyKeyboardRemove()
             )
             
-
+            if ('carantine' in user_data.keys()) == False:
+                user_data['carantine'] = ' '
+                user_data['def_send'] = ' '
+                user_data['chosen_def_descr'] = ' '
             #user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + ' ' + user_data['chosen_fit_name_2'] + ' ' + user_data['chosen_fit_name_3'] + ' ' + user_data['chosen_fit_name_4'] 
             conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
             cursor = conn.cursor()

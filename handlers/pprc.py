@@ -57,7 +57,7 @@ class SetParameterPPRC(StatesGroup):
     continue_load = State()
     defects_descr = State()
     carantine = State()
-    def_gone = State()
+    def_send = State()
 
 @router.message(Text(text='работает PPR-C'))
 async def pprc_controller(message: Message, state: FSMContext):
@@ -518,35 +518,34 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
                 reply_markup=make_row_keyboard(['yes'])
             )
             print('choose defects')
-            await state.set_state(SetParameterPPRC.defects_descr)
-
-# @router.message(SetParameterPPRC.defects_descr)
-# async def get_photo_pprc_view(message: Message, state: FSMContext):
-#         await state.update_data(chosen_weight=message.text.lower())
-#       osen_weight=message.text.lower())
-#         await message.answer(
-#             text="Сколько ушло в брак?",
-#             reply_markup=ReplyKeyboardRemove()
-#         )
-#         print('choose defects')
-#         await state.set_state(SetParameterPPRC.def_gone)  await message.answer(
-#             text="Сколько ушло в карантин?",
-#             reply_markup=ReplyKeyboardRemove()
-#         )
-#         print('choose defects')
-#         await state.set_state(SetParameterPPRC.carantine)
-
-# @router.message(SetParameterPPRC.carantine)
-# async def get_photo_pprc_view(message: Message, state: FSMContext):
-#         ##await state.update_data(ch
+            await state.set_state(SetParameterPPRC.def_send)
 
 @router.message(SetParameterPPRC.defects_descr)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_def=message.text.lower())
+        if message.text != 'yes':
+                await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
+        else:
+                await state.update_data(chosen_def_descr='')
+        await message.answer(
+                text="сколько штук поставлено в карантин",
+                reply_markup=ReplyKeyboardRemove()
+            )
+        await state.set_state(SetParameterPPRC.carantine)
+
+@router.message(SetParameterPPRC.carantine)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(carantine=message.text.lower())
+        await message.answer(
+                text="сколько штук ушло в брак?",
+                reply_markup=ReplyKeyboardRemove()
+            )
+        await state.set_state(SetParameterPPRC.def_send)
+
+@router.message(SetParameterPPRC.def_send)
 async def continue_load(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,15, 17,20,23]:
-        if message.text != 'yes':
-            await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
-        else:
-            await state.update_data(chosen_def_descr = ' ')
+        await state.update_data(def_send=message.text.lower().replace(',', '.'))
         await message.answer(
                     text='продолжить заполнение данных',
                     reply_markup=make_row_keyboard(['yes'])
@@ -562,7 +561,7 @@ async def continue_load(message: Message, state: FSMContext):
             )
             await state.set_state(SetParameterPPRC.send_photo_diameter_sent)
         else:
-            await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
+            await state.update_data(def_send=message.text.lower().replace(',', '.'))
             await message.answer(
                     text="перейти к передаче данных",
                     reply_markup=make_row_keyboard(available_proceeds)
@@ -669,6 +668,11 @@ async def pprc_chosen(message: Message, state: FSMContext):
                 reply_markup=ReplyKeyboardRemove()
             )
             print('success 5 params')
+            if ('carantine' in user_data.keys()) == False:
+                user_data['carantine'] = ' '
+                user_data['def_send'] = ' '
+                user_data['chosen_def_descr'] = ' '
+            
             conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
             cursor = conn.cursor()
             cursor.execute(f"""insert into pprc_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, NOMINAL_DIAMETER, VIEW, DIAMETER,WEIGHT, WIDTH,MARK_CONTROL, MASTER, DEFECT,DEFECT_DESCR,  created_at, updated_at, tube_type, number_package) values ('работает','{user_data['chosen_controller_name']}','{user_data['chosen_smena']}','{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}',{user_data['chosen_diameter']}, {user_data['chosen_weight']},{user_data['chosen_width']}, '{user_data['chosen_control_mark']}', '{user_data['chosen_name']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours', '{user_data['chosen_tube_type']}', '{user_data['number_package']}')""")
@@ -693,7 +697,10 @@ async def pprc_chosen(message: Message, state: FSMContext):
                 text="Благодарю за заполненные данные",
                 reply_markup=ReplyKeyboardRemove()
             )
-            
+            if ('carantine' in user_data.keys()) == False:
+                user_data['carantine'] = ' '
+                user_data['def_send'] = ' '
+                user_data['chosen_def_descr'] = ' '
             conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
             cursor = conn.cursor()
             cursor.execute(f"""insert into pprc_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, NOMINAL_DIAMETER, VIEW, DIAMETER, WEIGHT, WIDTH, MASTER, DEFECT,DEFECT_DESCR, created_at, updated_at, tube_type, number_package) values ('работает', '{user_data['chosen_controller_name']}','{user_data['chosen_smena']}', '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}','{user_data['chosen_view']}',  {user_data['chosen_diameter']},  {user_data['chosen_weight']},{user_data['chosen_width']}, '{user_data['chosen_name']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',current_timestamp + interval'6 hours', current_timestamp + interval'6 hours', '{user_data['chosen_tube_type']}', '{user_data['number_package']}')""")

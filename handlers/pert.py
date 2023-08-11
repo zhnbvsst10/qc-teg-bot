@@ -60,6 +60,8 @@ class SetParameterPERT(StatesGroup):
     choosing_defects = State()
     defects_descr = State()
     continue_load = State()
+    carantine = State()
+    def_send = State()
 
 @router2.message(Text(text='работает pert'))
 async def pvc_controller(message: Message, state: FSMContext):
@@ -463,15 +465,34 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
                 reply_markup=make_row_keyboard(['yes'])
             )
             print('choose defects')
-            await state.set_state(SetParameterPERT.defects_descr)
+            await state.set_state(SetParameterPERT.def_send)
 
-@router2.message(SetParameterPERT.defects_descr) #F.text.in_(available_food_names))
+@router2.message(SetParameterPERT.defects_descr)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(def_descr=message.text.lower())
+        
+        await message.answer(
+                text="сколько штук поставлено в карантин",
+                reply_markup=ReplyKeyboardRemove()
+            )
+        await state.set_state(SetParameterPERT.carantine)
+
+@router2.message(SetParameterPERT.carantine)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(carantine=message.text.lower())
+        await message.answer(
+                text="сколько штук ушло в брак?",
+                reply_markup=ReplyKeyboardRemove()
+            )
+        await state.set_state(SetParameterPERT.def_send)
+
+@router2.message(SetParameterPERT.def_send) #F.text.in_(available_food_names))
 async def pvc_width(message: Message, state: FSMContext):
     if (datetime.now()+ timedelta(hours = 6)).hour in [2,5,8,11,14,17,20,23]:
             if message.text != 'yes':
-                await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
+                await state.update_data(def_send=message.text.lower().replace(',', '.'))
             else:
-                await state.update_data(chosen_def_descr='')
+                await state.update_data(def_send = '')
             await message.answer(
                     text='продолжить заполнение данных',
                     reply_markup=make_row_keyboard(['yes'])
@@ -486,7 +507,10 @@ async def pvc_width(message: Message, state: FSMContext):
             )
             await state.set_state(SetParameterPERT.choosing_pvc_outer_diam)
         else:
-            await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
+            if message.text != 'yes':
+                await state.update_data(def_send=message.text.lower().replace(',', '.'))
+            else:
+                await state.update_data(def_send = '')
             await message.answer(
                     text="перейти к передаче данных",
                     reply_markup=make_row_keyboard(available_proceeds)
@@ -590,6 +614,10 @@ async def pvc_chosen(message: Message, state: FSMContext):
             reply_markup=ReplyKeyboardRemove()
         )
         print('success 6 params')
+        if ('carantine' in user_data.keys()) == False:
+                user_data['carantine'] = ' '
+                user_data['def_send'] = ' '
+                user_data['chosen_def_descr'] = ' '
         conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
         cursor = conn.cursor()
         cursor.execute(f"""insert into pert_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, VIEW, 
@@ -611,7 +639,10 @@ async def pvc_chosen(message: Message, state: FSMContext):
             text="Благодарю за заполненные данные",
             reply_markup=ReplyKeyboardRemove()
         )
-        
+        if ('carantine' in user_data.keys()) == False:
+                user_data['carantine'] = ' '
+                user_data['def_send'] = ' '
+                user_data['chosen_def_descr'] = ' '
         conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
         cursor = conn.cursor()
         cursor.execute(f"""insert into pert_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, VIEW, 

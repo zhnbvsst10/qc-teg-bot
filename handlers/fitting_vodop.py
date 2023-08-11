@@ -159,6 +159,8 @@ class SetParameterFit(StatesGroup):
     send_photo_view_sent = State()
     choosing_defects = State()
     defects_descr = State()
+    carantine = State()
+    def_send = State()
 
 @router.message(Text(text='работает фиттинг водопр'))
 async def fitting_controller(message: Message, state: FSMContext):
@@ -431,11 +433,28 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
                 reply_markup=make_row_keyboard(['yes'])
             )
             print('choose defects')
-            await state.set_state(SetParameterFit.defects_descr)
+            await state.set_state(SetParameterFit.def_send)
 
+@router.message(SetParameterFit.defects_descr)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_def_descr=message.text.lower())
+        await message.answer(
+                text="сколько штук поставлено в карантин",
+                reply_markup=ReplyKeyboardRemove()
+            )
+        await state.set_state(SetParameterFit.carantine)
+
+@router.message(SetParameterFit.carantine)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(carantine=message.text.lower())
+        await message.answer(
+                text="сколько штук ушло в брак?",
+                reply_markup=ReplyKeyboardRemove()
+            )
+        await state.set_state(SetParameterFit.def_send)
 
 # 1VHMD2m_CBy6zGobYF6YPCJtyhYQdoHGS
-@router.message(SetParameterFit.defects_descr)
+@router.message(SetParameterFit.def_send)
 async def pprc_finish(message: Message, state: FSMContext):
     if message.text == 'go':
         await message.answer(
@@ -444,10 +463,7 @@ async def pprc_finish(message: Message, state: FSMContext):
         )
         await state.set_state(SetParameterFit.choosing_fitting_finish)
     else:
-        if message.text != 'yes':
-                await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
-        else:
-                await state.update_data(chosen_def_descr='')
+        await state.update_data(def_send=message.text.lower())
         await message.answer(
                 text="перейти к передаче данных",
                 reply_markup=make_row_keyboard(available_proceeds)
@@ -474,6 +490,11 @@ async def fitting_chosen(message: Message, state: FSMContext):
                 reply_markup=ReplyKeyboardRemove()
         )
         print('success fitting')
+        if ('carantine' in user_data.keys()) == False:
+                user_data['carantine'] = ' '
+                user_data['def_send'] = ' '
+                user_data['chosen_def_descr'] = ' '
+
         conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
         cursor = conn.cursor()
         cursor.execute(f"""insert into fitting_vodop_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND,  VIEW,  MASTER,WEIGHT,DEFECT,DEFECT_DESCR, created_at, updated_at) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}',  '{user_data['chosen_view']}','{user_data['chosen_name']}','{user_data['chosen_weight']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
