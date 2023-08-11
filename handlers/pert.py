@@ -19,7 +19,7 @@ bot = Bot(token=token)
 router2 = Router()
 available_answers = ['ok', 'not ok','back']
 available_shifts = ['A','B','C','back']
-available_controllers = ['Madi', 'Adilet', 'Magzhan']
+available_controllers = ['Madi', 'Adilet', 'Dinmukhammed']
 available_names = ['Talgat','Aibar','Bolat','back']
 available_tubes = ['PE-RT','OxyPE-RT','back']
 available_proceeds = ['yes']
@@ -469,7 +469,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
 
 @router2.message(SetParameterPERT.defects_descr)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
-        await state.update_data(def_descr=message.text.lower())
+        await state.update_data(chosen_def_descr=message.text.lower())
         
         await message.answer(
                 text="сколько штук поставлено в карантин",
