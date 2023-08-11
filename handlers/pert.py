@@ -59,6 +59,7 @@ class SetParameterPERT(StatesGroup):
     send_photo_weight_b_sent = State()
     choosing_defects = State()
     defects_descr = State()
+    continue_load = State()
 
 @router2.message(Text(text='работает pert'))
 async def pvc_controller(message: Message, state: FSMContext):
@@ -384,7 +385,60 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
                 )
         await state.set_state(SetParameterPERT.send_photo_weight_b_sent)
 
+
 @router2.message(SetParameterPERT.send_photo_weight_b_sent)
+async def pvc_diameter(message: Message, state: FSMContext):
+        await message.answer(
+            text="Введите вес:",
+            reply_markup=ReplyKeyboardRemove()
+        )
+        print('choose weight ')
+        await state.set_state(SetParameterPERT.choosing_pvc_weight)
+
+@router2.message(SetParameterPERT.choosing_pvc_weight)
+async def get_photo_pprc_view(message: Message, state: FSMContext):
+        await state.update_data(chosen_weight=message.text.lower())
+        await message.answer(
+            text="отправьте фото",
+            reply_markup=make_row_keyboard(['back'])
+        )
+        print('choose diameter')
+        await state.set_state(SetParameterPERT.send_photo_weight)
+
+@router2.message(SetParameterPERT.send_photo_weight)
+async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
+    if message.text == 'back':
+        await message.answer(
+            text="go back",
+            reply_markup=make_row_keyboard(['go'])
+            )
+        await state.set_state(SetParameterPERT.send_photo_weight_b_sent)
+    else:
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()           
+        drive = GoogleDrive(gauth)  
+        file_id =  message.photo[-1].file_id
+        print(message.photo[-1])
+        file_unique_id = message.photo[-1].file_unique_id
+        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
+        file = await bot.get_file(file_id)
+        file_path = file.file_path
+        filename = 'pert_weight_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
+        await bot.download_file(file_path, filename )
+        upload_file_list = [filename]
+        for upload_file in upload_file_list:
+            gfile = drive.CreateFile({'parents': [{'id': '1NwwKZX-0JbjnoagbHu5c5LpGCPia_rz3'}]})
+            gfile.SetContentFile(upload_file)
+            gfile.Upload()
+
+        await message.answer(
+                text="продолжить",
+                reply_markup=make_row_keyboard(['yes'])
+                )
+        await state.set_state(SetParameterPERT.send_photo_weight_sent)
+
+
+@router2.message(SetParameterPERT.send_photo_weight_sent)
 async def get_photo_pprc_view(message: Message, state: FSMContext):
         await state.update_data(chosen_weight=message.text.lower())
         await message.answer(
@@ -421,11 +475,11 @@ async def pvc_width(message: Message, state: FSMContext):
             else:
                 await state.update_data(chosen_def_descr='')
             await message.answer(
-                text="Теперь укажите вес:",
-                reply_markup=ReplyKeyboardRemove()
-            )
-            print('choose weight')
-            await state.set_state(SetParameterPERT.choosing_pvc_weight)
+                    text='продолжить заполнение данных',
+                    reply_markup=make_row_keyboard(['yes'])
+                )
+            await state.set_state(SetParameterPERT.continue_load)
+
     elif (datetime.now()+ timedelta(hours = 6)).hour in [0,1,3,4,6,7,9,10,12,13,15,16,18,19,21,22]:
         if message.text == 'back':
             await message.answer(
@@ -434,66 +488,18 @@ async def pvc_width(message: Message, state: FSMContext):
             )
             await state.set_state(SetParameterPERT.choosing_pvc_outer_diam)
         else:
-            if message.text != 'yes':
-                await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
-            else:
-                await state.update_data(chosen_def_descr='')
+            await state.update_data(chosen_def_descr=message.text.lower().replace(',', '.'))
             await message.answer(
                     text="перейти к передаче данных",
                     reply_markup=make_row_keyboard(available_proceeds)
             )
             await state.set_state(SetParameterPERT.choosing_pvc_finish)
-    else:
-        await message.answer(
-            text="В данный момент работы не ведутся",
-            reply_markup=ReplyKeyboardRemove()
-        )
+
+        
 
 
 
-@router2.message(SetParameterPERT.choosing_pvc_weight)
-async def get_photo_pprc_view(message: Message, state: FSMContext):
-        await state.update_data(chosen_weight=message.text.lower())
-        await message.answer(
-            text="отправьте фото",
-            reply_markup=make_row_keyboard(['back'])
-        )
-        print('choose diameter')
-        await state.set_state(SetParameterPERT.send_photo_weight)
-
-@router2.message(SetParameterPERT.send_photo_weight)
-async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
-    if message.text == 'back':
-        await message.answer(
-            text="go back",
-            reply_markup=make_row_keyboard(['go'])
-            )
-        await state.set_state(SetParameterPERT.defects_descr)
-    else:
-        gauth = GoogleAuth()
-        gauth.LocalWebserverAuth()           
-        drive = GoogleDrive(gauth)  
-        file_id =  message.photo[-1].file_id
-        print(message.photo[-1])
-        file_unique_id = message.photo[-1].file_unique_id
-        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
-        file = await bot.get_file(file_id)
-        file_path = file.file_path
-        filename = 'pert_weight_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
-        await bot.download_file(file_path, filename )
-        upload_file_list = [filename]
-        for upload_file in upload_file_list:
-            gfile = drive.CreateFile({'parents': [{'id': '1NwwKZX-0JbjnoagbHu5c5LpGCPia_rz3'}]})
-            gfile.SetContentFile(upload_file)
-            gfile.Upload()
-
-        await message.answer(
-                text="продолжить",
-                reply_markup=make_row_keyboard(['yes'])
-                )
-        await state.set_state(SetParameterPERT.send_photo_weight_sent)
-
-@router2.message(SetParameterPERT.send_photo_weight_sent) #F.text.in_(available_food_names))
+@router2.message(SetParameterPERT.continue_load) #F.text.in_(available_food_names))
 async def pvc_control_mark(message: Message, state: FSMContext):
     if message.text == 'go':
         await message.answer(
@@ -527,7 +533,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext, bot):
             text="go back",
             reply_markup=make_row_keyboard(['go'])
             )
-        await state.set_state(SetParameterPERT.send_photo_weight_sent)
+        await state.set_state(SetParameterPERT.continue_load)
     else:
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()           
@@ -611,11 +617,11 @@ async def pvc_chosen(message: Message, state: FSMContext):
         conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
         cursor = conn.cursor()
         cursor.execute(f"""insert into pert_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, VIEW, 
-                                                    OUTER_DIAMETER, WIDTH_ST, WEIGHT_B, 
+                                                    OUTER_DIAMETER, WIDTH_ST, WEIGHT_B, WEIGHT,
                                                      MASTER,DEFECT,DEFECT_DESCR,  created_at, updated_at) values 
                                                 (TRUE,'{user_data['chosen_controller_name']}','{user_data['chosen_smena']}','{user_data['chosen_tube']}',  
                                                             '{user_data['chosen_view']}','{user_data['chosen_outer_diam']}',{user_data['chosen_width_s']}, 
-                                                            {user_data['chosen_weight_b']},  '{user_data['chosen_name']}','{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',
+                                                            {user_data['chosen_weight_b']}, {user_data['chosen_weight']}, '{user_data['chosen_name']}','{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',
                                                               current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
         conn.commit()
         cursor.close()
