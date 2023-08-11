@@ -402,7 +402,6 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             text="отправьте фото",
             reply_markup=make_row_keyboard(['back'])
         )
-        print('choose diameter')
         await state.set_state(SetParameterPERT.send_photo_weight)
 
 @router2.message(SetParameterPERT.send_photo_weight)
