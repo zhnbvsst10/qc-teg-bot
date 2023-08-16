@@ -127,6 +127,16 @@ async def fitting_controller(message: Message, state: FSMContext):
 
 @router.message(SetParameterFitCanal.choosing_fitting_controller)
 async def pprc_name(message: Message, state: FSMContext):
+    await state.update_data(chosen_controller_name=message.text.lower())
+    await message.answer(
+            text="Выберите станок?",
+            reply_markup=make_row_keyboard(available_stanoks)
+        )
+    print('choose stanok')
+    await state.set_state(SetParameterFitCanal.choosing_fitting_line)
+
+@router.message(SetParameterFitCanal.choosing_fitting_controller)
+async def pprc_name(message: Message, state: FSMContext):
     if message.text == 'go':
         await message.answer(
             text="Кто является мастером на линии на текущий час ?",
@@ -135,7 +145,7 @@ async def pprc_name(message: Message, state: FSMContext):
         print('choose master canal')
         await state.set_state(SetParameterFitCanal.choosing_fitting_name)
     else:
-        await state.update_data(chosen_controller_name=message.text.lower())
+        await state.update_data(chosen_stanok=message.text.lower())
         await message.answer(
             text="Кто является мастером на линии на текущий час ?",
             reply_markup=make_row_keyboard(available_masters_fitting)
