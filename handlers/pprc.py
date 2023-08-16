@@ -669,8 +669,8 @@ async def pprc_chosen(message: Message, state: FSMContext):
             )
             print('success 5 params')
             if ('carantine' in user_data.keys()) == False:
-                user_data['carantine'] = ' '
-                user_data['def_send'] = ' '
+                user_data['carantine'] = '0'
+                user_data['def_send'] = '0'
                 user_data['chosen_def_descr'] = ' '
             
             conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
@@ -698,8 +698,8 @@ async def pprc_chosen(message: Message, state: FSMContext):
                 reply_markup=ReplyKeyboardRemove()
             )
             if ('carantine' in user_data.keys()) == False:
-                user_data['carantine'] = ' '
-                user_data['def_send'] = ' '
+                user_data['carantine'] = '0'
+                user_data['def_send'] = '0'
                 user_data['chosen_def_descr'] = ' '
             conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
             cursor = conn.cursor()

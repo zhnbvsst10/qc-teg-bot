@@ -491,8 +491,8 @@ async def fitting_chosen(message: Message, state: FSMContext):
         )
         print('success fitting')
         if ('carantine' in user_data.keys()) == False:
-                user_data['carantine'] = ' '
-                user_data['def_send'] = ' '
+                user_data['carantine'] = '0'
+                user_data['def_send'] = '0'
                 user_data['chosen_def_descr'] = ' '
 
         conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
