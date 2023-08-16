@@ -525,7 +525,7 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
                 reply_markup=make_row_keyboard(['yes'])
             )
             print('choose defects')
-            await state.set_state(SetParameterPVC3.defects_descr)
+            await state.set_state(SetParameterPVC3.def_send)
 
 
 @router2.message(SetParameterPVC3.defects_descr)
