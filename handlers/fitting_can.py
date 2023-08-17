@@ -145,7 +145,8 @@ async def pprc_name(message: Message, state: FSMContext):
         print('choose master canal')
         await state.set_state(SetParameterFitCanal.choosing_fitting_name)
     else:
-        await state.update_data(chosen_stanok=message.text.lower())
+        # await state.update_data(chosen_stanok=message.text.lower())
+        await state.update_data(chosen_controller_name=message.text.lower())
         await message.answer(
             text="Кто является мастером на линии на текущий час ?",
             reply_markup=make_row_keyboard(available_masters_fitting)
