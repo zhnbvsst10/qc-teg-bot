@@ -125,15 +125,15 @@ async def fitting_controller(message: Message, state: FSMContext):
     await state.set_state(SetParameterFitCanal.choosing_fitting_controller)
 
 
-@router.message(SetParameterFitCanal.choosing_fitting_controller)
-async def pprc_name(message: Message, state: FSMContext):
-    await state.update_data(chosen_controller_name=message.text.lower())
-    await message.answer(
-            text="Выберите станок?",
-            reply_markup=make_row_keyboard(available_stanoks)
-        )
-    print('choose stanok')
-    await state.set_state(SetParameterFitCanal.choosing_fitting_line)
+# @router.message(SetParameterFitCanal.choosing_fitting_controller)
+# async def pprc_name(message: Message, state: FSMContext):
+#     await state.update_data(chosen_controller_name=message.text.lower())
+#     await message.answer(
+#             text="Выберите станок?",
+#             reply_markup=make_row_keyboard(available_stanoks)
+#         )
+#     print('choose stanok')
+#     await state.set_state(SetParameterFitCanal.choosing_fitting_line)
 
 @router.message(SetParameterFitCanal.choosing_fitting_controller)
 async def pprc_name(message: Message, state: FSMContext):
