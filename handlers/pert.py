@@ -19,8 +19,8 @@ bot = Bot(token=token)
 router2 = Router()
 available_answers = ['ok', 'not ok','back']
 available_shifts = ['A','B','C','back']
-available_controllers = ['Madi', 'Adilet', 'Dinmukhammed']
-available_names = ['Talgat','Aibar','Bolat','back']
+available_controllers = ['Daulet', 'Adilet', 'Dinmukhammed']
+available_names = ['Talgat','Aibar','Omirserik','back']
 available_tubes = ['PE-RT','OxyPE-RT','back']
 available_proceeds = ['yes']
 
