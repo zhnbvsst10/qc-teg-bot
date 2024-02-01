@@ -235,9 +235,10 @@ async def pprc_tube(message: Message, state: FSMContext):
         button4 = KeyboardButton(text='ТРОЙНИК')
         button5 = KeyboardButton(text='МОСТ')
         button6 = KeyboardButton(text='АРМАТУРА')
-        button7 = KeyboardButton(text='back')
+        button7 = KeyboardButton(text='СМЕСИТЕЛЬ')
+        button8 = KeyboardButton(text='back')
             
-        markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).as_markup()
+        markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).as_markup()
         await message.answer(
             text='Выберите наименование продукции',
             reply_markup=markup1
@@ -251,9 +252,10 @@ async def pprc_tube(message: Message, state: FSMContext):
         button4 = KeyboardButton(text='ТРОЙНИК')
         button5 = KeyboardButton(text='МОСТ')
         button6 = KeyboardButton(text='АРМАТУРА')
-        button7 = KeyboardButton(text='back')
+        button7 = KeyboardButton(text='СМЕСИТЕЛЬ')
+        button8 = KeyboardButton(text='back')
             
-        markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).as_markup()
+        markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).as_markup()
         await state.update_data(chosen_tube=message.text.lower())
         await message.answer(
             text='Выберите наименование продукции',
