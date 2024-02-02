@@ -197,7 +197,7 @@ async def pprc_tube(message: Message, state: FSMContext):
         button6 = KeyboardButton(text='ЗАГЛУШКА ')
         button7 = KeyboardButton(text='ХОМУТ ')
         button8 = KeyboardButton(text='БУТЫЛКА ')
-        button9 = KeyboardButton(text='КРЫШКА РЕВИЗИЙ')
+        button9 = KeyboardButton(text='КРЫШКА')
         button10 = KeyboardButton(text='back')
             
         markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).row(button9).row(button10).as_markup()
@@ -217,7 +217,7 @@ async def pprc_tube(message: Message, state: FSMContext):
             button6 = KeyboardButton(text='ЗАГЛУШКА')
             button7 = KeyboardButton(text='ХОМУТ')
             button8 = KeyboardButton(text='БУТЫЛКА')
-            button9 = KeyboardButton(text='КРЫШКА РЕВИЗИЙ')
+            button9 = KeyboardButton(text='КРЫШКА')
             button10 = KeyboardButton(text='back')
                 
             markup1 = ReplyKeyboardBuilder([[button1]]).row(button2).row(button3).row(button4).row(button5).row(button6).row(button7).row(button8).row(button9).row(button10).as_markup()
