@@ -30,6 +30,7 @@ available_stanoks = ['1','2','3','4','5','6','back']
 name_dict = {
     'БУТЫЛКА': [    
                 'БУТЫЛКА КАНАЛИЗ 100*50 REDUK DENIZ',
+                'БУТЫЛКА КАНАЛИЗ 110/50 REDUK OKYANUS',
             ],
     'МУФТА' : [
         'МУФТА * КАНАЛИЗ 110 MANSON OKYANUS PP',
@@ -63,6 +64,8 @@ name_dict = {
                 'ТРОЙНИК ПРЯМОЙ 100*100 TE CATAL DENIZ',
                 'ТРОЙНИК ПРЯМОЙ 100*50 TE CATAL DENIZ',
                 'ТРОЙНИК ПРЯМОЙ 50*50 TE CATAL DENIZ',
+                'ТРОЙНИК ПРЯМОЙ 110/45 OKYANUS',
+
             ],
     'ХОМУТ' : [
                 'ХОМУТ КАНАЛИЗ 100 KELEPCE DENIZ',
@@ -74,7 +77,10 @@ name_dict = {
     ],
     'КРЕСТОВИНА' : [
         'КРЕСТОВИНА * КАНАЛИЗ 100*100*90 ISTAVROZ OKYANUS PP',
-        'КРЕСТОВИНА 100*100*90 ISTAVROZ DENIZ PP'
+        'КРЕСТОВИНА 100*100*90 ISTAVROZ DENIZ PP',
+        'КРЕСТОВИНА 110/110/45 OKYANUS',
+        'КРЕСТОВИНА 110/110/45 DENIZ',
+
     ],
     'ЗАГЛУШКА' : [
         'ЗАГЛУШКА КАНАЛИЗ 100 KORTAPA DENIZ',

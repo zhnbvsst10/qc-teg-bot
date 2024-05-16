@@ -23,7 +23,7 @@ available_answers = ['ok', 'not ok']
 available_shifts = ['A','B','C','back']
 available_controllers = ['Daulet', 'Adilet', 'Dinmukhammed']
 available_names = ['Anton', 'Aziz', 'Kamil','back']
-available_tubes = ['okyanus/1.8', 'deniz type 1/4.0', 'deniz type 1/3.2', 'deniz type 2/2.2','back']
+available_tubes = ['okyanus/1.8','okyanus type 2/2,2', 'deniz type 1/4.0', 'deniz type 1/3.2', 'deniz type 2/2.2','back']
 available_diameters = ['50', '70','110','160','back']
 available_proceeds = ['yes','back']
 
