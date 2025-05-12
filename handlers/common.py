@@ -176,7 +176,7 @@ async def not_working(message: Message, state: FSMContext):
 async def not_working(message: Message, state: FSMContext):
     await state.update_data(state_=message.text.lower())
     user_data = await state.get_data()
-    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+    conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
     cursor = conn.cursor()
     cursor.execute(f"""insert into pvc_params (working, working_descr,created_at, updated_at) values ('ремонт', '{user_data['state_']}',current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
@@ -200,7 +200,7 @@ async def not_working(message: Message, state: FSMContext):
 async def not_working(message: Message, state: FSMContext):
     await state.update_data(state_=message.text.lower())
     user_data = await state.get_data()
-    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+    conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
     cursor = conn.cursor()
     cursor.execute(f"""insert into pvc_params (working, working_descr, created_at, updated_at) values ('настройка', '{user_data['state_']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
@@ -223,7 +223,7 @@ async def not_working(message: Message, state: FSMContext):
 async def not_working(message: Message, state: FSMContext):
     await state.update_data(state_=message.text.lower())
     user_data = await state.get_data()
-    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+    conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
     cursor = conn.cursor()
     cursor.execute(f"""insert into pert_params (working, working_descr, created_at, updated_at) values ('ремонт', '{user_data['state_']}',current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
@@ -246,7 +246,7 @@ async def not_working(message: Message, state: FSMContext):
 async def not_working(message: Message, state: FSMContext):
     await state.update_data(state_=message.text.lower())
     user_data = await state.get_data()
-    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+    conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
     cursor = conn.cursor()
     cursor.execute(f"""insert into pert_params (working, working_descr, created_at, updated_at) values ('настройка', '{user_data['state_']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
@@ -270,7 +270,7 @@ async def not_working(message: Message, state: FSMContext):
 async def not_working(message: Message, state: FSMContext):
     await state.update_data(state_=message.text.lower())
     user_data = await state.get_data()
-    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+    conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
     cursor = conn.cursor()
     cursor.execute(f"""insert into pprc_params (working, working_descr, created_at, updated_at) values ('ремонт', '{user_data['state_']}',current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
@@ -293,7 +293,7 @@ async def not_working(message: Message, state: FSMContext):
 async def not_working(message: Message, state: FSMContext):
     await state.update_data(state_=message.text.lower())
     user_data = await state.get_data()
-    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+    conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
     cursor = conn.cursor()
     cursor.execute(f"""insert into pprc_params (working, working_descr, created_at, updated_at) values ('настройка', '{user_data['state_']}',current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
@@ -316,7 +316,7 @@ async def not_working(message: Message, state: FSMContext):
 
     await state.update_data(state_=message.text.lower())
     user_data = await state.get_data()
-    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+    conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
     cursor = conn.cursor()
     cursor.execute(f"""insert into fitting_vodop_params (working,working_descr, STANOK, shift, created_at, updated_at) values ('ремонт','{user_data['state_']}', {user_data['chosen_stanok']}, '{user_data['chosen_smena']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
@@ -340,7 +340,7 @@ async def not_working(message: Message, state: FSMContext):
 async def not_working(message: Message, state: FSMContext):
     await state.update_data(state_=message.text.lower())
     user_data = await state.get_data()
-    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+    conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
     cursor = conn.cursor()
     cursor.execute(f"""insert into fitting_vodop_params (working,working_descr,  STANOK, shift,created_at, updated_at) values ('настройка','{user_data['state_']}', {user_data['chosen_stanok']},'{user_data['chosen_smena']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
@@ -365,7 +365,7 @@ async def not_working(message: Message, state: FSMContext):
     await state.update_data(state_=message.text.lower())
     user_data = await state.get_data()
     
-    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+    conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
     cursor = conn.cursor()
     cursor.execute(f"""insert into fitting_canal_params (working,working_descr, STANOK, shift,created_at, updated_at) values ('ремонт','{user_data['state_']}', {user_data['chosen_stanok']},'{user_data['chosen_smena']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
@@ -389,7 +389,8 @@ async def not_working(message: Message, state: FSMContext):
 async def not_working(message: Message, state: FSMContext):
     await state.update_data(state_=message.text.lower())
     user_data = await state.get_data()
-    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+    conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
+
     cursor = conn.cursor()
     cursor.execute(f"""insert into fitting_canal_params (working,working_descr, STANOK,shift,created_at, updated_at) values ('настройка', '{user_data['state_']}',{user_data['chosen_stanok']}, '{user_data['chosen_smena']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
@@ -415,7 +416,8 @@ async def not_working(message: Message, state: FSMContext):
     await state.update_data(state_=message.text.lower())
     user_data = await state.get_data()
     
-    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+    conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
+
     cursor = conn.cursor()
     cursor.execute(f"""insert into fitting_other_params (working,working_descr,  STANOK, shift,created_at, updated_at) values ('ремонт','{user_data['state_']}', {user_data['chosen_stanok']},'{user_data['chosen_smena']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()
@@ -439,7 +441,7 @@ async def not_working(message: Message, state: FSMContext):
 
     await state.update_data(state_=message.text.lower())
     user_data = await state.get_data()
-    conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+    conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
     cursor = conn.cursor()
     cursor.execute(f"""insert into fitting_other_params (working,working_descr,  STANOK,shift,created_at, updated_at) values ('настройка', '{user_data['state_']}', {user_data['chosen_stanok']}, '{user_data['chosen_smena']}',current_timestamp + interval'6 hours', current_timestamp + interval'6 hours')""")
     conn.commit()

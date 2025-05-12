@@ -618,7 +618,7 @@ async def pvc_chosen(message: Message, state: FSMContext):
                 user_data['carantine'] = '0'
                 user_data['def_send'] = '0'
                 user_data['chosen_def_descr'] = ' '
-        conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+        conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
         cursor = conn.cursor()
         cursor.execute(f"""insert into pert_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, VIEW, 
                                                     OUTER_DIAMETER, WIDTH_ST, WEIGHT_B, WEIGHT, MARK_CONTROL,
@@ -643,7 +643,7 @@ async def pvc_chosen(message: Message, state: FSMContext):
                 user_data['carantine'] = '0'
                 user_data['def_send'] = '0'
                 user_data['chosen_def_descr'] = ' '
-        conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+        conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
         cursor = conn.cursor()
         cursor.execute(f"""insert into pert_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, VIEW, 
                                                     OUTER_DIAMETER, WIDTH_ST, WEIGHT_B, WEIGHT,
