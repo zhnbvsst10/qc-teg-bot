@@ -38,14 +38,18 @@ async def register_user(message: types.Message):
 
 async def send_message(bot: Bot):
     
-    await bot.send_message(443493321,'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1055367376,'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1174180760,'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1051813835,'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1374864950, 'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1309686262, 'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1247023320, 'Проверка контроля качества. \n Перейти в /start')
-    print('hey')
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT user_id FROM users")
+    user_ids = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    for user_id in user_ids:
+        try:
+            await bot.send_message(user_id[0], 'Проверка контроля качества. \n Перейти в /start')
+        except Exception as e:
+            print(f"Не удалось отправить сообщение {user_id[0]}: {e}")
     
     
 
