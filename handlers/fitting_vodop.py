@@ -1,23 +1,15 @@
 from aiogram import Router, F
-from aiogram.filters.command import Command
 from aiogram.filters.text import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards.simple_row import make_row_keyboard
 from datetime import datetime, timedelta
-from aiogram.utils.keyboard import KeyboardButton,ReplyKeyboardBuilder, InlineKeyboardBuilder
+from aiogram.utils.keyboard import KeyboardButton,ReplyKeyboardBuilder
 
 import psycopg2
-from aiogram.types.photo_size import PhotoSize
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-from aiogram import Bot
-import os
-
-#token = os.getenv('TOKEN')
-token = '6029120908:AAFJPrT_MHo4vUVEH4rCnl46UbVxT9goJ_g'
-bot = Bot(token=token)
 
 router = Router()
 
@@ -25,7 +17,7 @@ router = Router()
 available_answers = ['ok', 'not ok','back']
 available_shifts = ['A','B','C', 'back']
 available_controllers = ['Daulet', 'Adilet', 'Dinmukhammed']
-available_masters_fitting = ['Salamat', 'Dauren', 'Aibek','back']
+available_masters_fitting = ['Timur', 'Abai', 'Dauren','back']
 available_tubes = ['okyanus', 'deniz','kavi','back']
 available_diameters = ['20','25','32','40','back']
 available_proceeds = ['yes','back']
@@ -506,7 +498,7 @@ async def fitting_chosen(message: Message, state: FSMContext):
                 user_data['def_send'] = '0'
                 user_data['chosen_def_descr'] = ' '
 
-        conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
+        conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
         cursor = conn.cursor()
         cursor.execute(f"""insert into fitting_vodop_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND,  VIEW,  MASTER,WEIGHT,DEFECT,DEFECT_DESCR, created_at, updated_at, carantine_num, defect_num) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}',  '{user_data['chosen_view']}','{user_data['chosen_name']}','{user_data['chosen_weight']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours', '{user_data['carantine']}', '{user_data['def_send']}')""")
         conn.commit()

@@ -1,5 +1,4 @@
-from aiogram import Router, F
-from aiogram.filters.command import Command
+from aiogram import Router
 from aiogram.filters.text import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
@@ -7,7 +6,6 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards.simple_row import make_row_keyboard
 from datetime import datetime, timedelta
 import psycopg2
-from aiogram.types.photo_size import PhotoSize
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from aiogram import Bot
@@ -21,7 +19,7 @@ available_answers = ['ok', 'not ok','back']
 available_shifts = ['A','B','C','back']
 available_controllers = ['Daulet', 'Adilet', 'Dinmukhammed']
 available_names = ['Talgat','Aibar','Omirserik','back']
-available_tubes = ['PE-RT','OxyPE-RT','back']
+available_tubes = ['PE-RT','OxyPE-RT', 'Pert-Al- Pert', 'back']
 available_proceeds = ['yes']
 
 
