@@ -13,9 +13,11 @@ from aiogram.types.photo_size import PhotoSize
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from aiogram.utils.keyboard import ReplyKeyboardMarkup, KeyboardButton,ReplyKeyboardBuilder
+from aiogram.exceptions import TelegramBadRequest
+
 
 #token = os.getenv('TOKEN')
-token = '6029120908:AAFJPrT_MHo4vUVEH4rCnl46UbVxT9goJ_g'
+token = '7491228760:AAFnb_5APIBYInpumPOgLNsF1D5xl6ItBs8'
 bot = Bot(token=token)
 
 router2 = Router()
@@ -357,17 +359,26 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             )
         await state.set_state(SetParameterPVC3.send_photo_functionality_sent)
     else:
-        gauth = GoogleAuth()
-        gauth.LocalWebserverAuth()           
-        drive = GoogleDrive(gauth)  
-        file_id =  message.photo[-1].file_id
-        print(message.photo[-1])
+        
+        file_id = message.photo[-1].file_id
         file_unique_id = message.photo[-1].file_unique_id
-        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
-        file = await bot.get_file(file_id)
-        file_path = file.file_path
-        filename = 'pvc_diameter_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
-        await bot.download_file(file_path, filename )
+
+        # Сначала загружаем файл с Telegram
+        try:
+            file = await bot.get_file(file_id)
+            file_path = file.file_path
+            filename = 'pvc_diameter_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S') + '.jpg'
+            await bot.download_file(file_path, filename)
+        except TelegramBadRequest:
+            await message.answer("Не удалось скачать файл. Попробуйте отправить заново.")
+            return
+
+        # Теперь, когда файл уже локально скачан, авторизуемся в Google
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()
+        drive = GoogleDrive(gauth)
+
+        # Загружаем файл в Google Drive
         upload_file_list = [filename]
         for upload_file in upload_file_list:
             gfile = drive.CreateFile({'parents': [{'id': '1Dmbaj2-puU0mOo4s35-Ud-1aF8u-WVmK'}]})
@@ -375,10 +386,11 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             gfile.Upload()
 
         await message.answer(
-                text="продолжить",
-                reply_markup=make_row_keyboard(['yes'])
-                )
+            text="продолжить",
+            reply_markup=make_row_keyboard(['yes'])
+        )
         await state.set_state(SetParameterPVC3.send_photo_diameter_sent)
+
 
 
 @router2.message(SetParameterPVC3.send_photo_diameter_sent)
