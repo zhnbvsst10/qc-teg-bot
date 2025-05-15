@@ -242,17 +242,25 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             )
         await state.set_state(SetParameterPVC3.choosing_pvc_tube)
     else:
-        gauth = GoogleAuth()
-        gauth.LocalWebserverAuth()           
-        drive = GoogleDrive(gauth)  
-        file_id =  message.photo[-1].file_id
-        print(message.photo[-1])
+        file_id = message.photo[-1].file_id
         file_unique_id = message.photo[-1].file_unique_id
-        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
-        file = await bot.get_file(file_id)
-        file_path = file.file_path
-        filename = 'pvc_view_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
-        await bot.download_file(file_path, filename )
+
+        # Сначала загружаем файл с Telegram
+        try:
+            file = await bot.get_file(file_id)
+            file_path = file.file_path
+            filename = 'pvc_diameter_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S') + '.jpg'
+            await bot.download_file(file_path, filename)
+        except TelegramBadRequest:
+            await message.answer("Не удалось скачать файл. Попробуйте отправить заново.")
+            return
+
+        # Теперь, когда файл уже локально скачан, авторизуемся в Google
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()
+        drive = GoogleDrive(gauth)
+
+        # Загружаем файл в Google Drive
         upload_file_list = [filename]
         for upload_file in upload_file_list:
             gfile = drive.CreateFile({'parents': [{'id': '1Dmbaj2-puU0mOo4s35-Ud-1aF8u-WVmK'}]})
@@ -260,9 +268,9 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             gfile.Upload()
 
         await message.answer(
-                text="продолжить",
-                reply_markup=make_row_keyboard(['yes'])
-                )
+            text="продолжить",
+            reply_markup=make_row_keyboard(['yes'])
+        )
         await state.set_state(SetParameterPVC3.send_photo_view_sent)
 
 
