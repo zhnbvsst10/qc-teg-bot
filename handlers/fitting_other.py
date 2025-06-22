@@ -451,7 +451,7 @@ async def fitting_chosen(message: Message, state: FSMContext):
         if ('carantine' in user_data.keys()) == False:
             
             user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + ' ' + user_data['chosen_fit_name_2']  + user_data['chosen_fit_name_4'] 
-            conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+            conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
             cursor = conn.cursor()
             cursor.execute(f"""insert into fitting_other_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND, NOMINAL_SIZE, VIEW, FUNCTIONALITY, MASTER, DEFECT, created_at, updated_at,COLOR, carantine_num ,defect_num) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',  '{user_data['chosen_name']}', '{user_data['chosen_def']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours',  '{user_data['chosen_fit_name_4']}', '0', '0')""")
             conn.commit()
@@ -460,7 +460,7 @@ async def fitting_chosen(message: Message, state: FSMContext):
             await state.set_state(SetParameterFitOther.send_photo)
         else:
             user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + ' ' + user_data['chosen_fit_name_2']  + user_data['chosen_fit_name_4'] 
-            conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+            conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
             cursor = conn.cursor()
             cursor.execute(f"""insert into fitting_other_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND, NOMINAL_SIZE, VIEW, FUNCTIONALITY, MASTER, DEFECT,DEFECT_DESCR, created_at, updated_at,COLOR, carantine_num,	defect_num) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',  '{user_data['chosen_name']}', '{user_data['chosen_def']}', '{user_data['def_descr']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours',  '{user_data['chosen_fit_name_4']}', '{user_data['carantine']}', '{user_data['def_send']}')""")
             conn.commit()

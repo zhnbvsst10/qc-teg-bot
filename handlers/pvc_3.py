@@ -13,8 +13,9 @@ from aiogram.types.photo_size import PhotoSize
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from aiogram.utils.keyboard import ReplyKeyboardMarkup, KeyboardButton,ReplyKeyboardBuilder
+from aiogram.exceptions import TelegramBadRequest
 
-token = os.getenv('TOKEN')
+token = '7491228760:AAFnb_5APIBYInpumPOgLNsF1D5xl6ItBs8'
 bot = Bot(token=token)
 
 router2 = Router()
@@ -239,17 +240,25 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             )
         await state.set_state(SetParameterPVC3.choosing_pvc_tube)
     else:
-        gauth = GoogleAuth()
-        gauth.LocalWebserverAuth()           
-        drive = GoogleDrive(gauth)  
-        file_id =  message.photo[-1].file_id
-        print(message.photo[-1])
+        file_id = message.photo[-1].file_id
         file_unique_id = message.photo[-1].file_unique_id
-        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
-        file = await bot.get_file(file_id)
-        file_path = file.file_path
-        filename = 'pvc_view_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
-        await bot.download_file(file_path, filename )
+
+        # Сначала загружаем файл с Telegram
+        try:
+            file = await bot.get_file(file_id)
+            file_path = file.file_path
+            filename = 'pvc_diameter_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S') + '.jpg'
+            await bot.download_file(file_path, filename)
+        except TelegramBadRequest:
+            await message.answer("Не удалось скачать файл. Попробуйте отправить заново.")
+            return
+
+        # Теперь, когда файл уже локально скачан, авторизуемся в Google
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()
+        drive = GoogleDrive(gauth)
+
+        # Загружаем файл в Google Drive
         upload_file_list = [filename]
         for upload_file in upload_file_list:
             gfile = drive.CreateFile({'parents': [{'id': '1Dmbaj2-puU0mOo4s35-Ud-1aF8u-WVmK'}]})
@@ -257,9 +266,9 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             gfile.Upload()
 
         await message.answer(
-                text="продолжить",
-                reply_markup=make_row_keyboard(['yes'])
-                )
+            text="продолжить",
+            reply_markup=make_row_keyboard(['yes'])
+        )
         await state.set_state(SetParameterPVC3.send_photo_view_sent)
 
 
@@ -356,17 +365,25 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             )
         await state.set_state(SetParameterPVC3.send_photo_functionality_sent)
     else:
-        gauth = GoogleAuth()
-        gauth.LocalWebserverAuth()           
-        drive = GoogleDrive(gauth)  
-        file_id =  message.photo[-1].file_id
-        print(message.photo[-1])
+        file_id = message.photo[-1].file_id
         file_unique_id = message.photo[-1].file_unique_id
-        #PhotoSize(file_id=file_id, file_unique_id=file_unique_id)
-        file = await bot.get_file(file_id)
-        file_path = file.file_path
-        filename = 'pvc_diameter_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S' + '.jpg')
-        await bot.download_file(file_path, filename )
+
+        # Сначала загружаем файл с Telegram
+        try:
+            file = await bot.get_file(file_id)
+            file_path = file.file_path
+            filename = 'pvc_diameter_' + (datetime.now() + timedelta(hours=6)).strftime('%Y-%m-%d %H:%M:%S') + '.jpg'
+            await bot.download_file(file_path, filename)
+        except TelegramBadRequest:
+            await message.answer("Не удалось скачать файл. Попробуйте отправить заново.")
+            return
+
+        # Теперь, когда файл уже локально скачан, авторизуемся в Google
+        gauth = GoogleAuth()
+        gauth.LocalWebserverAuth()
+        drive = GoogleDrive(gauth)
+
+        # Загружаем файл в Google Drive
         upload_file_list = [filename]
         for upload_file in upload_file_list:
             gfile = drive.CreateFile({'parents': [{'id': '1Dmbaj2-puU0mOo4s35-Ud-1aF8u-WVmK'}]})
@@ -374,9 +391,9 @@ async def get_photo_pprc_view(message: Message, state: FSMContext):
             gfile.Upload()
 
         await message.answer(
-                text="продолжить",
-                reply_markup=make_row_keyboard(['yes'])
-                )
+            text="продолжить",
+            reply_markup=make_row_keyboard(['yes'])
+        )
         await state.set_state(SetParameterPVC3.send_photo_diameter_sent)
 
 
@@ -786,7 +803,7 @@ async def pvc_chosen(message: Message, state: FSMContext):
                 user_data['carantine'] = '0'
                 user_data['def_send'] = '0'
                 user_data['chosen_def_descr'] = ' '
-            conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+            conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
             cursor = conn.cursor()
             cursor.execute(f"""insert into pvc_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, NOMINAL_DIAMETER, nominal_length, VIEW, FUNCTIONALITY, DIAMETER, WEIGHT,WIDTH,MARK_CONTROL,LENGTH,STRENGTH, MASTER, DEFECT,DEFECT_DESCR, created_at, updated_at, carantine_num,defect_num) values (TRUE,'{user_data['chosen_controller_name']}','{user_data['chosen_smena']}','{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}','{user_data['chosen_length_nom']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',{user_data['chosen_diameter']}, {user_data['chosen_weight']}, {user_data['chosen_width']}, '{user_data['chosen_control_mark']}', '{user_data['chosen_length']}', '{user_data['chosen_proch']}','{user_data['chosen_name']}','{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours','{user_data['carantine']}', '{user_data['def_send']}')""")
             conn.commit()
@@ -813,7 +830,7 @@ async def pvc_chosen(message: Message, state: FSMContext):
                 user_data['carantine'] = '0'
                 user_data['def_send'] = '0'
                 user_data['chosen_def_descr'] = ' '
-            conn = psycopg2.connect(dbname="neondb", user="zhanabayevasset", password="txDhFR1yl8Pi", host='ep-cool-poetry-346809.us-east-2.aws.neon.tech')
+            conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
             cursor = conn.cursor()
             cursor.execute(f"""insert into pvc_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, NOMINAL_DIAMETER, nominal_length, VIEW, FUNCTIONALITY, DIAMETER, WEIGHT, MASTER, DEFECT,DEFECT_DESCR, created_at, updated_at, carantine_num, defect_num) values (TRUE, '{user_data['chosen_controller_name']}','{user_data['chosen_smena']}', '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}','{user_data['chosen_length_nom']}','{user_data['chosen_view']}', '{user_data['chosen_functionality']}', {user_data['chosen_diameter']},  {user_data['chosen_weight']}, '{user_data['chosen_name']}','{user_data['chosen_def']}', '{user_data['chosen_def_descr']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours','{user_data['carantine']}', '{user_data['def_send']}')""")
             conn.commit()

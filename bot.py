@@ -3,15 +3,14 @@ import logging
 from aiogram import Bot, F
 from aiogram import Dispatcher, Message, types
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from handlers import common, fitting_vodop,  pvc_3, pprc, fitting_can, fitting_other, pert
+from aiogram.filters.command import Command
+from handlers import common, fitting_vodop, pvc_3, pprc, fitting_can, fitting_other, pert
 import os
 import psycopg2
-
 
 token = os.getenv('TOKEN')
 dp = Dispatcher()
 bot = Bot(token=token)
-
 
 def connect_db():
     conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
@@ -29,33 +28,30 @@ def save_user_id(user_id: int):
     cursor.close()
     conn.close()
 
-@dp.message(Messagecommands=['register'])
+@dp.message(Command(commands=["register"]))
 async def register_user(message: types.Message):
     save_user_id(message.from_user.id)
     await message.reply("Вы зарегистрированы!")
 
 async def send_message(bot: Bot):
-    
-    await bot.send_message(443493321,'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1055367376,'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1174180760,'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1051813835,'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1374864950, 'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1309686262, 'Проверка контроля качества. \n Перейти в /start')
-    await bot.send_message(1247023320, 'Проверка контроля качества. \n Перейти в /start')
-    print('hey')
-    
-    
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT user_id FROM users")
+    user_ids = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    for user_id in user_ids:
+        try:
+            await bot.send_message(user_id[0], 'Проверка контроля качества. \n Перейти в /start')
+        except Exception as e:
+            print(f"Не удалось отправить сообщение {user_id[0]}: {e}")
 
-    
-    
 async def main():
     bot.delete_webhook()
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
     )
-    
     sched = AsyncIOScheduler({'apscheduler.timezone':'Asia/Almaty'})
     sched.add_job(send_message,'cron',hour='0-23/1', minute = '30', kwargs= {'bot':bot} )
     sched.start()
@@ -67,11 +63,7 @@ async def main():
     dp.include_router(fitting_can.router)
     dp.include_router(fitting_other.router)
     dp.include_router(pert.router2)
-
     await dp.start_polling(bot, skip_updates=True)
-
-
-
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
