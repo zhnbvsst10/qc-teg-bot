@@ -2,8 +2,8 @@ from aiogram import Router,  F
 from aiogram.filters.command import Command
 from aiogram.filters.text import Text
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, ReplyKeyboardRemove, KeyboardButton,ReplyKeyboardMarkup
-from aiogram.utils.keyboard import ReplyKeyboardMarkup, KeyboardButton,ReplyKeyboardBuilder
+from aiogram.types import Message, ReplyKeyboardRemove, KeyboardButton
+from aiogram.utils.keyboard import KeyboardButton,ReplyKeyboardBuilder
 from datetime import datetime, timedelta
 import psycopg2
 from keyboards.simple_row import make_row_keyboard

@@ -1,23 +1,15 @@
 from aiogram import Router, F
-from aiogram.filters.command import Command
 from aiogram.filters.text import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards.simple_row import make_row_keyboard
 from datetime import datetime, timedelta
-from aiogram.utils.keyboard import KeyboardButton,ReplyKeyboardBuilder, InlineKeyboardBuilder
+from aiogram.utils.keyboard import KeyboardButton,ReplyKeyboardBuilder
 
 import psycopg2
-from aiogram.types.photo_size import PhotoSize
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-from aiogram import Bot
-import os
-
-#token = os.getenv('TOKEN')
-token = '6029120908:AAFJPrT_MHo4vUVEH4rCnl46UbVxT9goJ_g'
-bot = Bot(token=token)
 
 router = Router()
 
@@ -25,7 +17,7 @@ router = Router()
 available_answers = ['ok', 'not ok','back']
 available_shifts = ['A','B','C', 'back']
 available_controllers = ['Daulet', 'Adilet', 'Dinmukhammed']
-available_masters_fitting = ['Salamat', 'Dauren', 'Aibek','back']
+available_masters_fitting = ['Timur', 'Abai', 'Dauren','back']
 available_tubes = ['okyanus', 'deniz','kavi','back']
 available_diameters = ['20','25','32','40','back']
 available_proceeds = ['yes','back']

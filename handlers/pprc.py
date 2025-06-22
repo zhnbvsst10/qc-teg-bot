@@ -1,5 +1,4 @@
 from aiogram import Router, F
-from aiogram.filters.command import Command
 from aiogram.filters.text import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
@@ -7,14 +6,8 @@ from aiogram.types import Message, ReplyKeyboardRemove
 from keyboards.simple_row import make_row_keyboard
 from datetime import datetime, timedelta
 import psycopg2
-from aiogram.types.photo_size import PhotoSize
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-from aiogram import Bot
-import os
-#token = os.getenv('TOKEN')
-token = '6029120908:AAFJPrT_MHo4vUVEH4rCnl46UbVxT9goJ_g'
-bot = Bot(token=token)
 
 router = Router()
 available_answers = ['ok', 'not ok','back']

@@ -1,16 +1,38 @@
 import asyncio
 import logging
 from aiogram import Bot, F
-from aiogram import Dispatcher
+from aiogram import Dispatcher, Message, types
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from handlers import common, fitting_vodop,  pvc_3, pprc, fitting_can, fitting_other, pert
 import os
+import psycopg2
 
 
-#token = os.getenv('TOKEN')
-token = '6029120908:AAFJPrT_MHo4vUVEH4rCnl46UbVxT9goJ_g'
+token = os.getenv('TOKEN')
 dp = Dispatcher()
 bot = Bot(token=token)
+
+
+def connect_db():
+    conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
+    return conn
+
+def save_user_id(user_id: int):
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO users (user_id) 
+        VALUES (%s) 
+        ON CONFLICT (user_id) DO NOTHING;
+    """, (user_id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+@dp.message(Messagecommands=['register'])
+async def register_user(message: types.Message):
+    save_user_id(message.from_user.id)
+    await message.reply("Вы зарегистрированы!")
 
 async def send_message(bot: Bot):
     

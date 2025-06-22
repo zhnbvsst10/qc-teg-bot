@@ -14,16 +14,15 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from aiogram.utils.keyboard import ReplyKeyboardMarkup, KeyboardButton,ReplyKeyboardBuilder
 
-#token = os.getenv('TOKEN')
-token = '6029120908:AAFJPrT_MHo4vUVEH4rCnl46UbVxT9goJ_g'
+token = os.getenv('TOKEN')
 bot = Bot(token=token)
 
 router2 = Router()
 available_answers = ['ok', 'not ok']
 available_shifts = ['A','B','C','back']
 available_controllers = ['Daulet', 'Adilet', 'Dinmukhammed']
-available_names = ['Anton', 'Aziz', 'Kamil','back']
-available_tubes = ['okyanus/1.8','okyanus type 2/2,2', 'deniz type 1/4.0', 'deniz type 1/3.2', 'deniz type 2/2.2','back']
+available_names = ['Anton', 'Aziz', 'Egor','back']
+available_tubes = ['okyanus/2,2','okyanus type 2/2,2', 'deniz type 1/4.0', 'deniz type 1/3.2', 'deniz type 2/2.2','back']
 available_diameters = ['50', '70','110','160','back']
 available_proceeds = ['yes','back']
 
@@ -139,7 +138,7 @@ async def pvc_tube(message: Message, state: FSMContext):
         await state.set_state(SetParameterPVC3.choosing_pvc_tube)
     else:
         await state.update_data(chosen_name=message.text.lower())
-        available_tubes = ['okyanus/1.8', 'deniz type 1/4.0', 'deniz type 1/3.2', 'deniz type 2/2.2','back']
+        available_tubes = ['okyanus/2.2', 'deniz type 1/4.0', 'deniz type 1/3.2', 'deniz type 2/2.2','back']
         button1 = KeyboardButton(text='okyanus/1.8',)
         button2 = KeyboardButton(text='deniz type 1/4.0')
         button3 = KeyboardButton(text='deniz type 1/3.2')

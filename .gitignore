@@ -1,2 +1,4 @@
 test.ipynb
 test.py
+venv/
+**/__pycache__/
