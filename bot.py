@@ -1,14 +1,17 @@
 import asyncio
 import logging
 from aiogram import Bot, F
-from aiogram import Dispatcher, Message, types
+from aiogram import Dispatcher, types
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from aiogram.filters.command import Command
 from handlers import common, fitting_vodop, pvc_3, pprc, fitting_can, fitting_other, pert
 import os
 import psycopg2
+from dotenv import load_dotenv
+load_dotenv()
 
 token = os.getenv('TOKEN')
+print(token)
 dp = Dispatcher()
 bot = Bot(token=token)
 

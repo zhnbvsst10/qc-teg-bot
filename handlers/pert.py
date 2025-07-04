@@ -10,6 +10,9 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from aiogram import Bot
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 #token = os.getenv('TOKEN')
 token = os.getenv('TOKEN')
 bot = Bot(token=token)
