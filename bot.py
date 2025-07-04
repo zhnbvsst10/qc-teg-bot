@@ -9,14 +9,14 @@ import os
 import psycopg2
 from dotenv import load_dotenv
 load_dotenv()
+db_url = os.getenv('DATABASE_URL') or os.getenv('CONN_STR')
 
 token = os.getenv('TOKEN')
-print(token)
 dp = Dispatcher()
 bot = Bot(token=token)
 
 def connect_db():
-    conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
+    conn = psycopg2.connect(db_url)
     return conn
 
 def save_user_id(user_id: int):

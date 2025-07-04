@@ -8,6 +8,8 @@ from datetime import datetime, timedelta
 import psycopg2
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
+from dotenv import load_dotenv
+import os
 
 router = Router()
 available_answers = ['ok', 'not ok','back']
@@ -666,7 +668,9 @@ async def pprc_chosen(message: Message, state: FSMContext):
                 user_data['def_send'] = '0'
                 user_data['chosen_def_descr'] = ' '
             
-            conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
+            load_dotenv()
+            db_url = os.getenv('DATABASE_URL') or os.getenv('CONN_STR')
+            conn = psycopg2.connect(db_url)
             cursor = conn.cursor()
             cursor.execute(f"""insert into pprc_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, NOMINAL_DIAMETER, VIEW, DIAMETER,WEIGHT, WIDTH,MARK_CONTROL, MASTER, DEFECT,DEFECT_DESCR,  created_at, updated_at, tube_type, number_package, carantine_num, defect_num) values ('работает','{user_data['chosen_controller_name']}','{user_data['chosen_smena']}','{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}',{user_data['chosen_diameter']}, {user_data['chosen_weight']},{user_data['chosen_width']}, '{user_data['chosen_control_mark']}', '{user_data['chosen_name']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}', current_timestamp + interval'6 hours', current_timestamp + interval'6 hours', '{user_data['chosen_tube_type']}', '{user_data['number_package']}', '{user_data['carantine']}', '{user_data['def_send']}' )""")
             conn.commit()
@@ -694,7 +698,9 @@ async def pprc_chosen(message: Message, state: FSMContext):
                 user_data['carantine'] = '0'
                 user_data['def_send'] = '0'
                 user_data['chosen_def_descr'] = ' '
-            conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
+            load_dotenv()
+            db_url = os.getenv('DATABASE_URL') or os.getenv('CONN_STR')
+            conn = psycopg2.connect(db_url)
             cursor = conn.cursor()
             cursor.execute(f"""insert into pprc_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, NOMINAL_DIAMETER, VIEW, DIAMETER, WEIGHT, WIDTH, MASTER, DEFECT,DEFECT_DESCR, created_at, updated_at, tube_type, number_package, carantine_num, defect_num) values ('работает', '{user_data['chosen_controller_name']}','{user_data['chosen_smena']}', '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}','{user_data['chosen_view']}',  {user_data['chosen_diameter']},  {user_data['chosen_weight']},{user_data['chosen_width']}, '{user_data['chosen_name']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',current_timestamp + interval'6 hours', current_timestamp + interval'6 hours', '{user_data['chosen_tube_type']}', '{user_data['number_package']}','{user_data['carantine']}', '{user_data['def_send']}')""")
             conn.commit()

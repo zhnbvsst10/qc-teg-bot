@@ -9,6 +9,11 @@ from aiogram.utils.keyboard import KeyboardButton,ReplyKeyboardBuilder
 import psycopg2
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+db_url = os.getenv('DATABASE_URL') or os.getenv('CONN_STR')
 
 router = Router()
 available_answers = ['ok', 'not ok','back']
@@ -567,7 +572,7 @@ async def fitting_chosen(message: Message, state: FSMContext):
                 user_data['def_send'] = '0'
                 user_data['chosen_def_descr'] = ' '
             #user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + ' ' + user_data['chosen_fit_name_2'] + ' ' + user_data['chosen_fit_name_3'] + ' ' + user_data['chosen_fit_name_4'] 
-            conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
+            conn = psycopg2.connect(db_url)
             cursor = conn.cursor()
             cursor.execute(f"""insert into fitting_canal_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND, NOMINAL_DIAMETER, VIEW, MASTER, WEIGHT,DEFECT,DEFECT_DESCR, created_at, updated_at, carantine_num, defect_num) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}', '{user_data['chosen_name']}','{user_data['chosen_weight']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours','{user_data['carantine']}', '{user_data['def_send']}')""")
             conn.commit()
@@ -597,7 +602,7 @@ async def fitting_chosen(message: Message, state: FSMContext):
                 user_data['def_send'] = '0'
                 user_data['chosen_def_descr'] = ' '
             #user_data['chosen_fit_name'] = user_data['chosen_fit_name_1'] + ' ' + user_data['chosen_fit_name_2'] + ' ' + user_data['chosen_fit_name_3'] + ' ' + user_data['chosen_fit_name_4'] 
-            conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
+            conn = psycopg2.connect(db_url)
             cursor = conn.cursor()
             cursor.execute(f"""insert into fitting_canal_params (WORKING,CONTROLLER_NAME,  STANOK,SHIFT, FITTING_NAME, BRAND, NOMINAL_DIAMETER, VIEW, FUNCTIONALITY, MASTER, WEIGHT,DEFECT,DEFECT_DESCR, created_at, updated_at, carantine_num, defect_num) values (TRUE,'{user_data['chosen_controller_name']}', '{user_data['chosen_stanok']}','{user_data['chosen_smena']}', '{user_data['chosen_fit_name']}',  '{user_data['chosen_tube']}', '{user_data['chosen_nom_diameter']}', '{user_data['chosen_view']}','{user_data['chosen_functionality']}',  '{user_data['chosen_name']}','{user_data['chosen_weight']}', '{user_data['chosen_def']}', '{user_data['chosen_def_descr']}',  current_timestamp + interval'6 hours', current_timestamp + interval'6 hours', '{user_data['carantine']}', '{user_data['def_send']}')""")
             conn.commit()

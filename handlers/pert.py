@@ -25,6 +25,7 @@ available_names = ['Talgat','Aibar','Omirserik','back']
 available_tubes = ['PE-RT','OxyPE-RT', 'Pert-Al- Pert', 'back']
 available_proceeds = ['yes']
 
+db_url = os.getenv('DATABASE_URL') or os.getenv('CONN_STR')
 
 class SetParameterPERT(StatesGroup):
     choosing_pvc_type = State()
@@ -619,7 +620,7 @@ async def pvc_chosen(message: Message, state: FSMContext):
                 user_data['carantine'] = '0'
                 user_data['def_send'] = '0'
                 user_data['chosen_def_descr'] = ' '
-        conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
+        conn = psycopg2.connect(db_url)
         cursor = conn.cursor()
         cursor.execute(f"""insert into pert_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, VIEW, 
                                                     OUTER_DIAMETER, WIDTH_ST, WEIGHT_B, WEIGHT, MARK_CONTROL,
@@ -644,7 +645,7 @@ async def pvc_chosen(message: Message, state: FSMContext):
                 user_data['carantine'] = '0'
                 user_data['def_send'] = '0'
                 user_data['chosen_def_descr'] = ' '
-        conn = psycopg2.connect('postgresql://neondb_owner:npg_qKfatzsHP75o@ep-blue-lake-a4lt99hy-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require')
+        conn = psycopg2.connect(db_url)
         cursor = conn.cursor()
         cursor.execute(f"""insert into pert_params (WORKING,CONTROLLER_NAME, SHIFT, BRAND, VIEW, 
                                                     OUTER_DIAMETER, WIDTH_ST, WEIGHT_B, WEIGHT,
