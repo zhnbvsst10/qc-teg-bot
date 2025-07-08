@@ -10,6 +10,10 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+token = os.getenv('TOKEN')
 
 router = Router()
 available_answers = ['ok', 'not ok','back']
@@ -20,6 +24,7 @@ available_tubes = ['okyanus', 'deniz','pinar','deniz PN','back']
 available_diameters = ['20','25','32','40','50','63','back']
 available_proceeds = ['yes','back']
 available_tube_type = ['композит', 'обычный']
+
 class SetParameterPPRC(StatesGroup):
     choosing_pprc_type = State()
     choosing_pprc_controller = State()

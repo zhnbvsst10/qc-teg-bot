@@ -14,8 +14,11 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from aiogram.utils.keyboard import ReplyKeyboardMarkup, KeyboardButton,ReplyKeyboardBuilder
 from aiogram.exceptions import TelegramBadRequest
+import os
+from dotenv import load_dotenv
 
-token = '7491228760:AAFnb_5APIBYInpumPOgLNsF1D5xl6ItBs8'
+load_dotenv()
+token = os.getenv('TOKEN')
 bot = Bot(token=token)
 
 router2 = Router()
